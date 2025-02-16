@@ -10,6 +10,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class ElevatorSubsystem extends SubsystemBase {
     private final static ElevatorSubsystem INSTANCE = new ElevatorSubsystem();
@@ -50,8 +52,21 @@ public class ElevatorSubsystem extends SubsystemBase {
         return INSTANCE;
     }
 
+    /**
+     * Sets the elevator to a specific position using motion magic
+     * @param position The ElevatorPosition to move to
+     */
     public void setPosition(ElevatorPosition position) {
         leftMotor.setControl(motionMagic.withPosition(position.getHeight() / ElevatorConstants.SENSOR_TO_MECHANISM_RATIO));
+    }
+
+    /**
+     * Creates a command to move the elevator to a specific position
+     * @param position The ElevatorPosition to move to
+     * @return A command that will move the elevator to the specified position
+     */
+    public Command moveToPosition(ElevatorPosition position) {
+        return Commands.runOnce(() -> setPosition(position), this);
     }
 
     public Angle getCurrentPosition() {
