@@ -1,0 +1,66 @@
+package frc.robot.subsystems;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+
+public class ElevatorSubsystem extends SubsystemBase {
+    private final static ElevatorSubsystem INSTANCE = new ElevatorSubsystem();
+
+    private final TalonFX leftMotor;
+    private final TalonFX rightMotor;
+    private final MotionMagicVoltage motionMagic;
+
+    private ElevatorSubsystem() {
+        leftMotor = new TalonFX(ElevatorConstants.LEFT_MOTOR_ID);
+        rightMotor = new TalonFX(ElevatorConstants.RIGHT_MOTOR_ID);
+
+        // Configure motors
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        config.Slot0.kP = ElevatorConstants.kP;
+        config.Slot0.kI = ElevatorConstants.kI;
+        config.Slot0.kD = ElevatorConstants.kD;
+        config.Slot0.kV = ElevatorConstants.kFF;
+        config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.MAX_VELOCITY;
+        config.MotionMagic.MotionMagicAcceleration = ElevatorConstants.MAX_ACCELERATION;
+        config.MotionMagic.MotionMagicJerk = ElevatorConstants.MAX_JERK;
+        config.Feedback.SensorToMechanismRatio = ElevatorConstants.SENSOR_TO_MECHANISM_RATIO;
+
+        leftMotor.getConfigurator().apply(config);
+        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        rightMotor.getConfigurator().apply(config);
+
+        // Configure right motor to follow left motor (inverted)
+
+        // Set brake mode
+        leftMotor.setNeutralMode(NeutralModeValue.Brake);
+        rightMotor.setNeutralMode(NeutralModeValue.Brake);
+
+        motionMagic = new MotionMagicVoltage(0);
+    }
+
+    public static ElevatorSubsystem getInstance() {
+        return INSTANCE;
+    }
+
+    public void setPosition(ElevatorPosition position) {
+        leftMotor.setControl(motionMagic.withPosition(position.getHeight() / ElevatorConstants.SENSOR_TO_MECHANISM_RATIO));
+    }
+
+    public Angle getCurrentPosition() {
+        return leftMotor.getPosition().getValue();
+    }
+
+    @Override
+    public void periodic() {
+        // Add any periodic checks or logging here
+    }
+}
+
