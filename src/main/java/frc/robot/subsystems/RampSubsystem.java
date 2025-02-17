@@ -3,10 +3,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class RampSubsystem extends SubsystemBase{
+public class RampSubsystem extends SubsystemBase {
     private final TalonFX RampMotor = new TalonFX(Constants.RampConstants.RampID);
     // private final SlewRateLimiter speedLimiter = new SlewRateLimiter(100);
 
@@ -29,4 +30,7 @@ public class RampSubsystem extends SubsystemBase{
         RampMotor.set(speed);
     }
 
+    public Command run(double speed) {
+        return this.runOnce(() -> setSpeed(speed));
+    }
 }
