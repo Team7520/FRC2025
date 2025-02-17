@@ -1,6 +1,10 @@
 package frc.robot;
 
 public class Constants {
+    public static class RampConstants {
+        public static final int RampID = 43;
+    }
+  
     public static class ElevatorConstants {
         public static final int LEFT_MOTOR_ID = 41;
         public static final int RIGHT_MOTOR_ID = 42;

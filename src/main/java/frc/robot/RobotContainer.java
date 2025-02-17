@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.RampSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 
@@ -40,6 +40,8 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    private final RampSubsystem rampSubsystem = RampSubsystem.getInstance();
+
     public RobotContainer() {
         configureBindings();
     }
@@ -56,6 +58,8 @@ public class RobotContainer {
             )
         );
 
+        rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
+      
         driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driveController.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
