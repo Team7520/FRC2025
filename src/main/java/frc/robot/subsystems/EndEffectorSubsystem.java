@@ -73,7 +73,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         pivotConfig.smartCurrentLimit(EndEffectorConstants.PIVOT_CURRENT_LIMIT);
 
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        pivotEncoder.setPosition(0);
+//        pivotEncoder.setPosition(0);
     }
 
     public void setPivotPosition(EndEffectorConstants.PivotPosition position) {

@@ -22,6 +22,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
+import frc.robot.commands.ManualElevator;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -46,9 +47,9 @@ public class RobotContainer {
     private final EndEffectorSubsystem endEffector = EndEffectorSubsystem.getInstance();
 
     // Constants for speeds
-    private static final double CONVEYOR_INTAKE_SPEED = 0.7;
-    private static final double CONVEYOR_EJECT_SPEED = -0.7;
-    private static final double RAMP_SPEED = 1;
+    private static final double CONVEYOR_INTAKE_SPEED = 0.3;
+    private static final double CONVEYOR_EJECT_SPEED = -0.3;
+    private static final double RAMP_SPEED = 0.5;
 
     public RobotContainer() {
         configureBindings();
@@ -106,6 +107,11 @@ public class RobotContainer {
         // Default commands to stop when not actively controlled
         endEffector.setDefaultCommand(endEffector.stopConveyorCommand());
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
+
+        // Manual elevator control
+        elevator.setDefaultCommand(
+            new ManualElevator(elevator, () -> -operatorController.getRightY())
+        );
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
