@@ -31,6 +31,6 @@ public class RampSubsystem extends SubsystemBase {
     }
 
     public Command run(double speed) {
-        return this.runOnce(() -> setSpeed(speed));
+        return this.run(() -> setSpeed(speed));
     }
 }
