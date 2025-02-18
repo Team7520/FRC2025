@@ -44,11 +44,11 @@ public class RobotContainer {
 
     private final RampSubsystem rampSubsystem = RampSubsystem.getInstance();
     private final EndEffectorSubsystem endEffector = EndEffectorSubsystem.getInstance();
-    
+
     // Constants for speeds
     private static final double CONVEYOR_INTAKE_SPEED = 0.7;
     private static final double CONVEYOR_EJECT_SPEED = -0.7;
-    private static final double RAMP_SPEED = 0.5;
+    private static final double RAMP_SPEED = 1;
 
     public RobotContainer() {
         configureBindings();
@@ -67,7 +67,7 @@ public class RobotContainer {
         );
 
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
-      
+
         driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driveController.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
@@ -98,7 +98,7 @@ public class RobotContainer {
         // Conveyor Controls (using triggers)
         operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED));
         operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED));
-        
+
         // Ramp Controls (using bumpers)
         operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED));
         operatorController.leftBumper().whileTrue(rampSubsystem.run(-RAMP_SPEED));

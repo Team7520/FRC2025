@@ -45,10 +45,10 @@ public class Constants {
 
     public static class EndEffectorConstants {
         public static final int PIVOT_ID = 23;
-        public static final int CONVEYOR_ID = 24;
-        public static final double SENSOR_TO_MECHANISM_RATIO = 9d/400d;
-        public static final double MAX_ANGLE = 135;
-        public static final double MIN_ANGLE = 0;
+        public static final int CONVEYOR_ID = 20;
+        public static final double SENSOR_TO_MECHANISM_RATIO = 14.0625;
+        public static final double MAX_ANGLE = 0;
+        public static final double MIN_ANGLE = -220;
 
         // PID Constants
         public static final double kP = 0.1;
@@ -63,8 +63,8 @@ public class Constants {
         public static final double MAX_JERK = MAX_ACCELERATION*4;
         public static final double ALLOWABLE_ERROR = 0.5;
         public static enum PivotPosition {
-            UP(90),
-            DOWN(30);
+            UP(-200),
+            DOWN(-135);
 
             private final double angle;
 
@@ -80,8 +80,6 @@ public class Constants {
         // Current Limiting Constants
         public static final int PIVOT_CURRENT_LIMIT = 10;
         public static final int CONVEYOR_CURRENT_LIMIT = 10;
-
-
 
 
     }
