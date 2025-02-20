@@ -17,7 +17,7 @@ public class ManualElevator extends Command {
 
     @Override
     public void execute() {
-        double adjustedInput = input.getAsDouble() * MANUAL_ADJUSTMENT_RATE;
+        double adjustedInput = input.getAsDouble() * MANUAL_ADJUSTMENT_RATE*2;
         if (Math.abs(adjustedInput) > 0.1) { // Add deadband
             elevator.addToPosition(adjustedInput);
         }

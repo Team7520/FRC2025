@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
@@ -102,6 +103,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Add any periodic checks or logging here
+        String currentPos = leftMotor.getPosition().getValue().toLongString();
+        SmartDashboard.putString("ElevatorPos", currentPos);
     }
 }
 
