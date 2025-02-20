@@ -27,9 +27,11 @@ public class Constants {
         public static final int CURRENT_LIMIT = 20;
         public static enum ElevatorPosition {
             GROUND(0),
-            LOW(10),
-            MID(24),
-            HIGH(55);
+            LOW(11.83),
+            MID(29.75),
+            HIGH(54.3),
+            LOWALG(18.3),
+            HIGHALG(34.45);
 
             private final double height;
 
@@ -51,20 +53,22 @@ public class Constants {
         public static final double MIN_ANGLE = -220;
 
         // PID Constants
-        public static final double kP = 0.01;
+        public static final double kP = 0.05;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kIz = 0.0;
         public static final double kFF = 0.0;
 
         // MAX motion constants
-        public static final double MAX_VELOCITY = 10000;
-        public static final double MAX_ACCELERATION = MAX_VELOCITY*2;
-        public static final double MAX_JERK = MAX_ACCELERATION*4;
+        public static final double MAX_VELOCITY = 20000;
+        public static final double MAX_ACCELERATION = MAX_VELOCITY*1.5;
+        public static final double MAX_JERK = MAX_ACCELERATION*3;
         public static final double ALLOWABLE_ERROR = 0.5;
         public static enum PivotPosition {
-            UP(-138),
-            DOWN(-135);
+            UP(-211),
+            DOWN(-176),
+            DUNK(-122),
+            ALG(-128.57);
 
             private final double angle;
 
@@ -82,5 +86,41 @@ public class Constants {
         public static final int CONVEYOR_CURRENT_LIMIT = 40;
 
 
+    }
+
+    public static class TuskConstants {
+        public static final int PIVOT_ID = 24;
+        public static final double SENSOR_TO_MECHANISM_RATIO = 25;
+        public static final double MAX_ANGLE = 0;
+        public static final double MIN_ANGLE = -220;
+
+        public static final double kP = 0.05;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kIz = 0.0;
+        public static final double kFF = 0.0;
+
+        public static final double MAX_VELOCITY = 20000;
+        public static final double MAX_ACCELERATION = MAX_VELOCITY*1.5;
+        public static final double MAX_JERK = MAX_ACCELERATION*3;
+        public static final double ALLOWABLE_ERROR = 0.5;
+        public static enum PivotPosition {
+            UP(0),
+            DOWN(141.666489);
+
+            private final double angle;
+
+            PivotPosition(double angle) {
+                this.angle = angle;
+            }
+
+            public double getAngle() {
+                return angle;
+            }
+        }
+
+        // Current Limiting Constants
+        public static final int PIVOT_CURRENT_LIMIT = 30;
+        public static final int CONVEYOR_CURRENT_LIMIT = 40;
     }
 }

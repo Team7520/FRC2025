@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -18,10 +19,12 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.RampSubsystem;
+import frc.robot.subsystems.TuskSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
+import frc.robot.Constants;
 import frc.robot.commands.ManualElevator;
 
 public class RobotContainer {
@@ -45,11 +48,12 @@ public class RobotContainer {
 
     private final RampSubsystem rampSubsystem = RampSubsystem.getInstance();
     private final EndEffectorSubsystem endEffector = EndEffectorSubsystem.getInstance();
+    private final TuskSubsystem tuskSubsystem = TuskSubsystem.getInstance();
 
     // Constants for speeds
-    private static final double CONVEYOR_INTAKE_SPEED = 0.3;
-    private static final double CONVEYOR_EJECT_SPEED = -0.3;
-    private static final double RAMP_SPEED = 0.5;
+    private static final double CONVEYOR_INTAKE_SPEED = 0.1;
+    private static final double CONVEYOR_EJECT_SPEED = -0.1;
+    private static final double RAMP_SPEED = 0.3;
 
     public RobotContainer() {
         configureBindings();
@@ -68,7 +72,7 @@ public class RobotContainer {
         );
 
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
-
+        endEffector.setDefaultCommand(endEffector.run(0));
         driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driveController.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
@@ -91,20 +95,32 @@ public class RobotContainer {
         operatorController.x().onTrue(elevator.moveToPosition(ElevatorPosition.LOW));
         operatorController.y().onTrue(elevator.moveToPosition(ElevatorPosition.MID));
         operatorController.b().onTrue(elevator.moveToPosition(ElevatorPosition.HIGH));
+        operatorController.button(9).onTrue(elevator.moveToPosition(ElevatorPosition.LOWALG));
+        operatorController.button(10).onTrue(elevator.moveToPosition(ElevatorPosition.HIGHALG));
+
+
 
         // EndEffector Pivot Controls
         operatorController.povUp().onTrue(endEffector.setPivotPositionCommand(PivotPosition.UP));
         operatorController.povDown().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DOWN));
+        operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
+        operatorController.povLeft().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
 
+                
         // Conveyor Controls (using triggers)
         operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED));
         operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED));
 
+        // operatorController.rightBumper().whileTrue(endEffector.run(0.05));
+        // operatorController.leftBumper().whileTrue(endEffector.run(-0.1));
+        operatorController.button(7).onTrue(tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP));
+        operatorController.button(8).onTrue(tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN));
         // Ramp Controls (using bumpers)
         operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED));
         operatorController.leftBumper().whileTrue(rampSubsystem.run(-RAMP_SPEED));
 
         // Default commands to stop when not actively controlled
+
         endEffector.setDefaultCommand(endEffector.stopConveyorCommand());
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
 
