@@ -28,6 +28,7 @@ import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Constants;
+import frc.robot.commands.L2Command;
 import frc.robot.commands.ManualElevator;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -74,9 +75,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(CommandSwerveDrivetrain.deadband(-driveController.getLeftY() * MaxSpeed)) // Drive forward with negative Y (forward)
-                    .withVelocityY(CommandSwerveDrivetrain.deadband(-driveController.getLeftX() * MaxSpeed)) // Drive left with negative X (left)
-                    .withRotationalRate(CommandSwerveDrivetrain.deadband(-driveController.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(CommandSwerveDrivetrain.deadband(-driveController.getLeftY() * MaxSpeed * 0.5)) // Drive forward with negative Y (forward)
+                    .withVelocityY(CommandSwerveDrivetrain.deadband(-driveController.getLeftX() * MaxSpeed * 0.5)) // Drive left with negative X (left)
+                    .withRotationalRate(CommandSwerveDrivetrain.deadband(-driveController.getRightX() * MaxAngularRate * 0.5)) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -101,7 +102,8 @@ public class RobotContainer {
 
         // Elevator Position Controls - using command factory method
         operatorController.a().onTrue(elevator.moveToPosition(ElevatorPosition.GROUND));
-        operatorController.x().onTrue(elevator.moveToPosition(ElevatorPosition.LOW));
+        //operatorController.x().onTrue(elevator.moveToPosition(ElevatorPosition.LOW));
+        operatorController.x().onTrue(new L2Command(elevator, endEffector, -CONVEYOR_INTAKE_SPEED));
         operatorController.y().onTrue(elevator.moveToPosition(ElevatorPosition.MID));
         operatorController.b().onTrue(elevator.moveToPosition(ElevatorPosition.HIGH));
         operatorController.button(9).onTrue(elevator.moveToPosition(ElevatorPosition.LOWALG));
