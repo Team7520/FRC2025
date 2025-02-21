@@ -14,7 +14,6 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -30,6 +29,7 @@ import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Constants;
 import frc.robot.commands.ManualElevator;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -74,9 +74,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(CommandSwerveDrivetrain.deadband(-joystick.getLeftY() * MaxSpeed)) // Drive forward with negative Y (forward)
-                    .withVelocityY(CommandSwerveDrivetrain.deadband(-joystick.getLeftX() * MaxSpeed)) // Drive left with negative X (left)
-                    .withRotationalRate(CommandSwerveDrivetrain.deadband(-joystick.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(CommandSwerveDrivetrain.deadband(-driveController.getLeftY() * MaxSpeed)) // Drive forward with negative Y (forward)
+                    .withVelocityY(CommandSwerveDrivetrain.deadband(-driveController.getLeftX() * MaxSpeed)) // Drive left with negative X (left)
+                    .withRotationalRate(CommandSwerveDrivetrain.deadband(-driveController.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
             )
         );
 
