@@ -10,10 +10,10 @@ import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.*;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -34,6 +34,9 @@ public class TunerConstants {
         .withKP(5).withKI(0).withKD(0)
         .withKS(0).withKV(0.124);
 
+    // The slew rate limiter for joystick imputs
+    public static final double slewRateLimiter = 18;
+    
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
     private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
@@ -41,8 +44,6 @@ public class TunerConstants {
     // This affects the PID/FF gains for the drive motors
     private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.Voltage;
 
-    // The slew rate limiter for joystick imputs
-    public static final double slewRateLimiter = 18;
 
     // The type of motor used for the drive motor
     private static final DriveMotorArrangement kDriveMotorType = DriveMotorArrangement.TalonFX_Integrated;
@@ -60,23 +61,22 @@ public class TunerConstants {
     // Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
     // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
     private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration()
-    .withClosedLoopRamps(
-        new ClosedLoopRampsConfigs()
-            .withVoltageClosedLoopRampPeriod(1)
-            .withDutyCycleClosedLoopRampPeriod(1)
-    )
-    .withCurrentLimits(
-        new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(60)
-            .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(60)
-            .withSupplyCurrentLimitEnable(true)
-    )
-    .withMotorOutput(
-        new MotorOutputConfigs()
-            .withNeutralMode(NeutralModeValue.Coast)
-    );
-
+        .withClosedLoopRamps(
+            new ClosedLoopRampsConfigs()
+                .withVoltageClosedLoopRampPeriod(1)
+                .withDutyCycleClosedLoopRampPeriod(1)
+        )
+        .withCurrentLimits(
+            new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(60)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(60)
+                .withSupplyCurrentLimitEnable(true)
+        )
+        .withMotorOutput(
+            new MotorOutputConfigs()
+                .withNeutralMode(NeutralModeValue.Coast)
+        );
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
         .withCurrentLimits(
             new CurrentLimitsConfigs()
@@ -84,8 +84,10 @@ public class TunerConstants {
                 // stator current limit to help avoid brownouts without impacting performance.
                 .withStatorCurrentLimit(Amps.of(40))
                 .withStatorCurrentLimitEnable(true)
-            ).withMotorOutput(
-                new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake)
+        )
+        .withMotorOutput(
+            new MotorOutputConfigs()
+                .withNeutralMode(NeutralModeValue.Brake)
         );
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs

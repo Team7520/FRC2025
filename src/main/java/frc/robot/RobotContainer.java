@@ -7,12 +7,14 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -26,9 +28,9 @@ import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Constants;
+import frc.robot.commands.L2Command;
 import frc.robot.commands.ManualElevator;
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class RobotContainer {
@@ -60,6 +62,7 @@ public class RobotContainer {
     private static final double CONVEYOR_INTAKE_SPEED = 0.1;
     private static final double CONVEYOR_EJECT_SPEED = -0.1;
     private static final double RAMP_SPEED = 0.3;
+
 
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("test");
@@ -112,7 +115,8 @@ public class RobotContainer {
 
         // Elevator Position Controls - using command factory method
         operatorController.a().onTrue(elevator.moveToPosition(ElevatorPosition.GROUND));
-        operatorController.x().onTrue(elevator.moveToPosition(ElevatorPosition.LOW));
+        //operatorController.x().onTrue(elevator.moveToPosition(ElevatorPosition.LOW));
+        operatorController.x().onTrue(new L2Command(elevator, endEffector, -CONVEYOR_INTAKE_SPEED));
         operatorController.y().onTrue(elevator.moveToPosition(ElevatorPosition.MID));
         operatorController.b().onTrue(elevator.moveToPosition(ElevatorPosition.HIGH));
         operatorController.button(9).onTrue(elevator.moveToPosition(ElevatorPosition.LOWALG));

@@ -59,6 +59,10 @@ public class Constants {
         public static final double kIz = 0.0;
         public static final double kFF = 0.0;
 
+        public static final double kP_CONVEYOR = 0.2;
+        public static final double kI_CONVEYOR = 0.0;
+        public static final double kD_CONVEYOR = 0.0;
+
         // MAX motion constants
         public static final double MAX_VELOCITY = 20000;
         public static final double MAX_ACCELERATION = MAX_VELOCITY*1.5;
