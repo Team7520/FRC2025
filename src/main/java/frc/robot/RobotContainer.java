@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -42,7 +43,24 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("test");
+        autoChooser = AutoBuilder.buildAutoChooser("1m F + 90 CW");
+        autoChooser.addOption("2m F", getAutonomousCommand());
+        autoChooser.addOption("1m F", getAutonomousCommand());
+        autoChooser.addOption("0.5m F", getAutonomousCommand());
+        autoChooser.addOption("0.5m B", getAutonomousCommand());
+        autoChooser.addOption("1m B", getAutonomousCommand());
+        autoChooser.addOption("2m B", getAutonomousCommand());
+        autoChooser.addOption("1m R", getAutonomousCommand());
+        autoChooser.addOption("1m F + 1m R", getAutonomousCommand());
+        autoChooser.addOption("45 CCW", getAutonomousCommand());
+        autoChooser.addOption("45 CW", getAutonomousCommand());
+        autoChooser.addOption("180 CCW", getAutonomousCommand());
+        autoChooser.addOption("90 CCW", getAutonomousCommand());
+        autoChooser.addOption("90 CW", getAutonomousCommand());
+        autoChooser.addOption("180 CW", getAutonomousCommand());
+        autoChooser.addOption("135 CW", getAutonomousCommand());
+        autoChooser.addOption("135 CCW", getAutonomousCommand());
+        autoChooser.addOption("1m F + 90 CW + 1m R", getAutonomousCommand());
         SmartDashboard.putData("AutoPaths", autoChooser);
 
         configureBindings();
