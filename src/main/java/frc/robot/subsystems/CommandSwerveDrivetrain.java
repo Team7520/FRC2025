@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -13,6 +15,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,11 +30,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
-
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.Telemetry.TagCoods;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -39,6 +48,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+    int counter = 0;
+    public static ArrayList<TagCoods> TagArray = new ArrayList<>();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -85,7 +96,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     // PID constants for translation
                     new PIDConstants(10, 0, 0),
                     // PID constants for rotation
-                    new PIDConstants(7, 0, 0)
+                    new PIDConstants(5, 0, 0)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
@@ -162,6 +173,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        LimeTags();
     }
 
     /**
@@ -187,6 +199,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        LimeTags();
     }
 
     /**
@@ -220,6 +233,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        LimeTags();
     }
 
     /**
@@ -230,6 +244,66 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
+    }
+
+    public void LimeTags() {
+        //Distance between sides is 33.02 cm
+
+        //ID 0 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 1 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 2 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 3 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 4 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 5 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 6 Apriltag
+        TagArray.add(new TagCoods(13.484, 3.96, 13.77, 3.125, 13.627, 3.042, Rotation2d.fromDegrees(120)));
+        //ID 7 Apriltag
+        TagArray.add(new TagCoods(14.195, 3.861, 14.195, 4.191, 14.195, 4.026, Rotation2d.fromDegrees(180)));
+        //ID 8 Apriltag
+        TagArray.add(new TagCoods(13.77, 4.927, 13.484, 5.092, 13.627, 5.009, Rotation2d.fromDegrees(240)));
+        //ID 9 Apriltag
+        TagArray.add(new TagCoods(12.634, 5.092, 12.348, 4.927, 12.491, 5.009, Rotation2d.fromDegrees(300)));
+        //ID 10 Apriltag
+        TagArray.add(new TagCoods(11.923, 4.191, 11.923, 3.861, 11.923, 4.026, Rotation2d.fromDegrees(0)));
+        //ID 11 Apriltag
+        TagArray.add(new TagCoods(12.348, 3.125, 12.634, 2.96, 12.491, 3.042, Rotation2d.fromDegrees(60)));
+        //ID 12 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 13 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 14 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 15 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 16 Apriltag
+        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
+        //ID 17 Apriltag
+        TagArray.add(new TagCoods(3.779, 3.125, 4.064, 2.960, 3.922, 3.042, Rotation2d.fromDegrees(60)));
+        //ID 18 Apriltag
+        TagArray.add(new TagCoods(3.353, 4.191, 3.353, 3.861, 3.353, 4.026, Rotation2d.fromDegrees(0)));
+        //ID 19 Apriltag
+        TagArray.add(new TagCoods(4.064, 5.092, 3.779, 4.927, 3.922, 5.009, Rotation2d.fromDegrees(300)));
+        //ID 20 Apriltag
+        TagArray.add(new TagCoods(5.2, 4.927, 4.914, 5.092, 5.057, 5.009, Rotation2d.fromDegrees(240)));
+        //ID 21 Apriltag
+        TagArray.add(new TagCoods(5.626, 3.861, 5.626, 4.191, 5.626, 4.026, Rotation2d.fromDegrees(180)));
+        //ID 22 Apriltag
+        TagArray.add(new TagCoods(2.96, 4.914, 5.2, 3.125, 5.057, 3.042, Rotation2d.fromDegrees(120)));
+
+        LimelightHelpers.setCameraPose_RobotSpace("", 
+        -0.11,    // Forward offset (meters)
+            0,    // Side offset (meters)
+            0,    // Height offset (meters)
+            0,    // Roll (degrees)
+            20,   // Pitch (degrees)
+            0     // Yaw (degrees)
+        );
     }
 
     /**
@@ -254,6 +328,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
+    public static double deadband(double value) {
+        return Math.abs(value) > 0.05 ? value : 0;
+    }
+
     @Override
     public void periodic() {
         /*
@@ -273,6 +351,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
+        if (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0 && counter > 0) {
+            counter = 0;
+            resetPose(updatedPose);
+            //System.out.printf("Updated X:%f Updated Y:%f, Updated Rotate:%f\n", updatedPose.getX(), updatedPose.getY(), updatedPose.getRotation().getDegrees());
+        } else {
+            counter++;
+            //System.out.println("ran in null");
+        }
+        SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
+        SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
     }
 
     private void startSimThread() {
@@ -322,5 +411,71 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Matrix<N3, N1> visionMeasurementStdDevs
     ) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+    }
+
+    public PathPlannerPath GoLeft() {
+        double id = LimelightHelpers.getFiducialID("");
+
+        List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+            new Pose2d(TagArray.get((int)id).LeftX, TagArray.get((int)id).LeftY, TagArray.get((int)id).BotAngle)
+        );
+
+        PathConstraints constraints = new PathConstraints(0.15, 0.15, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+
+        PathPlannerPath path = new PathPlannerPath(
+            wayPoints,
+            constraints,
+            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+            new GoalEndState(0.0, TagArray.get((int)id).BotAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+        
+        path.preventFlipping =true;
+        return path;
+    }
+
+    public PathPlannerPath GoRight() {
+        double id = LimelightHelpers.getFiducialID("");
+
+        List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+            new Pose2d(TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle)
+        );
+
+        PathConstraints constraints = new PathConstraints(0.15, 0.15, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+
+        PathPlannerPath path = new PathPlannerPath(
+            wayPoints,
+            constraints,
+            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+            new GoalEndState(0.0, TagArray.get((int)id).BotAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+        
+        path.preventFlipping =true;
+        return path;
+    }
+
+    public PathPlannerPath GoMid4Algae() {
+        List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+            new Pose2d(4.914, 5.092, Rotation2d.fromDegrees(240))
+            // 11 Right is 12.634, 2.96, 60 degree
+            // 6 Right is 13.77, 3.125, 120 degree
+            // 8 Right is 13.484, 5.092, 240 degree
+            // 9 Right is 12.348, 4.927, 300 degrees
+            // 7 Right is 14.195, 4.191, 180 degrees
+        );
+
+        PathConstraints constraints = new PathConstraints(0.15, 0.15, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+
+        PathPlannerPath path = new PathPlannerPath(
+            wayPoints,
+            constraints,
+            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+            new GoalEndState(0.0, Rotation2d.fromDegrees(240)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+        
+        path.preventFlipping =true;
+        return path;
     }
 }

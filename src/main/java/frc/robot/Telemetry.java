@@ -4,6 +4,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -31,6 +32,25 @@ public class Telemetry {
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
         SignalLogger.start();
+    }
+
+    public static final class TagCoods {
+        public TagCoods(double leftX, double leftY, double rightX, double rightY, double midX, double midY, Rotation2d angle) {
+            LeftX = leftX;
+            LeftY = leftY;
+            RightX = rightX;
+            RightY = rightY;
+            BotAngle = angle;
+            MidX = midX;
+            MidY = midY;
+        }
+        public double LeftX = -1;
+        public double LeftY = -1;
+        public double RightX = -1;
+        public double RightY = -1;
+        public Rotation2d BotAngle;
+        public double MidX = -1;
+        public double MidY = -1;
     }
 
     /* What to publish over networktables for telemetry */

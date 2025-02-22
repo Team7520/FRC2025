@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -26,6 +27,9 @@ import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Constants;
 import frc.robot.commands.ManualElevator;
+import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -46,6 +50,8 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    private final SendableChooser<Command> autoChooser;
+
     private final RampSubsystem rampSubsystem = RampSubsystem.getInstance();
     private final EndEffectorSubsystem endEffector = EndEffectorSubsystem.getInstance();
     private final TuskSubsystem tuskSubsystem = TuskSubsystem.getInstance();
@@ -56,6 +62,9 @@ public class RobotContainer {
     private static final double RAMP_SPEED = 0.3;
 
     public RobotContainer() {
+        autoChooser = AutoBuilder.buildAutoChooser("test");
+        SmartDashboard.putData("AutoPaths", autoChooser);
+
         configureBindings();
     }
 
@@ -65,11 +74,22 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driveController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-driveController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(CommandSwerveDrivetrain.deadband(-driveController.getLeftY() * MaxSpeed)) // Drive forward with negative Y (forward)
+                    .withVelocityY(CommandSwerveDrivetrain.deadband(-driveController.getLeftX() * MaxSpeed)) // Drive left with negative X (left)
+                    .withRotationalRate(CommandSwerveDrivetrain.deadband(-driveController.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
             )
         );
+
+        //auto movements to reef
+        driveController.povLeft().onTrue(new InstantCommand(() -> {
+                  var cmd = AutoBuilder.followPath(drivetrain.GoLeft());
+                  cmd.schedule();}
+            ));
+        
+        driveController.povRight().onTrue(new InstantCommand(() -> {
+                  var cmd = AutoBuilder.followPath(drivetrain.GoRight());
+                  cmd.schedule();}
+            ));
 
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
         endEffector.setDefaultCommand(endEffector.run(0));
@@ -133,6 +153,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }
