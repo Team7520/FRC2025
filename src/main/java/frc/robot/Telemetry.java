@@ -34,24 +34,6 @@ public class Telemetry {
         SignalLogger.start();
     }
 
-    public static final class TagCoods {
-        public TagCoods(double leftX, double leftY, double rightX, double rightY, double midX, double midY, Rotation2d angle) {
-            LeftX = leftX;
-            LeftY = leftY;
-            RightX = rightX;
-            RightY = rightY;
-            BotAngle = angle;
-            MidX = midX;
-            MidY = midY;
-        }
-        public double LeftX = -1;
-        public double LeftY = -1;
-        public double RightX = -1;
-        public double RightY = -1;
-        public Rotation2d BotAngle;
-        public double MidX = -1;
-        public double MidY = -1;
-    }
 
     /* What to publish over networktables for telemetry */
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
