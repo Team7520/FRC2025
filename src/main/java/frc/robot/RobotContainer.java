@@ -8,11 +8,14 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -55,8 +58,71 @@ public class RobotContainer {
     private static final double CONVEYOR_EJECT_SPEED = -0.1;
     private static final double RAMP_SPEED = 0.3;
 
+    public final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
     public RobotContainer() {
+
+        registerAutos();
+
         configureBindings();
+    }
+
+    private void registerAutos() {
+
+        registerNamedCommands();
+
+        autoChooser.setDefaultOption("1m F + 90 CW", drivetrain.getPPAutoCommand("1m F + 90 CW", true));
+        autoChooser.addOption("2m F", drivetrain.getPPAutoCommand("2m F", true));
+        autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
+        autoChooser.addOption("0.5m F", drivetrain.getPPAutoCommand("0.5m F", true));
+        autoChooser.addOption("0.5m B", drivetrain.getPPAutoCommand("0.5m B", true));
+        autoChooser.addOption("1m B", drivetrain.getPPAutoCommand("1m B", true));
+        autoChooser.addOption("2m B", drivetrain.getPPAutoCommand("2m B", true));
+        autoChooser.addOption("1m R", drivetrain.getPPAutoCommand("1m R", true));
+        autoChooser.addOption("1m F + 1m R", drivetrain.getPPAutoCommand("1m F + 1m R", true));
+        autoChooser.addOption("45 CCW", drivetrain.getPPAutoCommand("45 CCW", true));
+        autoChooser.addOption("45 CW", drivetrain.getPPAutoCommand("45 CW", true));
+        autoChooser.addOption("180 CCW", drivetrain.getPPAutoCommand("180 CCW", true));
+        autoChooser.addOption("90 CCW", drivetrain.getPPAutoCommand("90 CCW", true));
+        autoChooser.addOption("90 CW", drivetrain.getPPAutoCommand("90 CW", true));
+        autoChooser.addOption("180 CW", drivetrain.getPPAutoCommand("180 CW", true));
+        autoChooser.addOption("135 CW", drivetrain.getPPAutoCommand("135 CW", true));
+        autoChooser.addOption("135 CCW", drivetrain.getPPAutoCommand("135 CCW", true));
+        autoChooser.addOption("1m F + 90 CW + 1m R", drivetrain.getPPAutoCommand("1m F + 90 CW + 1m R", true));
+        SmartDashboard.putData("AutoPaths", autoChooser);
+    }
+
+    private void registerNamedCommands() {
+
+        // Example
+        NamedCommands.registerCommand("elevatorGround", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.GROUND)));
+        NamedCommands.registerCommand("elevatorLow", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.LOW)));
+        NamedCommands.registerCommand("elevatorMid", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.MID)));
+        NamedCommands.registerCommand("elevatorHigh", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.HIGH)));
+        NamedCommands.registerCommand("elevatorLowAlgae", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.LOWALG)));
+        NamedCommands.registerCommand("elevatorHighAlgae", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.HIGHALG)));
+        NamedCommands.registerCommand("pivotUp", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.UP)));
+        NamedCommands.registerCommand("pivotDown", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DOWN)));
+        NamedCommands.registerCommand("pivotDunk", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DUNK)));
+        NamedCommands.registerCommand("pivotAlgae", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.ALG)));
+        NamedCommands.registerCommand("conveyorIntake", new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED)));
+        NamedCommands.registerCommand("conveyorEject", new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED)));
+        NamedCommands.registerCommand("conveyorStop", new InstantCommand(() -> endEffector.stopConveyorCommand()));
+        NamedCommands.registerCommand("tuskUp", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP)));
+        NamedCommands.registerCommand("tuskDown", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN)));
+        NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
+        NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
+        NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
+
+        /*
+        NamedCommands.registerCommand("log", new InstantCommand(() -> System.out.println("eeeeeeeeeeeeeeeeeeeeeeeee")));
+        NamedCommands.registerCommand("intakeOut", new AutoIntake(Position.INTAKE));
+        NamedCommands.registerCommand("intake", new InstantCommand(() -> intakeSubsystem.setSpeed(Position.INTAKE.getSpeed())));
+        NamedCommands.registerCommand("stopIntaking", new InstantCommand(() -> intakeSubsystem.setSpeed(0)));
+        NamedCommands.registerCommand("intakeIn", new AutoIntake(Position.SHOOT));
+        NamedCommands.registerCommand("stopShoot", new AutoShoot(0, false));
+        NamedCommands.registerCommand("AutoNotePickUp", new AutoNotePickUp());
+*/
     }
 
     private void configureBindings() {
