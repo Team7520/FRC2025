@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.Constants.TagCoods;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
@@ -95,9 +96,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(57.5, 30, 0), //kp = 4.5 or 2.5
+                    new PIDConstants(57.5, 30, 0), //kp = 4.5 or 2.5 //57, 36, 0 on kyle's
                     // PID constants for rotation
-                    new PIDConstants(5, 0, 0)
+                    new PIDConstants(5, 0, 0)//25, 17.5, 0.1 on kyle's
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
@@ -263,17 +264,37 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         //ID 5 Apriltag
         TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
         //ID 6 Apriltag
-        TagArray.add(new TagCoods(13.484, 3.96, 13.77, 3.125, 13.627, 3.042, Rotation2d.fromDegrees(120)));
+        TagArray.add(new TagCoods(13.474 + Constants.AutoMoveConstants.c, 3.306 - Constants.AutoMoveConstants.d, 
+                    13.474 + Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
+                    3.306 - Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, 
+                    13.474 + Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
+                    3.306 - Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(120)));
         //ID 7 Apriltag
-        TagArray.add(new TagCoods(14.195, 3.861, 14.195, 4.191, 14.195, 4.026, Rotation2d.fromDegrees(180)));
+        TagArray.add(new TagCoods(13.89 + Constants.AutoMoveConstants.a, 4.026, 
+                    13.89 + Constants.AutoMoveConstants.a, 4.026 + Constants.AutoMoveConstants.b, 
+                    13.89 + Constants.AutoMoveConstants.a, 4.026 - Constants.AutoMoveConstants.b, Rotation2d.fromDegrees(180)));
         //ID 8 Apriltag
-        TagArray.add(new TagCoods(13.77, 4.927, 13.484, 5.092, 13.627, 5.009, Rotation2d.fromDegrees(240)));
+        TagArray.add(new TagCoods(13.474 + Constants.AutoMoveConstants.c, 4.745 + Constants.AutoMoveConstants.d, 
+                    13.474 + Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
+                    4.745 + Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, 
+                    13.474 + Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
+                    4.745 + Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(240)));
         //ID 9 Apriltag
-        TagArray.add(new TagCoods(12.634, 5.092, 12.348, 4.927, 12.491, 5.009, Rotation2d.fromDegrees(300)));
+        TagArray.add(new TagCoods(12.643 - Constants.AutoMoveConstants.c, 4.745 + Constants.AutoMoveConstants.d, 
+                    12.643 - Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
+                    4.745 + Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, 
+                    12.643 - Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
+                    4.745 + Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(300)));
         //ID 10 Apriltag
-        TagArray.add(new TagCoods(11.923, 4.191, 11.923, 3.861, 11.923, 4.026, Rotation2d.fromDegrees(0)));
+        TagArray.add(new TagCoods(12.227 - Constants.AutoMoveConstants.a, 4.026, 
+                    12.227 - Constants.AutoMoveConstants.a, 4.026 - Constants.AutoMoveConstants.b, 
+                    12.227 - Constants.AutoMoveConstants.a, 4.026 + Constants.AutoMoveConstants.b, Rotation2d.fromDegrees(0)));
         //ID 11 Apriltag
-        TagArray.add(new TagCoods(12.348, 3.125, 12.634, 2.96, 12.491, 3.042, Rotation2d.fromDegrees(60)));
+        TagArray.add(new TagCoods(12.643 - Constants.AutoMoveConstants.c, 3.306 - Constants.AutoMoveConstants.d, 
+                    12.643 - Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
+                    3.306 - Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, 
+                    12.643 - Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
+                    3.306 - Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(60)));
         //ID 12 Apriltag
         TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
         //ID 13 Apriltag
@@ -285,17 +306,37 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         //ID 16 Apriltag
         TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
         //ID 17 Apriltag
-        TagArray.add(new TagCoods(3.779, 3.125, 4.064, 2.960, 3.922, 3.042, Rotation2d.fromDegrees(60)));
+        TagArray.add(new TagCoods(4.074 - Constants.AutoMoveConstants.c, 3.306 - Constants.AutoMoveConstants.d, 
+                    4.074 - Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
+                    3.306 - Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, 
+                    4.074 - Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
+                    3.306 - Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(60)));
         //ID 18 Apriltag
-        TagArray.add(new TagCoods(3.353, 4.191, 3.353, 3.861, 3.353, 4.026, Rotation2d.fromDegrees(0)));
+        TagArray.add(new TagCoods(3.658 - Constants.AutoMoveConstants.a, 4.026, 
+                    3.658 - Constants.AutoMoveConstants.a, 4.026 - Constants.AutoMoveConstants.b, 
+                    3.658 - Constants.AutoMoveConstants.a, 4.026 + Constants.AutoMoveConstants.b, Rotation2d.fromDegrees(0)));
         //ID 19 Apriltag
-        TagArray.add(new TagCoods(4.064, 5.092, 3.779, 4.927, 3.922, 5.009, Rotation2d.fromDegrees(300)));
+        TagArray.add(new TagCoods(4.074 - Constants.AutoMoveConstants.c, 4.745 + Constants.AutoMoveConstants.d, 
+                    4.074 - Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
+                    4.745 + Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, 
+                    4.074 - Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
+                    4.745 + Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(300)));
         //ID 20 Apriltag
-        TagArray.add(new TagCoods(5.2, 4.927, 4.914, 5.092, 5.057, 5.009, Rotation2d.fromDegrees(240)));
+        TagArray.add(new TagCoods(4.905 + Constants.AutoMoveConstants.c, 4.745 + Constants.AutoMoveConstants.d, 
+                    4.905 + Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
+                    4.745 + Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, 
+                    4.905 + Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
+                    4.745 + Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(240)));
         //ID 21 Apriltag
-        TagArray.add(new TagCoods(5.626, 3.861, 5.626, 4.191, 5.626, 4.026, Rotation2d.fromDegrees(180)));
+        TagArray.add(new TagCoods(5.321 + Constants.AutoMoveConstants.a, 4.026, 
+                    5.321 + Constants.AutoMoveConstants.a, 4.026 + Constants.AutoMoveConstants.b, 
+                    5.321 + Constants.AutoMoveConstants.a, 4.026 - Constants.AutoMoveConstants.b, Rotation2d.fromDegrees(180)));
         //ID 22 Apriltag
-        TagArray.add(new TagCoods(2.96, 4.914, 5.2, 3.125, 5.057, 3.042, Rotation2d.fromDegrees(120)));
+        TagArray.add(new TagCoods(4.905 + Constants.AutoMoveConstants.c, 3.306 - Constants.AutoMoveConstants.d, 
+                    4.905 + Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
+                    3.306 - Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, 
+                    4.905 + Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
+                    3.306 - Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(120)));
 
         LimelightHelpers.setCameraPose_RobotSpace("", 
         -0.11,    // Forward offset (meters)

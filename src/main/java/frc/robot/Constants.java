@@ -26,6 +26,15 @@ public class Constants {
         public double MidY = -1;
     }
 
+    public static final class AutoMoveConstants {
+        public static final double a = 0.305;
+        public static final double b = 0.165;
+        public static final double c = a / 2;
+        public static final double d = Math.sqrt(3) * (a/2);
+        public static final double e = b / 2;
+        public static final double f = Math.sqrt(3) * (b/2);
+    }
+
     public static class ElevatorConstants {
         public static final int LEFT_MOTOR_ID = 41;
         public static final int RIGHT_MOTOR_ID = 42;
