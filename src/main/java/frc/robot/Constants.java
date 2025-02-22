@@ -1,8 +1,29 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class Constants {
     public static class RampConstants {
         public static final int RampID = 43;
+    }
+
+    public static final class TagCoods {
+        public TagCoods(double leftX, double leftY, double rightX, double rightY, double midX, double midY, Rotation2d angle) {
+            LeftX = leftX;
+            LeftY = leftY;
+            RightX = rightX;
+            RightY = rightY;
+            BotAngle = angle;
+            MidX = midX;
+            MidY = midY;
+        }
+        public double LeftX = -1;
+        public double LeftY = -1;
+        public double RightX = -1;
+        public double RightY = -1;
+        public Rotation2d BotAngle;
+        public double MidX = -1;
+        public double MidY = -1;
     }
 
     public static class ElevatorConstants {

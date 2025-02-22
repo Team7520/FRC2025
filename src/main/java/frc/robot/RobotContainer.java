@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -137,6 +138,17 @@ public class RobotContainer {
                     .withRotationalRate(-driveController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
+
+        //auto movements to reef
+        driveController.povLeft().onTrue(new InstantCommand(() -> {
+                  var cmd = AutoBuilder.followPath(drivetrain.GoLeft());
+                  cmd.schedule();}
+            ));
+        
+        driveController.povRight().onTrue(new InstantCommand(() -> {
+                  var cmd = AutoBuilder.followPath(drivetrain.GoRight());
+                  cmd.schedule();}
+            ));
 
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
         endEffector.setDefaultCommand(endEffector.run(0));
