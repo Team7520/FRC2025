@@ -89,6 +89,7 @@ public class RobotContainer {
         autoChooser.addOption("135 CW", drivetrain.getPPAutoCommand("135 CW", true));
         autoChooser.addOption("135 CCW", drivetrain.getPPAutoCommand("135 CCW", true));
         autoChooser.addOption("1m F + 90 CW + 1m R", drivetrain.getPPAutoCommand("1m F + 90 CW + 1m R", true));
+        
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
 
