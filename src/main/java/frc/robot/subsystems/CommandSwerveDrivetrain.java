@@ -96,7 +96,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(57.5, 30, 0), //kp = 4.5 or 2.5 //57, 36, 0 on kyle's
+                    new PIDConstants(10, 0, 0), //kp = 4.5 or 2.5 //57, 36, 0 on kyle's
                     // PID constants for rotation
                     new PIDConstants(5, 0, 0)//25, 17.5, 0.1 on kyle's
                 ),
@@ -339,7 +339,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     3.306 - Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(120)));
 
         LimelightHelpers.setCameraPose_RobotSpace("", 
-        -0.11,    // Forward offset (meters)
+        -0.181,    // Forward offset (meters)
             0,    // Side offset (meters)
             0,    // Height offset (meters)
             0,    // Roll (degrees)
@@ -397,13 +397,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0 && counter > 0) {
             counter = 0;
             resetPose(updatedPose);
+            SmartDashboard.putBoolean("Can See?", true);
             //System.out.printf("Updated X:%f Updated Y:%f, Updated Rotate:%f\n", updatedPose.getX(), updatedPose.getY(), updatedPose.getRotation().getDegrees());
         } else {
             counter++;
             //System.out.println("ran in null");
-        }
+            SmartDashboard.putBoolean("Can See?", false);
+        }   
         SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
         SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
+        SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
     }
 
     private void startSimThread() {
@@ -457,19 +460,31 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public PathPlannerPath GoLeft() {
         double id = LimelightHelpers.getFiducialID("");
+        //System.out.printf("X: %f Y: %f Rotate: %f\n", TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle);
+        List<Waypoint> wayPoints;
+        Rotation2d botangle;
 
-        List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
-            new Pose2d(TagArray.get((int)id).LeftX, TagArray.get((int)id).LeftY, TagArray.get((int)id).BotAngle)
-        );
+        if(id < 1 || id > 22) {
+            wayPoints = PathPlannerPath.waypointsFromPoses(
+                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation())
+            ); 
+            botangle = getState().Pose.getRotation();
+        } else {
+            wayPoints = PathPlannerPath.waypointsFromPoses(
+                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+                new Pose2d(TagArray.get((int)id).LeftX, TagArray.get((int)id).LeftY, TagArray.get((int)id).BotAngle)
+            );
+            botangle = TagArray.get((int)id).BotAngle;
+        }
 
-        PathConstraints constraints = new PathConstraints(0.15, 0.15, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+        PathConstraints constraints = new PathConstraints(0.75, 0.75, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
 
         PathPlannerPath path = new PathPlannerPath(
             wayPoints,
             constraints,
             null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-            new GoalEndState(0.0, TagArray.get((int)id).BotAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            new GoalEndState(0.0, botangle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
         );
         
         path.preventFlipping =true;
@@ -478,19 +493,30 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public PathPlannerPath GoRight() {
         double id = LimelightHelpers.getFiducialID("");
-
-        List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
-            new Pose2d(TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle)
-        );
-
-        PathConstraints constraints = new PathConstraints(0.15, 0.15, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+        List<Waypoint> wayPoints;
+        Rotation2d botangle;
+        
+        if(id < 1 || id > 22) {
+            wayPoints = PathPlannerPath.waypointsFromPoses(
+                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation())
+            ); 
+            botangle = getState().Pose.getRotation();
+        } else { 
+            wayPoints = PathPlannerPath.waypointsFromPoses(
+                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+                new Pose2d(TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle)
+            );
+            botangle = TagArray.get((int)id).BotAngle;
+        }
+        
+        PathConstraints constraints = new PathConstraints(0.75, 0.75, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
 
         PathPlannerPath path = new PathPlannerPath(
             wayPoints,
             constraints,
             null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-            new GoalEndState(0.0, TagArray.get((int)id).BotAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            new GoalEndState(0.0, botangle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
         );
         
         path.preventFlipping =true;

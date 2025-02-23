@@ -29,6 +29,8 @@ import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Constants;
 import frc.robot.commands.L2Command;
+import frc.robot.commands.L3Command;
+import frc.robot.commands.L4Command;
 import frc.robot.commands.ManualElevator;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -88,6 +90,7 @@ public class RobotContainer {
                   var cmd = AutoBuilder.followPath(drivetrain.GoLeft());
                   cmd.schedule();}
             ));
+        // driveController.povLeft().onTrue(drivetrain.runOnce(() -> drivetrain.GoLeft()));
         
         driveController.povRight().onTrue(new InstantCommand(() -> {
                   var cmd = AutoBuilder.followPath(drivetrain.GoRight());
@@ -116,9 +119,9 @@ public class RobotContainer {
         // Elevator Position Controls - using command factory method
         operatorController.a().onTrue(elevator.moveToPosition(ElevatorPosition.GROUND));
         //operatorController.x().onTrue(elevator.moveToPosition(ElevatorPosition.LOW));
-        operatorController.x().onTrue(new L2Command(elevator, endEffector, -CONVEYOR_INTAKE_SPEED));
-        operatorController.y().onTrue(elevator.moveToPosition(ElevatorPosition.MID));
-        operatorController.b().onTrue(elevator.moveToPosition(ElevatorPosition.HIGH));
+        operatorController.x().onTrue(new L2Command(elevator, endEffector, 0));
+        operatorController.y().onTrue(new L3Command(elevator, endEffector, 0));
+        operatorController.b().onTrue(new L4Command(elevator, endEffector, 0));
         operatorController.button(9).onTrue(elevator.moveToPosition(ElevatorPosition.LOWALG));
         operatorController.button(10).onTrue(elevator.moveToPosition(ElevatorPosition.HIGHALG));
 

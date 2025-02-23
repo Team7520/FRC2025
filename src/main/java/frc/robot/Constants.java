@@ -8,7 +8,7 @@ public class Constants {
     }
 
     public static final class TagCoods {
-        public TagCoods(double leftX, double leftY, double rightX, double rightY, double midX, double midY, Rotation2d angle) {
+        public TagCoods(double midX, double midY, double rightX, double rightY, double leftX, double leftY, Rotation2d angle) {
             LeftX = leftX;
             LeftY = leftY;
             RightX = rightX;
@@ -27,9 +27,9 @@ public class Constants {
     }
 
     public static final class AutoMoveConstants {
-        public static final double a = 0.305;
-        public static final double b = 0.165;
-        public static final double c = a / 2;
+        public static final double a = 0.2; // 0.305
+        public static final double b = 0.175; //0.165
+        public static final double c = a /2;
         public static final double d = Math.sqrt(3) * (a/2);
         public static final double e = b / 2;
         public static final double f = Math.sqrt(3) * (b/2);
@@ -58,7 +58,7 @@ public class Constants {
         public static enum ElevatorPosition {
             GROUND(0),
             LOW(11.83),
-            MID(29.75),
+            MID(26.8),
             HIGH(54.3),
             LOWALG(18.3),
             HIGHALG(34.45);
