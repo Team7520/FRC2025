@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -59,7 +60,7 @@ public class RobotContainer {
     private static final double CONVEYOR_EJECT_SPEED = -0.1;
     private static final double RAMP_SPEED = 0.3;
 
-    public final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
 
@@ -72,24 +73,10 @@ public class RobotContainer {
 
         registerNamedCommands();
 
-        autoChooser.setDefaultOption("1m F + 90 CW", drivetrain.getPPAutoCommand("1m F + 90 CW", true));
-        autoChooser.addOption("2m F", drivetrain.getPPAutoCommand("2m F", true));
-        autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
-        autoChooser.addOption("0.5m F", drivetrain.getPPAutoCommand("0.5m F", true));
-        autoChooser.addOption("0.5m B", drivetrain.getPPAutoCommand("0.5m B", true));
-        autoChooser.addOption("1m B", drivetrain.getPPAutoCommand("1m B", true));
-        autoChooser.addOption("2m B", drivetrain.getPPAutoCommand("2m B", true));
-        autoChooser.addOption("1m R", drivetrain.getPPAutoCommand("1m R", true));
-        autoChooser.addOption("1m F + 1m R", drivetrain.getPPAutoCommand("1m F + 1m R", true));
-        autoChooser.addOption("45 CCW", drivetrain.getPPAutoCommand("45 CCW", true));
-        autoChooser.addOption("45 CW", drivetrain.getPPAutoCommand("45 CW", true));
-        autoChooser.addOption("180 CCW", drivetrain.getPPAutoCommand("180 CCW", true));
-        autoChooser.addOption("90 CCW", drivetrain.getPPAutoCommand("90 CCW", true));
-        autoChooser.addOption("90 CW", drivetrain.getPPAutoCommand("90 CW", true));
-        autoChooser.addOption("180 CW", drivetrain.getPPAutoCommand("180 CW", true));
-        autoChooser.addOption("135 CW", drivetrain.getPPAutoCommand("135 CW", true));
-        autoChooser.addOption("135 CCW", drivetrain.getPPAutoCommand("135 CCW", true));
-        autoChooser.addOption("1m F + 90 CW + 1m R", drivetrain.getPPAutoCommand("1m F + 90 CW + 1m R", true));
+        autoChooser = AutoBuilder.buildAutoChooser();
+
+        autoChooser.setDefaultOption("Middle Barge to Reef G", drivetrain.getPPAutoCommand("Middle Barge to Reef G", true));
+        autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
         
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
@@ -212,6 +199,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return new PathPlannerAuto("Testy");
     }
 }
