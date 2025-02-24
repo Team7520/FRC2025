@@ -28,6 +28,8 @@ import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Constants;
+import frc.robot.commands.AlgaeHigh;
+import frc.robot.commands.AlgaeLow;
 import frc.robot.commands.L2Command;
 import frc.robot.commands.L3Command;
 import frc.robot.commands.L4Command;
@@ -122,8 +124,9 @@ public class RobotContainer {
         operatorController.x().onTrue(new L2Command(elevator, endEffector, 0));
         operatorController.y().onTrue(new L3Command(elevator, endEffector, 0));
         operatorController.b().onTrue(new L4Command(elevator, endEffector, 0));
-        operatorController.button(9).onTrue(elevator.moveToPosition(ElevatorPosition.LOWALG));
-        operatorController.button(10).onTrue(elevator.moveToPosition(ElevatorPosition.HIGHALG));
+        // Algae - press joystick inwards
+        operatorController.button(9).onTrue(new AlgaeLow(elevator, endEffector, tuskSubsystem, 0));
+        operatorController.button(10).onTrue(new AlgaeHigh(elevator, endEffector, tuskSubsystem, 0));
 
 
 

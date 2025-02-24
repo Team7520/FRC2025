@@ -83,7 +83,7 @@ public class Constants {
         public static final double MIN_ANGLE = -220;
 
         // PID Constants
-        public static final double kP = 0.05;
+        public static final double kP = 0.03;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kIz = 0.0;
