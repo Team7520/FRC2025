@@ -140,39 +140,21 @@ public class RobotContainer {
 
         //auto movements to reef
         driveController.povLeft().onTrue(new InstantCommand(() -> {
-                  var cmd = AutoBuilder.followPath(drivetrain.GoLeft());
-                  cmd.schedule();}
-            ));
+            if(LimelightHelpers.getTV("") == true) {
+                var cmd = AutoBuilder.followPath(drivetrain.GoLeft());
+                cmd.schedule();}   
+            }            
+        ));
+        
         // driveController.povLeft().onTrue(drivetrain.runOnce(() -> drivetrain.GoLeft()));
         
         driveController.povRight().onTrue(new InstantCommand(() -> {
+            if(LimelightHelpers.getTV("") == true) {
                   var cmd = AutoBuilder.followPath(drivetrain.GoRight());
                   cmd.schedule();}
-            ));
-
-        //auto movements to reef
-        driveController.povLeft().onTrue(new InstantCommand(() -> {
-                  var cmd = AutoBuilder.followPath(drivetrain.GoLeft());
-                  cmd.schedule();}
-            ));
-        // driveController.povLeft().onTrue(drivetrain.runOnce(() -> drivetrain.GoLeft()));
+            }
+        ));
         
-        driveController.povRight().onTrue(new InstantCommand(() -> {
-                  var cmd = AutoBuilder.followPath(drivetrain.GoRight());
-                  cmd.schedule();}
-            ));
-
-        //auto movements to reef
-        driveController.povLeft().onTrue(new InstantCommand(() -> {
-                  var cmd = AutoBuilder.followPath(drivetrain.GoLeft());
-                  cmd.schedule();}
-            ));
-        
-        driveController.povRight().onTrue(new InstantCommand(() -> {
-                  var cmd = AutoBuilder.followPath(drivetrain.GoRight());
-                  cmd.schedule();}
-            ));
-
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
         endEffector.setDefaultCommand(endEffector.run(0));
         driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
