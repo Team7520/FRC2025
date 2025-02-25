@@ -83,7 +83,7 @@ public class Constants {
         public static final double MIN_ANGLE = -220;
 
         // PID Constants
-        public static final double kP = 0.02;
+        public static final double kP = 0.01;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kIz = 0.0;
@@ -99,7 +99,7 @@ public class Constants {
         public static final double MAX_JERK = MAX_ACCELERATION*3;
         public static final double ALLOWABLE_ERROR = 0.5;
         public static enum PivotPosition {
-            UP(-211),
+            UP(-203),
             DOWN(-176),
             DUNK(-122),
             ALG(-128.57);
@@ -128,7 +128,7 @@ public class Constants {
         public static final double MAX_ANGLE = 0;
         public static final double MIN_ANGLE = -220;
 
-        public static final double kP = 0.05;
+        public static final double kP = 0.01;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kIz = 0.0;
@@ -140,7 +140,7 @@ public class Constants {
         public static final double ALLOWABLE_ERROR = 0.5;
         public static enum PivotPosition {
             UP(0),
-            DOWN(141.666489);
+            DOWN(126.78);
 
             private final double angle;
 
