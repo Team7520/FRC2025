@@ -49,7 +49,7 @@ public class Constants {
         public static final double kFF = 0.0;
 
         // Motion Magic Constants
-        public static final double MAX_VELOCITY = 6400; // 10 inches per second
+        public static final double MAX_VELOCITY = 5000; // 10 inches per second
         public static final double MAX_ACCELERATION = MAX_VELOCITY*2; // 20 inches per second squared
         public static final double MAX_JERK = MAX_ACCELERATION*4; // 60 inches per second cubed
         public static final double ALLOWABLE_ERROR = 0.5; // 0.5 inches
@@ -83,7 +83,7 @@ public class Constants {
         public static final double MIN_ANGLE = -220;
 
         // PID Constants
-        public static final double kP = 0.03;
+        public static final double kP = 0.02;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kIz = 0.0;

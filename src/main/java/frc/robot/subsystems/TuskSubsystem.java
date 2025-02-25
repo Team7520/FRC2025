@@ -81,7 +81,7 @@ public class TuskSubsystem extends SubsystemBase {
     }
 
     public Command setPivotPositionCommand(TuskConstants.PivotPosition position) {
-        return this.run(() -> setPivotPosition(position));
+        return this.runOnce(() -> setPivotPosition(position));
     }
 
     public void setPivotPosition(Angle angle) {
@@ -89,7 +89,7 @@ public class TuskSubsystem extends SubsystemBase {
     }
 
     public Command setPivotPositionCommand(Angle angle) {
-        return this.run(() -> setPivotPosition(angle));
+        return this.runOnce(() -> setPivotPosition(angle));
     }
 
     public void setSpeed(double speed) {

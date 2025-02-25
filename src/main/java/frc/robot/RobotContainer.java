@@ -128,8 +128,6 @@ public class RobotContainer {
         operatorController.button(9).onTrue(new AlgaeLow(elevator, endEffector, tuskSubsystem, 0));
         operatorController.button(10).onTrue(new AlgaeHigh(elevator, endEffector, tuskSubsystem, 0));
 
-
-
         // EndEffector Pivot Controls
         operatorController.povUp().onTrue(endEffector.setPivotPositionCommand(PivotPosition.UP));
         operatorController.povDown().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DOWN));
@@ -148,6 +146,8 @@ public class RobotContainer {
         // Ramp Controls (using bumpers)
         operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED));
         operatorController.leftBumper().whileTrue(rampSubsystem.run(-RAMP_SPEED));
+
+        operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
 
         // Default commands to stop when not actively controlled
 

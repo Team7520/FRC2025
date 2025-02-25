@@ -14,7 +14,8 @@ public class AlgaeHigh extends SequentialCommandGroup {
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DOWN),
             tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN),
             new WaitCommand(0.5),
-            elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.HIGHALG)
+            elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.HIGHALG),
+            new WaitCommand(1)
         );
     }
 }

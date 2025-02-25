@@ -20,10 +20,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.EndEffectorConstants;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class EndEffectorSubsystem extends SubsystemBase {
     private final static EndEffectorSubsystem INSTANCE = new EndEffectorSubsystem();
+
+    private final DigitalInput sensorInput = new DigitalInput(0);
 
     private final SparkMax pivotMotor;
     private final SparkFlex conveyorMotor;
@@ -141,19 +144,22 @@ public class EndEffectorSubsystem extends SubsystemBase {
     public void stopConveyor() {
         //conveyorMotor.set(0);
         holdConveyorPosition();
-        pivotController.setReference(lastPivotPosition, ControlType.kMAXMotionPositionControl);
     }
 
     public Command stopConveyorCommand() {
         return this.run(() -> stopConveyor());
     }
     
+    public boolean getSensor() {
+        return sensorInput.get();
+    }
 
     @Override
-    public void periodic() {
+    public void periodic() {    
         // Update dashboard with current positions and states
         SmartDashboard.putNumber("Pivot Angle", pivotEncoder.getPosition());
         SmartDashboard.putNumber("Pivot Velocity", pivotEncoder.getVelocity());
+        SmartDashboard.putBoolean("Sensor", getSensor());
     }
 }
 

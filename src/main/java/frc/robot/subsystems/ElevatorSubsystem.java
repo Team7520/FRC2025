@@ -77,6 +77,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setPosition(ElevatorPosition position) {
         leftMotor.setControl(motionMagic.withPosition(position.getHeight()));
     }
+
+    public void resetEncoder() {
+        leftMotor.setPosition(0.0);
+    }
+    public Command resetEncoderCommand(){
+        return Commands.runOnce(() -> resetEncoder());
+    }
     
     /**
     * Creates a command to move the elevator to a specific position
