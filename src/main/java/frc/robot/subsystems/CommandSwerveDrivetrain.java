@@ -56,7 +56,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
     int counter = 0;
-    public static ArrayList<TagCoods> TagArray = new ArrayList<>();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -115,66 +114,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
-    }
-
-    public void LimeTags() {
-        //Distance between sides is 33.02 cm
-
-        //ID 0 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 1 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 2 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 3 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 4 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 5 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 6 Apriltag
-        TagArray.add(new TagCoods(13.484, 3.96, 13.77, 3.125, 13.627, 3.042, Rotation2d.fromDegrees(120)));
-        //ID 7 Apriltag
-        TagArray.add(new TagCoods(14.195, 3.861, 14.195, 4.191, 14.195, 4.026, Rotation2d.fromDegrees(180)));
-        //ID 8 Apriltag
-        TagArray.add(new TagCoods(13.77, 4.927, 13.484, 5.092, 13.627, 5.009, Rotation2d.fromDegrees(240)));
-        //ID 9 Apriltag
-        TagArray.add(new TagCoods(12.634, 5.092, 12.348, 4.927, 12.491, 5.009, Rotation2d.fromDegrees(300)));
-        //ID 10 Apriltag
-        TagArray.add(new TagCoods(11.923, 4.191, 11.923, 3.861, 11.923, 4.026, Rotation2d.fromDegrees(0)));
-        //ID 11 Apriltag
-        TagArray.add(new TagCoods(12.348, 3.125, 12.634, 2.96, 12.491, 3.042, Rotation2d.fromDegrees(60)));
-        //ID 12 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 13 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 14 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 15 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 16 Apriltag
-        TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
-        //ID 17 Apriltag
-        TagArray.add(new TagCoods(3.779, 3.125, 4.064, 2.960, 3.922, 3.042, Rotation2d.fromDegrees(60)));
-        //ID 18 Apriltag
-        TagArray.add(new TagCoods(3.353, 4.191, 3.353, 3.861, 3.353, 4.026, Rotation2d.fromDegrees(0)));
-        //ID 19 Apriltag
-        TagArray.add(new TagCoods(4.064, 5.092, 3.779, 4.927, 3.922, 5.009, Rotation2d.fromDegrees(300)));
-        //ID 20 Apriltag
-        TagArray.add(new TagCoods(5.2, 4.927, 4.914, 5.092, 5.057, 5.009, Rotation2d.fromDegrees(240)));
-        //ID 21 Apriltag
-        TagArray.add(new TagCoods(5.626, 3.861, 5.626, 4.191, 5.626, 4.026, Rotation2d.fromDegrees(180)));
-        //ID 22 Apriltag
-        TagArray.add(new TagCoods(2.96, 4.914, 5.2, 3.125, 5.057, 3.042, Rotation2d.fromDegrees(120)));
-
-        LimelightHelpers.setCameraPose_RobotSpace("", 
-        -0.11,    // Forward offset (meters)
-            0,    // Side offset (meters)
-            0,    // Height offset (meters)
-            0,    // Roll (degrees)
-            20,   // Pitch (degrees)
-            0     // Yaw (degrees)
-        );
     }
 
     /**

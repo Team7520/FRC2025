@@ -62,8 +62,6 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    private final SendableChooser<Command> autoChooser;
-
     private final RampSubsystem rampSubsystem = RampSubsystem.getInstance();
     private final EndEffectorSubsystem endEffector = EndEffectorSubsystem.getInstance();
     private final TuskSubsystem tuskSubsystem = TuskSubsystem.getInstance();
