@@ -38,7 +38,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -77,6 +77,7 @@ public class RobotContainer {
 
         autoChooser.setDefaultOption("Middle Barge to Reef G", drivetrain.getPPAutoCommand("Middle Barge to Reef G", true));
         autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
+        autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
         
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
@@ -120,8 +121,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driveController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * 0.25) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driveController.getLeftX() * MaxSpeed * 0.25) // Drive left with negative X (left)
                     .withRotationalRate(-driveController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
@@ -199,6 +200,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("Testy");
+        return autoChooser.getSelected();
     }
 }
