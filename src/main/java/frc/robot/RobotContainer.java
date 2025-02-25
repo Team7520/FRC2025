@@ -9,12 +9,18 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -43,7 +49,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -67,12 +73,59 @@ public class RobotContainer {
     private static final double CONVEYOR_EJECT_SPEED = -0.1;
     private static final double RAMP_SPEED = 0.3;
 
+    private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("test");
-        SmartDashboard.putData("AutoPaths", autoChooser);
+
+        registerAutos();
 
         configureBindings();
+    }
+
+    private void registerAutos() {
+
+        registerNamedCommands();
+
+        autoChooser = AutoBuilder.buildAutoChooser();
+
+        autoChooser.setDefaultOption("Middle Barge to Reef G", drivetrain.getPPAutoCommand("Middle Barge to Reef G", true));
+        autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
+        autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
+        
+        SmartDashboard.putData("AutoPaths", autoChooser);
+    }
+
+    private void registerNamedCommands() {
+
+        // Example
+        NamedCommands.registerCommand("elevatorGround", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.GROUND)));
+        NamedCommands.registerCommand("elevatorLow", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.LOW)));
+        NamedCommands.registerCommand("elevatorMid", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.MID)));
+        NamedCommands.registerCommand("elevatorHigh", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.HIGH)));
+        NamedCommands.registerCommand("elevatorLowAlgae", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.LOWALG)));
+        NamedCommands.registerCommand("elevatorHighAlgae", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.HIGHALG)));
+        NamedCommands.registerCommand("pivotUp", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.UP)));
+        NamedCommands.registerCommand("pivotDown", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DOWN)));
+        NamedCommands.registerCommand("pivotDunk", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DUNK)));
+        NamedCommands.registerCommand("pivotAlgae", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.ALG)));
+        NamedCommands.registerCommand("conveyorIntake", new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED)));
+        NamedCommands.registerCommand("conveyorEject", new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED)));
+        NamedCommands.registerCommand("conveyorStop", new InstantCommand(() -> endEffector.stopConveyorCommand()));
+        NamedCommands.registerCommand("tuskUp", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP)));
+        NamedCommands.registerCommand("tuskDown", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN)));
+        NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
+        NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
+        NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
+
+        /*
+        NamedCommands.registerCommand("log", new InstantCommand(() -> System.out.println("eeeeeeeeeeeeeeeeeeeeeeeee")));
+        NamedCommands.registerCommand("intakeOut", new AutoIntake(Position.INTAKE));
+        NamedCommands.registerCommand("intake", new InstantCommand(() -> intakeSubsystem.setSpeed(Position.INTAKE.getSpeed())));
+        NamedCommands.registerCommand("stopIntaking", new InstantCommand(() -> intakeSubsystem.setSpeed(0)));
+        NamedCommands.registerCommand("intakeIn", new AutoIntake(Position.SHOOT));
+        NamedCommands.registerCommand("stopShoot", new AutoShoot(0, false));
+        NamedCommands.registerCommand("AutoNotePickUp", new AutoNotePickUp());
+*/
     }
 
     private void configureBindings() {
@@ -81,9 +134,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(CommandSwerveDrivetrain.deadband(-driveController.getLeftY() * MaxSpeed)) // Drive forward with negative Y (forward)
-                    .withVelocityY(CommandSwerveDrivetrain.deadband(-driveController.getLeftX() * MaxSpeed)) // Drive left with negative X (left)
-                    .withRotationalRate(CommandSwerveDrivetrain.deadband(-driveController.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * 0.25) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driveController.getLeftX() * MaxSpeed * 0.25) // Drive left with negative X (left)
+                    .withRotationalRate(-driveController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -93,6 +146,29 @@ public class RobotContainer {
                   cmd.schedule();}
             ));
         // driveController.povLeft().onTrue(drivetrain.runOnce(() -> drivetrain.GoLeft()));
+        
+        driveController.povRight().onTrue(new InstantCommand(() -> {
+                  var cmd = AutoBuilder.followPath(drivetrain.GoRight());
+                  cmd.schedule();}
+            ));
+
+        //auto movements to reef
+        driveController.povLeft().onTrue(new InstantCommand(() -> {
+                  var cmd = AutoBuilder.followPath(drivetrain.GoLeft());
+                  cmd.schedule();}
+            ));
+        // driveController.povLeft().onTrue(drivetrain.runOnce(() -> drivetrain.GoLeft()));
+        
+        driveController.povRight().onTrue(new InstantCommand(() -> {
+                  var cmd = AutoBuilder.followPath(drivetrain.GoRight());
+                  cmd.schedule();}
+            ));
+
+        //auto movements to reef
+        driveController.povLeft().onTrue(new InstantCommand(() -> {
+                  var cmd = AutoBuilder.followPath(drivetrain.GoLeft());
+                  cmd.schedule();}
+            ));
         
         driveController.povRight().onTrue(new InstantCommand(() -> {
                   var cmd = AutoBuilder.followPath(drivetrain.GoRight());
