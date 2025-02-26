@@ -36,6 +36,7 @@ import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Constants;
 import frc.robot.commands.AlgaeHigh;
 import frc.robot.commands.AlgaeLow;
+import frc.robot.commands.ElevatorDown;
 import frc.robot.commands.L2Command;
 import frc.robot.commands.L3Command;
 import frc.robot.commands.L4Command;
@@ -89,6 +90,7 @@ public class RobotContainer {
         autoChooser.setDefaultOption("Middle Barge to Reef G", drivetrain.getPPAutoCommand("Middle Barge to Reef G", true));
         autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
         autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
+        autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
         
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
@@ -96,12 +98,12 @@ public class RobotContainer {
     private void registerNamedCommands() {
 
         // Example
-        NamedCommands.registerCommand("elevatorGround", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.GROUND)));
-        NamedCommands.registerCommand("elevatorLow", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.LOW)));
-        NamedCommands.registerCommand("elevatorMid", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.MID)));
-        NamedCommands.registerCommand("elevatorHigh", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.HIGH)));
-        NamedCommands.registerCommand("elevatorLowAlgae", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.LOWALG)));
-        NamedCommands.registerCommand("elevatorHighAlgae", new InstantCommand(() -> elevator.moveToPosition(ElevatorPosition.HIGHALG)));
+        NamedCommands.registerCommand("elevatorGround", new ElevatorDown(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
+        NamedCommands.registerCommand("elevatorLow", new L2Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
+        NamedCommands.registerCommand("elevatorMid", new L3Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
+        NamedCommands.registerCommand("elevatorHigh", new L4Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
+        NamedCommands.registerCommand("elevatorLowAlgae", new AlgaeLow(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
+        NamedCommands.registerCommand("elevatorHighAlgae", new AlgaeHigh(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("pivotUp", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.UP)));
         NamedCommands.registerCommand("pivotDown", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DOWN)));
         NamedCommands.registerCommand("pivotDunk", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DUNK)));
@@ -111,8 +113,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("conveyorStop", new InstantCommand(() -> endEffector.stopConveyorCommand()));
         NamedCommands.registerCommand("tuskUp", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP)));
         NamedCommands.registerCommand("tuskDown", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN)));
-        NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
-        NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
+        NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
+        NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
         NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
 
         /*
