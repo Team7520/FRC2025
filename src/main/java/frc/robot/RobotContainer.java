@@ -31,6 +31,7 @@ import frc.robot.subsystems.RampSubsystem;
 import frc.robot.subsystems.TuskSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.LightingSubsystem;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Constants;
@@ -43,6 +44,7 @@ import frc.robot.commands.L4Command;
 import frc.robot.commands.ManualElevator;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -66,6 +68,7 @@ public class RobotContainer {
     private final RampSubsystem rampSubsystem = RampSubsystem.getInstance();
     private final EndEffectorSubsystem endEffector = EndEffectorSubsystem.getInstance();
     private final TuskSubsystem tuskSubsystem = TuskSubsystem.getInstance();
+    private final LightingSubsystem lightingSubsystem = LightingSubsystem.getInstance();
 
     // Constants for speeds
     private static final double CONVEYOR_INTAKE_SPEED = 0.1;
@@ -79,10 +82,12 @@ public class RobotContainer {
         registerAutos();
 
         configureBindings();
+
+        lightingSubsystem.AnimateTeam();
+        //lightingSubsystem.RainbowAnimate();    
     }
 
     private void registerAutos() {
-
         registerNamedCommands();
 
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -91,7 +96,7 @@ public class RobotContainer {
         autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
         autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
         autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
-        
+        autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
 
