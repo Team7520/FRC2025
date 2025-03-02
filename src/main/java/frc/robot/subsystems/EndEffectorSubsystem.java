@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.EndEffectorConstants;
+import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -92,8 +93,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         pivotConfig.idleMode(IdleMode.kBrake);
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-//        pivotEncoder.setPosition(0);
-        
+//        pivotEncoder.setPosition(0);        
     }
 
     public void setPivotPosition(EndEffectorConstants.PivotPosition position) {

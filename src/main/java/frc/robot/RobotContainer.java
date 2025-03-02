@@ -1,6 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+// Make povRight reset
 
 package frc.robot;
 
@@ -83,8 +84,11 @@ public class RobotContainer {
 
         configureBindings();
 
-        lightingSubsystem.AnimateTeam();
-        //lightingSubsystem.RainbowAnimate();    
+        //lightingSubsystem.AnimateTeam();// Flashing red
+        lightingSubsystem.FlashingWhite();// Flashing white
+        //lightingSubsystem.FireAnimate();// Fire animation
+        //lightingSubsystem.setLEDs(0, 0, 255);// Set a colour    
+        //lightingSubsystem.RainbowAnimate();// Rainbow animation
     }
 
     private void registerAutos() {
@@ -194,7 +198,8 @@ public class RobotContainer {
         // EndEffector Pivot Controls
         operatorController.povUp().onTrue(endEffector.setPivotPositionCommand(PivotPosition.UP));
         operatorController.povDown().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DOWN));
-        operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
+        //operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
+        operatorController.povRight().onTrue(elevator.resetEncoderCommand());
         operatorController.povLeft().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
 
                 
@@ -210,7 +215,7 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED));
         operatorController.leftBumper().whileTrue(rampSubsystem.run(-RAMP_SPEED));
 
-        operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
+        //operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
 
         // Default commands to stop when not actively controlled
 
