@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -56,6 +57,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
     int counter = 0;
+    public static boolean UpdatedPose = true;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -268,6 +270,24 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
+    public double limitSpeed(double speed, boolean speedCutOff) {
+        return speedCutOff ? speed * 0.25 : speed;
+    }
+
+    public double changeDeadband(double deadband, boolean change) {
+        return change ? deadband * 0.25 : deadband;
+    }
+
+    public Command LimelightStatus(boolean update) {
+        if(update) {
+            SmartDashboard.putBoolean("isWorking?", true);
+            return runOnce(() -> UpdatedPose = true);
+        } else {
+            SmartDashboard.putBoolean("isWorking?", false);
+            return runOnce(() -> UpdatedPose = false);
+        }
+    }
+
     public void LimeTags() {
         //Distance between sides is 33.02 cm
 
@@ -413,20 +433,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
-        if (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0 && counter > 0) {
-            counter = 0;
-            resetPose(updatedPose);
-            SmartDashboard.putBoolean("Can See?", true);
-            //System.out.printf("Updated X:%f Updated Y:%f, Updated Rotate:%f\n", updatedPose.getX(), updatedPose.getY(), updatedPose.getRotation().getDegrees());
-        } else {
-            counter++;
-            //System.out.println("ran in null");
-            SmartDashboard.putBoolean("Can See?", false);
-        }   
-        SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
-        SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
-        SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
+        SmartDashboard.putBoolean("UpdatedPose", UpdatedPose);
+        if(UpdatedPose) {
+            Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
+            if (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0 && counter > 0) {
+                counter = 0;
+                resetPose(updatedPose);
+                SmartDashboard.putBoolean("Can See?", true);
+                //System.out.printf("Updated X:%f Updated Y:%f, Updated Rotate:%f\n", updatedPose.getX(), updatedPose.getY(), updatedPose.getRotation().getDegrees());
+            } else {
+                counter++;
+                //System.out.println("ran in null");
+                SmartDashboard.putBoolean("Can See?", false);
+            }   
+            SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
+            SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
+            SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
+        }
     }
 
     private void startSimThread() {

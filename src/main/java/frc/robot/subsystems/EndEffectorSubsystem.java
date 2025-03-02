@@ -18,7 +18,9 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.EndEffectorConstants;
+import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -101,8 +103,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
         pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl);
     }
 
-    public Command setPivotPositionCommand(EndEffectorConstants.PivotPosition position) {
-        return Commands.runOnce(() -> setPivotPosition(position), this);
+    public Command setPivotPositionCommand(PivotPosition down) {
+        return Commands.runOnce(() -> setPivotPosition(down), this);
     }
 
 
