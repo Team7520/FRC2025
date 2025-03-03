@@ -28,7 +28,7 @@ public class LightingSubsystem {// Define a class
     private LightingSubsystem() {// Startup code
       candle.clearAnimation(0);// Clear animations
       candle.clearAnimation(1);
-      ColourFlowAnimate(0, 0, 255);// Colour flow animate our team colour
+      ColourFlowAnimate(0, 0, 255);
     }
 
     public void setLEDs(int r, int g, int b) {// Function to change LED colours
