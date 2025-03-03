@@ -1,0 +1,103 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "StopLimelight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start 1 to Right E"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartLimelight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignLeft"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevatorMid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevatorGround"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopLimelight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right E to Source X"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source X to Right F"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartLimelight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevatorMid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevatorGround"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Start 1",
+  "choreoAuto": false
+}

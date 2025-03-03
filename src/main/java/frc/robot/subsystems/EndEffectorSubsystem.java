@@ -2,9 +2,11 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Rotation;
 
+import com.revrobotics.AnalogInput;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkAnalogSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -36,6 +38,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private double lastPivotPosition;
     private double holdPosition = 0;
     private boolean isHoldingPosition = false;
+    private SparkAnalogSensor analoginput;
+
 
 
     public static EndEffectorSubsystem getInstance() {
@@ -91,9 +95,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
         pivotConfig.smartCurrentLimit(EndEffectorConstants.PIVOT_CURRENT_LIMIT);
         pivotConfig.idleMode(IdleMode.kBrake);
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        analoginput = conveyorMotor.getAnalog();
+//      pivotEncoder.setPosition(0);
 
-//        pivotEncoder.setPosition(0);
-        
     }
 
     public void setPivotPosition(EndEffectorConstants.PivotPosition position) {
@@ -105,6 +109,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
         return Commands.runOnce(() -> setPivotPosition(position), this);
     }
 
+    public double AnalogOutput() {
+        return analoginput.getVoltage();
+    }
 
     public void setSpeed(double speed) {
         pivotMotor.set(speed);
@@ -114,6 +121,14 @@ public class EndEffectorSubsystem extends SubsystemBase {
         setSpeed(0);
         stopConveyor();
 
+    }
+
+    public boolean StopWithSensor() {
+        if(analoginput.getVoltage() <= 1.5) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Command run(double speed) {
@@ -160,6 +175,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pivot Angle", pivotEncoder.getPosition());
         SmartDashboard.putNumber("Pivot Velocity", pivotEncoder.getVelocity());
         SmartDashboard.putBoolean("Sensor", getSensor());
+        SmartDashboard.putNumber("Analog Voltage", AnalogOutput());
     }
 }
 

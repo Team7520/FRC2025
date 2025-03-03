@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -16,10 +17,16 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.ConstraintsZone;
+import com.pathplanner.lib.path.EventMarker;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PointTowardsZone;
+import com.pathplanner.lib.path.RotationTarget;
 import com.pathplanner.lib.path.Waypoint;
+import com.revrobotics.AnalogInput;
+import com.revrobotics.spark.SparkFlex;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -38,6 +45,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -56,6 +64,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
     int counter = 0;
+    public static boolean UpdatedPose = true;
+
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -70,6 +80,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
     public static ArrayList<TagCoods> TagArray = new ArrayList<>();
+
+    public static boolean pathActive = false;
+
+    
     
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -366,6 +380,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             20,   // Pitch (degrees)
             0     // Yaw (degrees)
         );
+
+        //sparkFlex = new SparkFlex(20, SparkFlex.MotorType.kBrushless);
+
+        // Initialize Analog Input (Pin 3 on Data Port)
     }
 
     /**
@@ -393,6 +411,22 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public static double deadband(double value) {
         return Math.abs(value) > 0.05 ? value : 0;
     }
+    
+    public double limitSpeed(double speed, boolean speedCutOff) {
+        return speedCutOff ? speed * 0.25 : speed;
+    }
+
+    public double changeDeadband(double deadband, boolean change) {
+        return change ? deadband * 0.25 : deadband;
+    }
+
+    public Command LimelightStatus(boolean update) {
+        if(update) {
+            return run(() -> UpdatedPose = true);
+        } else {
+            return run(() -> UpdatedPose = false);
+        }
+    }
 
     @Override
     public void periodic() {
@@ -413,20 +447,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
-        if (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0 && counter > 0) {
-            counter = 0;
-            resetPose(updatedPose);
-            SmartDashboard.putBoolean("Can See?", true);
-            //System.out.printf("Updated X:%f Updated Y:%f, Updated Rotate:%f\n", updatedPose.getX(), updatedPose.getY(), updatedPose.getRotation().getDegrees());
-        } else {
-            counter++;
-            //System.out.println("ran in null");
-            SmartDashboard.putBoolean("Can See?", false);
-        }   
-        SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
-        SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
-        SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
+        if(UpdatedPose) {
+            Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
+            if (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0 && counter > 0) {
+                counter = 0;
+                resetPose(updatedPose);
+                SmartDashboard.putBoolean("Can See?", true);
+                //System.out.printf("Updated X:%f Updated Y:%f, Updated Rotate:%f\n", updatedPose.getX(), updatedPose.getY(), updatedPose.getRotation().getDegrees());
+            } else {
+                counter++;
+                //System.out.println("ran in null");
+                SmartDashboard.putBoolean("Can See?", false);
+            }   
+            SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
+            SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
+            SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
+        }
+        
     }
 
     private void startSimThread() {
@@ -478,44 +515,108 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 
-    public PathPlannerPath GoLeft() {
+    public PathPlannerPath GoLeft(int mode) {
+        //if Mode is 1, run normally. If -1, don't move
+        if(mode == -1) {
+            configureAutoBuilder(10, 0, 0, 5, 0, 0);
+            List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
+                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+                new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
+            );
+            
+            PathConstraints constraints = new PathConstraints(0.75, 0.75, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+            
+            PathPlannerPath path = new PathPlannerPath( 
+                wayPoints,
+                constraints,
+                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0.0, getState().Pose.getRotation()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            );
+            
+            path.preventFlipping =true;
+            return path;
+        }
+        //Create a path from current pose to the Left of seen tag
+        pathActive = true;
         configureAutoBuilder(10, 0, 0, 5, 0, 0);
         double id = LimelightHelpers.getFiducialID("");
-        
         List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
             new Pose2d(TagArray.get((int)id).LeftX, TagArray.get((int)id).LeftY, TagArray.get((int)id).BotAngle)
         );
 
-        PathConstraints constraints = new PathConstraints(0.75, 0.75, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+        PathConstraints constraints = new PathConstraints(1, 1, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
 
-        PathPlannerPath path = new PathPlannerPath(
+        EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
+        List<EventMarker> lst_em = Arrays.asList(signalEnd);
+        List<RotationTarget> lst_rt = Arrays.asList();
+        List<ConstraintsZone> lst_cz = Arrays.asList();
+        List<PointTowardsZone> lst_ptz = Arrays.asList();
+
+        PathPlannerPath path = new PathPlannerPath( 
             wayPoints,
+            lst_rt,
+            lst_ptz, 
+            lst_cz,
+            lst_em,
             constraints,
-            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-            new GoalEndState(0.0, TagArray.get((int)id).BotAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            null, 
+            new GoalEndState(0.0, TagArray.get((int)id).BotAngle), // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            false
         );
         
         path.preventFlipping =true;
         return path;
     }
 
-    public PathPlannerPath GoRight() {
+    public PathPlannerPath GoRight(int mode) {
+        if(mode == -1) {
+            configureAutoBuilder(10, 0, 0, 5, 0, 0);
+            List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
+                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+                new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
+            );
+            
+            PathConstraints constraints = new PathConstraints(0.75, 0.75, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+            
+            PathPlannerPath path = new PathPlannerPath( 
+                wayPoints,
+                constraints,
+                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0.0, getState().Pose.getRotation()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            );
+            
+            path.preventFlipping =true;
+            pathActive = false;
+            return path;
+        }
         configureAutoBuilder(10, 0, 0, 5, 0, 0);
+        pathActive = true;
+
         double id = LimelightHelpers.getFiducialID("");        
-        
         List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
                 new Pose2d(TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle)
             );        
 
-        PathConstraints constraints = new PathConstraints(0.75, 0.75, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
-                
-        PathPlannerPath path = new PathPlannerPath(
+        PathConstraints constraints = new PathConstraints(1, 1, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+        
+        EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
+        List<EventMarker> lst_em = Arrays.asList(signalEnd);
+        List<RotationTarget> lst_rt = Arrays.asList();
+        List<ConstraintsZone> lst_cz = Arrays.asList();
+        List<PointTowardsZone> lst_ptz = Arrays.asList();
+
+        PathPlannerPath path = new PathPlannerPath( 
             wayPoints,
+            lst_rt,
+            lst_ptz, 
+            lst_cz,
+            lst_em,
             constraints,
-            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-            new GoalEndState(0.0, TagArray.get((int)id).BotAngle) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            null, 
+            new GoalEndState(0.0, TagArray.get((int)id).BotAngle), // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            false
         );
         
         path.preventFlipping =true;
