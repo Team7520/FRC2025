@@ -1,6 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+// Make povRight reset
 
 package frc.robot;
 
@@ -12,6 +13,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.revrobotics.AnalogInput;
+import com.revrobotics.spark.SparkFlex;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,10 +23,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -38,6 +44,7 @@ import frc.robot.Constants;
 import frc.robot.commands.AlgaeHigh;
 import frc.robot.commands.AlgaeLow;
 import frc.robot.commands.ElevatorDown;
+import frc.robot.commands.ElevatorDownAuto;
 import frc.robot.commands.L2Command;
 import frc.robot.commands.L3Command;
 import frc.robot.commands.L4Command;
@@ -52,7 +59,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -74,8 +81,12 @@ public class RobotContainer {
     private static final double CONVEYOR_INTAKE_SPEED = 0.1;
     private static final double CONVEYOR_EJECT_SPEED = -0.1;
     private static final double RAMP_SPEED = 0.3;
+    private static boolean speedCutOff = false;
 
     private SendableChooser<Command> autoChooser;
+
+    
+     
 
     public RobotContainer() {
 
@@ -83,8 +94,11 @@ public class RobotContainer {
 
         configureBindings();
 
-        lightingSubsystem.AnimateTeam();
-        //lightingSubsystem.RainbowAnimate();    
+        lightingSubsystem.AnimateTeam();// Flashing red
+        //lightingSubsystem.FlashingWhite();// Flashing white
+        //lightingSubsystem.FireAnimate();// Fire animation
+        //lightingSubsystem.setLEDs(0, 0, 255);// Set a colour    
+        //lightingSubsystem.RainbowAnimate();// Rainbow animation
     }
 
     private void registerAutos() {
@@ -96,6 +110,23 @@ public class RobotContainer {
         autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
         autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
         autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
+        autoChooser.addOption("Start 1 to F to A Three Coral", drivetrain.getPPAutoCommand("Start 1 to F to A Three Coral", true));
+        autoChooser.addOption("Start 1 to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to F Three Coral", true));
+        autoChooser.addOption("Start 1 to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to F Two Coral", true));
+        autoChooser.addOption("Start 1 to F One Coral", drivetrain.getPPAutoCommand("Start 1 to F One Coral", true));
+        autoChooser.addOption("Start 1 to E to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to E to F Three Coral", true));
+        autoChooser.addOption("Start 1 to E to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to E to F Two Coral", true));
+        autoChooser.addOption("Start 1 to E One Coral", drivetrain.getPPAutoCommand("Start 1 to E One Coral", true));
+        
+        //All of section 3 autos
+        autoChooser.addOption("3-c", drivetrain.getPPAutoCommand("3-c", true));
+        autoChooser.addOption("3-c-y-b", drivetrain.getPPAutoCommand("3-c-y-b", true));
+        autoChooser.addOption("3-c-y-b-y-b", drivetrain.getPPAutoCommand("3-c-y-b-y-b", true));
+        autoChooser.addOption("3-b", drivetrain.getPPAutoCommand("3-b", true));
+        autoChooser.addOption("3-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b", true));
+        autoChooser.addOption("3-b-y-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b-y-b", true));
+        autoChooser.addOption("3-b-y-b-y-a", drivetrain.getPPAutoCommand("3-b-y-b-y-a", true));
+        
         autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
@@ -103,7 +134,7 @@ public class RobotContainer {
     private void registerNamedCommands() {
 
         // Example
-        NamedCommands.registerCommand("elevatorGround", new ElevatorDown(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
+        NamedCommands.registerCommand("elevatorGround", new ElevatorDownAuto(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorLow", new L2Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorMid", new L3Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorHigh", new L4Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
@@ -118,9 +149,25 @@ public class RobotContainer {
         NamedCommands.registerCommand("conveyorStop", new InstantCommand(() -> endEffector.stopConveyorCommand()));
         NamedCommands.registerCommand("tuskUp", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP)));
         NamedCommands.registerCommand("tuskDown", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN)));
-        NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
-        NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
+        NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
+        NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
         NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
+        NamedCommands.registerCommand("intake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)).alongWith(new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()))).raceWith(new WaitCommand(4)));
+        NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> rampSubsystem.run(0)).alongWith(new InstantCommand(() -> endEffector.stopConveyorCommand())).raceWith(new WaitCommand(0.01)));
+        NamedCommands.registerCommand("StopLimelight", drivetrain.LimelightStatus(false));
+        NamedCommands.registerCommand("StartLimelight", drivetrain.LimelightStatus(true));
+        // NamedCommands.registerCommand("AutoAlignLeft", new InstantCommand(() -> {
+        //     if(LimelightHelpers.getTV("") == true) {
+        //         var cmd = AutoBuilder.followPath(drivetrain.GoLeft(1));
+        //         cmd.schedule();}   
+        //     }            
+        // ));
+        // NamedCommands.registerCommand("AutoAlignRight", new InstantCommand(() -> {
+        //     if(LimelightHelpers.getTV("") == true) {
+        //           var cmd = AutoBuilder.followPath(drivetrain.GoRight(1));
+        //           cmd.schedule();}
+        //     }
+        // ));
 
         /*
         NamedCommands.registerCommand("log", new InstantCommand(() -> System.out.println("eeeeeeeeeeeeeeeeeeeeeeeee")));
@@ -139,32 +186,50 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * 0.25) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driveController.getLeftX() * MaxSpeed * 0.25) // Drive left with negative X (left)
-                    .withRotationalRate(-driveController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(drivetrain.limitSpeed(-driveController.getLeftY() * MaxSpeed, speedCutOff)) // Drive forward with negative Y (forward)
+                    .withVelocityY(drivetrain.limitSpeed(-driveController.getLeftX() * MaxSpeed, speedCutOff)) // Drive left with negative X (left)
+                    .withRotationalRate(-driveController.getRightX() * MaxAngularRate)
+                    .withDeadband(MaxSpeed * drivetrain.changeDeadband(0.1, speedCutOff)) // Drive counterclockwise with negative X (left)
             )
         );
+
+        //Cancel current path when Joystick is moved
+        new Trigger(() -> 
+            (Math.abs(driveController.getLeftX()) > 0.2 || 
+            Math.abs(driveController.getLeftY()) > 0.2 || 
+            Math.abs(driveController.getRightX()) > 0.2 || 
+            Math.abs(driveController.getRightY()) > 0.2) 
+            && CommandSwerveDrivetrain.pathActive
+        ).onTrue(new InstantCommand(() -> {
+            var cmd = AutoBuilder.followPath(drivetrain.GoRight(-1));
+            cmd.schedule();
+        }));
+        
+        driveController.y().onTrue(new InstantCommand(
+            () -> speedCutOff = !speedCutOff
+        ));
+        
+        driveController.a().onTrue(drivetrain.LimelightStatus(true));
+        driveController.rightBumper().onTrue(drivetrain.LimelightStatus(false));
 
         //auto movements to reef
         driveController.povLeft().onTrue(new InstantCommand(() -> {
             if(LimelightHelpers.getTV("") == true) {
-                var cmd = AutoBuilder.followPath(drivetrain.GoLeft());
+                var cmd = AutoBuilder.followPath(drivetrain.GoLeft(1));
                 cmd.schedule();}   
             }            
         ));
-        
-        // driveController.povLeft().onTrue(drivetrain.runOnce(() -> drivetrain.GoLeft()));
-        
+                
         driveController.povRight().onTrue(new InstantCommand(() -> {
             if(LimelightHelpers.getTV("") == true) {
-                  var cmd = AutoBuilder.followPath(drivetrain.GoRight());
+                  var cmd = AutoBuilder.followPath(drivetrain.GoRight(1));
                   cmd.schedule();}
             }
         ));
         
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
         endEffector.setDefaultCommand(endEffector.run(0));
-        driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        driveController.x().whileTrue(drivetrain.applyRequest(() -> brake));
         driveController.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
         ));
@@ -172,9 +237,9 @@ public class RobotContainer {
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         driveController.back().and(driveController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driveController.back().and(driveController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driveController.back().and(driveController.a()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         driveController.start().and(driveController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driveController.start().and(driveController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        driveController.start().and(driveController.a()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
         driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -194,13 +259,14 @@ public class RobotContainer {
         // EndEffector Pivot Controls
         operatorController.povUp().onTrue(endEffector.setPivotPositionCommand(PivotPosition.UP));
         operatorController.povDown().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DOWN));
-        operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
+        //operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
+        operatorController.povRight().onTrue(elevator.resetEncoderCommand());
         operatorController.povLeft().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
-
                 
         // Conveyor Controls (using triggers)
         operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED));
-        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED));
+        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()));
+        
 
         // operatorController.rightBumper().whileTrue(endEffector.run(0.05));
         // operatorController.leftBumper().whileTrue(endEffector.run(-0.1));
@@ -210,7 +276,7 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED));
         operatorController.leftBumper().whileTrue(rampSubsystem.run(-RAMP_SPEED));
 
-        operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
+        //operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
 
         // Default commands to stop when not actively controlled
 

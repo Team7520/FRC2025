@@ -2,9 +2,11 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Rotation;
 
+import com.revrobotics.AnalogInput;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkAnalogSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -18,7 +20,9 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.EndEffectorConstants;
+import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +40,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private double lastPivotPosition;
     private double holdPosition = 0;
     private boolean isHoldingPosition = false;
+    private SparkAnalogSensor analoginput;
+
 
 
     public static EndEffectorSubsystem getInstance() {
@@ -91,9 +97,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
         pivotConfig.smartCurrentLimit(EndEffectorConstants.PIVOT_CURRENT_LIMIT);
         pivotConfig.idleMode(IdleMode.kBrake);
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-//        pivotEncoder.setPosition(0);
-        
+        analoginput = conveyorMotor.getAnalog();
+//      pivotEncoder.setPosition(0);
     }
 
     public void setPivotPosition(EndEffectorConstants.PivotPosition position) {
@@ -101,10 +106,13 @@ public class EndEffectorSubsystem extends SubsystemBase {
         pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl);
     }
 
-    public Command setPivotPositionCommand(EndEffectorConstants.PivotPosition position) {
-        return Commands.runOnce(() -> setPivotPosition(position), this);
+    public Command setPivotPositionCommand(PivotPosition down) {
+        return Commands.runOnce(() -> setPivotPosition(down), this);
     }
 
+    public double AnalogOutput() {
+        return analoginput.getVoltage();
+    }
 
     public void setSpeed(double speed) {
         pivotMotor.set(speed);
@@ -114,6 +122,14 @@ public class EndEffectorSubsystem extends SubsystemBase {
         setSpeed(0);
         stopConveyor();
 
+    }
+
+    public boolean StopWithSensor() {
+        if(analoginput.getVoltage() <= 1.5) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Command run(double speed) {
@@ -160,6 +176,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pivot Angle", pivotEncoder.getPosition());
         SmartDashboard.putNumber("Pivot Velocity", pivotEncoder.getVelocity());
         SmartDashboard.putBoolean("Sensor", getSensor());
+        SmartDashboard.putNumber("Analog Voltage", AnalogOutput());
     }
 }
 

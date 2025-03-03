@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2m Forward"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2m Back"
+            "pathName": "Start 1 to Left F"
           }
         }
       ]

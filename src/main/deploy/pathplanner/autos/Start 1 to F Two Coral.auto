@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2m Forward"
+            "pathName": "Start 1 to Left F"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2m Back"
+            "pathName": "Left F to Source X"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source X to Right F"
           }
         }
       ]

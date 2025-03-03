@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2m Forward"
+            "pathName": "3-c"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2m Back"
+            "pathName": "c-y"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "pathy-b"
           }
         }
       ]
