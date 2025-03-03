@@ -1,6 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+// Make povRight reset
 
 package frc.robot;
 
@@ -36,6 +37,7 @@ import frc.robot.subsystems.RampSubsystem;
 import frc.robot.subsystems.TuskSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.LightingSubsystem;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Constants;
@@ -73,6 +75,7 @@ public class RobotContainer {
     private final RampSubsystem rampSubsystem = RampSubsystem.getInstance();
     private final EndEffectorSubsystem endEffector = EndEffectorSubsystem.getInstance();
     private final TuskSubsystem tuskSubsystem = TuskSubsystem.getInstance();
+    private final LightingSubsystem lightingSubsystem = LightingSubsystem.getInstance();
 
     // Constants for speeds
     private static final double CONVEYOR_INTAKE_SPEED = 0.1;
@@ -91,11 +94,18 @@ public class RobotContainer {
 
         configureBindings();
 
+<<<<<<< HEAD
         
+=======
+        lightingSubsystem.AnimateTeam();// Flashing red
+        //lightingSubsystem.FlashingWhite();// Flashing white
+        //lightingSubsystem.FireAnimate();// Fire animation
+        //lightingSubsystem.setLEDs(0, 0, 255);// Set a colour    
+        //lightingSubsystem.RainbowAnimate();// Rainbow animation
+>>>>>>> origin/Paths2-LightingSubsystem
     }
 
     private void registerAutos() {
-
         registerNamedCommands();
 
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -104,6 +114,7 @@ public class RobotContainer {
         autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
         autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
         autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
+<<<<<<< HEAD
         autoChooser.addOption("Start 1 to F to A Three Coral", drivetrain.getPPAutoCommand("Start 1 to F to A Three Coral", true));
         autoChooser.addOption("Start 1 to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to F Three Coral", true));
         autoChooser.addOption("Start 1 to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to F Two Coral", true));
@@ -121,6 +132,9 @@ public class RobotContainer {
         autoChooser.addOption("3-b-y-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b-y-b", true));
         autoChooser.addOption("3-b-y-b-y-a", drivetrain.getPPAutoCommand("3-b-y-b-y-a", true));
         
+=======
+        autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
+>>>>>>> origin/Paths2-LightingSubsystem
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
 
@@ -252,7 +266,8 @@ public class RobotContainer {
         // EndEffector Pivot Controls
         operatorController.povUp().onTrue(endEffector.setPivotPositionCommand(PivotPosition.UP));
         operatorController.povDown().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DOWN));
-        operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
+        //operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
+        operatorController.povRight().onTrue(elevator.resetEncoderCommand());
         operatorController.povLeft().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
                 
         // Conveyor Controls (using triggers)
@@ -268,7 +283,7 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED));
         operatorController.leftBumper().whileTrue(rampSubsystem.run(-RAMP_SPEED));
 
-        operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
+        //operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
 
         // Default commands to stop when not actively controlled
 

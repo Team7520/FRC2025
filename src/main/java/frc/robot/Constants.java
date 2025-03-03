@@ -100,7 +100,7 @@ public class Constants {
         public static final double ALLOWABLE_ERROR = 0.5;
         public static enum PivotPosition {
             UP(-203),
-            DOWN(-176),
+            DOWN(-190),
             DUNK(-122),
             ALG(-128.57);
 

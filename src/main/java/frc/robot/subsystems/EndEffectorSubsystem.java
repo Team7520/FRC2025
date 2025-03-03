@@ -99,7 +99,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         analoginput = conveyorMotor.getAnalog();
 //      pivotEncoder.setPosition(0);
-
     }
 
     public void setPivotPosition(EndEffectorConstants.PivotPosition position) {
