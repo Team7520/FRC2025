@@ -13,25 +13,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "b-y"
+            "pathName": "pathb-y"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "y-b"
+            "pathName": "pathy-b"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "b-y"
+            "pathName": "pathb-y"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "y-b"
+            "pathName": "pathy-b"
           }
         }
       ]

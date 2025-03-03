@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left F to Source X"
+            "pathName": null
           }
         },
         {
@@ -26,6 +26,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Start 1",
+  "folder": null,
   "choreoAuto": false
 }
