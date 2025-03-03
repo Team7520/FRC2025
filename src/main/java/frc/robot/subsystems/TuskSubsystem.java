@@ -27,6 +27,7 @@ public class TuskSubsystem extends SubsystemBase {
     private final SparkMax pivotMotor;
     private final SparkClosedLoopController pivotController;
     private final RelativeEncoder pivotEncoder;
+    @SuppressWarnings("unused")
     private double lastPosition;
 
 

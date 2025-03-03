@@ -37,6 +37,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private final SparkClosedLoopController pivotController;
     private final RelativeEncoder pivotEncoder;
     private final SparkClosedLoopController conveyorController;
+    @SuppressWarnings("unused")
     private double lastPivotPosition;
     private double holdPosition = 0;
     private boolean isHoldingPosition = false;
