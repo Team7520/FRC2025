@@ -41,6 +41,7 @@ import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Constants;
 import frc.robot.commands.AlgaeHigh;
 import frc.robot.commands.AlgaeLow;
+import frc.robot.commands.ElevatorDown;
 import frc.robot.commands.ElevatorDownAuto;
 import frc.robot.commands.L2Command;
 import frc.robot.commands.L3Command;
@@ -102,6 +103,14 @@ public class RobotContainer {
         autoChooser.setDefaultOption("Middle Barge to Reef G", drivetrain.getPPAutoCommand("Middle Barge to Reef G", true));
         autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
         autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
+        autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
+        autoChooser.addOption("Start 1 to F to A Three Coral", drivetrain.getPPAutoCommand("Start 1 to F to A Three Coral", true));
+        autoChooser.addOption("Start 1 to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to F Three Coral", true));
+        autoChooser.addOption("Start 1 to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to F Two Coral", true));
+        autoChooser.addOption("Start 1 to F One Coral", drivetrain.getPPAutoCommand("Start 1 to F One Coral", true));
+        autoChooser.addOption("Start 1 to E to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to E to F Three Coral", true));
+        autoChooser.addOption("Start 1 to E to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to E to F Two Coral", true));
+        autoChooser.addOption("Start 1 to E One Coral", drivetrain.getPPAutoCommand("Start 1 to E One Coral", true));
         
         //All of section 3 autos
         autoChooser.addOption("3-c", drivetrain.getPPAutoCommand("3-c", true));
@@ -188,6 +197,13 @@ public class RobotContainer {
             var cmd = AutoBuilder.followPath(drivetrain.GoRight(-1));
             cmd.schedule();
         }));
+        
+        driveController.y().onTrue(new InstantCommand(
+            () -> speedCutOff = !speedCutOff
+        ));
+        
+        driveController.a().onTrue(drivetrain.LimelightStatus(true));
+        driveController.rightBumper().onTrue(drivetrain.LimelightStatus(false));
 
         //auto movements to reef
         driveController.povLeft().onTrue(new InstantCommand(() -> {
@@ -206,7 +222,7 @@ public class RobotContainer {
         
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
         endEffector.setDefaultCommand(endEffector.run(0));
-        driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        driveController.x().whileTrue(drivetrain.applyRequest(() -> brake));
         driveController.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
         ));
@@ -214,9 +230,9 @@ public class RobotContainer {
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         driveController.back().and(driveController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driveController.back().and(driveController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driveController.back().and(driveController.a()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         driveController.start().and(driveController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driveController.start().and(driveController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        driveController.start().and(driveController.a()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
         driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));

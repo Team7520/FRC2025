@@ -46,6 +46,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -65,7 +66,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
     int counter = 0;
     public static boolean UpdatedPose = true;
-
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -282,6 +282,24 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
+    public double limitSpeed(double speed, boolean speedCutOff) {
+        return speedCutOff ? speed * 0.25 : speed;
+    }
+
+    public double changeDeadband(double deadband, boolean change) {
+        return change ? deadband * 0.25 : deadband;
+    }
+
+    public Command LimelightStatus(boolean update) {
+        if(update) {
+            SmartDashboard.putBoolean("isWorking?", true);
+            return runOnce(() -> UpdatedPose = true);
+        } else {
+            SmartDashboard.putBoolean("isWorking?", false);
+            return runOnce(() -> UpdatedPose = false);
+        }
+    }
+
     public void LimeTags() {
         //Distance between sides is 33.02 cm
 
@@ -411,22 +429,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public static double deadband(double value) {
         return Math.abs(value) > 0.05 ? value : 0;
     }
-    
-    public double limitSpeed(double speed, boolean speedCutOff) {
-        return speedCutOff ? speed * 0.25 : speed;
-    }
-
-    public double changeDeadband(double deadband, boolean change) {
-        return change ? deadband * 0.25 : deadband;
-    }
-
-    public Command LimelightStatus(boolean update) {
-        if(update) {
-            return run(() -> UpdatedPose = true);
-        } else {
-            return run(() -> UpdatedPose = false);
-        }
-    }
 
     @Override
     public void periodic() {
@@ -462,8 +464,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
             SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
             SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
-        }
-        
+        }     
     }
 
     private void startSimThread() {
