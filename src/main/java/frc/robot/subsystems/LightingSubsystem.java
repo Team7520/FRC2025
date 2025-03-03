@@ -5,6 +5,7 @@ import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.FireAnimation;
+
 /* 
  * Class that controls robot lighting through the CANdle (excluding the RSL)
  * Note: Until CTRE implements CANdle support in Phoenix 6, Phoenix 5 is required.
@@ -26,7 +27,7 @@ public class LightingSubsystem {// Define a class
     private LightingSubsystem() {// Startup code
       candle.clearAnimation(0);// Clear animations
       candle.clearAnimation(1);
-      ColourFlowAnimate(255, 0, 0);// Colour flow animate our team colour
+      ColourFlowAnimate(0, 0, 255);// Colour flow animate our team colour
     }
 
     public void setLEDs(int r, int g, int b) {// Function to change LED colours
@@ -59,7 +60,7 @@ public class LightingSubsystem {// Define a class
     }
 
     public void FlashingWhite() {// Flash all LEDs white
-      StrobeAnimate(255, 255, 255, 0);
+      StrobeAnimate(191, 191, 191, 0);
     }
 
     public void FireAnimate() {// Fire animation
@@ -70,4 +71,5 @@ public class LightingSubsystem {// Define a class
       candle.animate(fireAnimL, 0);
       candle.animate(fireAnimR, 1);
     }
+
 }

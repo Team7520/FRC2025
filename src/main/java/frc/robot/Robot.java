@@ -7,10 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.LightingSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  private final LightingSubsystem lightingSubsystem = LightingSubsystem.getInstance();
   private final RobotContainer m_robotContainer;
 
   public Robot() {
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    lightingSubsystem.StrobeAnimate(0, 255, 0, 0);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -44,10 +46,13 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+    lightingSubsystem.AnimateTeam();
+  }
 
   @Override
   public void teleopInit() {
+    lightingSubsystem.RainbowAnimate();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -57,7 +62,9 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {}
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+    lightingSubsystem.AnimateTeam();
+  }
 
   @Override
   public void testInit() {
