@@ -94,15 +94,11 @@ public class RobotContainer {
 
         configureBindings();
 
-<<<<<<< HEAD
-        
-=======
         lightingSubsystem.AnimateTeam();// Flashing red
         //lightingSubsystem.FlashingWhite();// Flashing white
         //lightingSubsystem.FireAnimate();// Fire animation
         //lightingSubsystem.setLEDs(0, 0, 255);// Set a colour    
         //lightingSubsystem.RainbowAnimate();// Rainbow animation
->>>>>>> origin/Paths2-LightingSubsystem
     }
 
     private void registerAutos() {
@@ -114,7 +110,6 @@ public class RobotContainer {
         autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
         autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
         autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
-<<<<<<< HEAD
         autoChooser.addOption("Start 1 to F to A Three Coral", drivetrain.getPPAutoCommand("Start 1 to F to A Three Coral", true));
         autoChooser.addOption("Start 1 to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to F Three Coral", true));
         autoChooser.addOption("Start 1 to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to F Two Coral", true));
@@ -132,9 +127,7 @@ public class RobotContainer {
         autoChooser.addOption("3-b-y-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b-y-b", true));
         autoChooser.addOption("3-b-y-b-y-a", drivetrain.getPPAutoCommand("3-b-y-b-y-a", true));
         
-=======
         autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
->>>>>>> origin/Paths2-LightingSubsystem
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
 
