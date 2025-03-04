@@ -3,11 +3,14 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "New Folder"
+    "Source X",
+    "Start 1"
   ],
-  "autoFolders": [],
-  "defaultMaxVel": 1.0,
-  "defaultMaxAccel": 1.0,
+  "autoFolders": [
+    "Start 1"
+  ],
+  "defaultMaxVel": 2.0,
+  "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 90.0,
   "defaultMaxAngAccel": 120.0,
   "defaultNominalVoltage": 12.0,

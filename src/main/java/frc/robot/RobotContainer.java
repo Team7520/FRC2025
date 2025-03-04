@@ -108,7 +108,6 @@ public class RobotContainer {
 
         autoChooser.setDefaultOption("Middle Barge to Reef G", drivetrain.getPPAutoCommand("Middle Barge to Reef G", true));
         autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
-        autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
         autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
         autoChooser.addOption("Start 1 to F to A Three Coral", drivetrain.getPPAutoCommand("Start 1 to F to A Three Coral", true));
         autoChooser.addOption("Start 1 to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to F Three Coral", true));
@@ -127,7 +126,8 @@ public class RobotContainer {
         autoChooser.addOption("3-b-y-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b-y-b", true));
         autoChooser.addOption("3-b-y-b-y-a", drivetrain.getPPAutoCommand("3-b-y-b-y-a", true));
         
-        autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
+        autoChooser.addOption("2-d One Coral", drivetrain.getPPAutoCommand("2-d One Coral", true));
+        //autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
 
@@ -265,7 +265,7 @@ public class RobotContainer {
                 
         // Conveyor Controls (using triggers)
         operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED));
-        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()));
+        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED));
         
 
         // operatorController.rightBumper().whileTrue(endEffector.run(0.05));
@@ -273,7 +273,8 @@ public class RobotContainer {
         operatorController.button(7).onTrue(tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP));
         operatorController.button(8).onTrue(tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN));
         // Ramp Controls (using bumpers)
-        operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED));
+        operatorController.rightBumper().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()));
+        operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED).until(() -> endEffector.StopWithSensor()));
         operatorController.leftBumper().whileTrue(rampSubsystem.run(-RAMP_SPEED));
 
         //operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
