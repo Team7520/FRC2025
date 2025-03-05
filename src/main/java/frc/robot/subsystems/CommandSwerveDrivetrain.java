@@ -449,6 +449,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+        SmartDashboard.putBoolean("Is Lime Disabled?", !UpdatedPose);
         if(UpdatedPose) {
             Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
             if (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0 && counter > 0) {
@@ -464,6 +465,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
             SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
             SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
+            SmartDashboard.putNumber("RobotZ_Pose", getState().Pose.getRotation().getDegrees());
         }     
     }
 
@@ -525,7 +527,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
             );
             
-            PathConstraints constraints = new PathConstraints(0.75, 0.75, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+            PathConstraints constraints = new PathConstraints(0.5, 0.5, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
             
             PathPlannerPath path = new PathPlannerPath( 
                 wayPoints,
@@ -578,7 +580,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
             );
             
-            PathConstraints constraints = new PathConstraints(0.75, 0.75, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+            PathConstraints constraints = new PathConstraints(0.5, 0.5, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
             
             PathPlannerPath path = new PathPlannerPath( 
                 wayPoints,
