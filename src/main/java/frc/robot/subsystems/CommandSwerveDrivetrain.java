@@ -208,7 +208,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configureAutoBuilder(14, 2, 0, 22.5, 5, 0);
+        configureAutoBuilder(7, 0, 0, 3, 0, 0); //14P, 22.5P
         LimeTags();
     }
 
@@ -234,7 +234,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configureAutoBuilder(14, 2, 0, 22.5, 5, 0);
+        configureAutoBuilder(7, 0, 0, 3, 0, 0);
         LimeTags();
     }
 
@@ -268,7 +268,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configureAutoBuilder(14, 2, 0, 22.5, 5, 0);
+        configureAutoBuilder(7, 0, 0, 3, 0, 0);
         LimeTags();
     }
 

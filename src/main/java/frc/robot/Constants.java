@@ -99,7 +99,7 @@ public class Constants {
         public static final double MAX_JERK = MAX_ACCELERATION*3;
         public static final double ALLOWABLE_ERROR = 0.5;
         public static enum PivotPosition {
-            UP(-203),
+            UP(-215),
             DOWN(-190),
             DUNK(-122),
             ALG(-128.57);

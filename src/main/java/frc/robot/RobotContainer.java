@@ -48,6 +48,8 @@ import frc.robot.commands.ElevatorDownAuto;
 import frc.robot.commands.L2Command;
 import frc.robot.commands.L3Command;
 import frc.robot.commands.L4Command;
+import frc.robot.commands.AutoIntake;
+
 import frc.robot.commands.ManualElevator;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -152,7 +154,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
         NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
         NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
-        NamedCommands.registerCommand("intake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)).alongWith(new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()))).raceWith(new WaitCommand(4)));
+        NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, CONVEYOR_EJECT_SPEED, RAMP_SPEED));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> rampSubsystem.run(0)).alongWith(new InstantCommand(() -> endEffector.stopConveyorCommand())).raceWith(new WaitCommand(0.01)));
         NamedCommands.registerCommand("StopLimelight", drivetrain.LimelightStatus(false));
         NamedCommands.registerCommand("StartLimelight", drivetrain.LimelightStatus(true));
