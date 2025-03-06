@@ -61,7 +61,8 @@ public class Constants {
             MID(26.8),
             HIGH(54.3),
             LOWALG(18.3),
-            HIGHALG(34.45);
+            HIGHALG(34.45),
+            INTAKE(2.365);
 
             private final double height;
 
@@ -99,7 +100,7 @@ public class Constants {
         public static final double MAX_JERK = MAX_ACCELERATION*3;
         public static final double ALLOWABLE_ERROR = 0.5;
         public static enum PivotPosition {
-            UP(-203),
+            UP(-215),
             DOWN(-190),
             DUNK(-122),
             ALG(-128.57);

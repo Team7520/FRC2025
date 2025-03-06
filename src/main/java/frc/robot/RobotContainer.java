@@ -48,6 +48,8 @@ import frc.robot.commands.ElevatorDownAuto;
 import frc.robot.commands.L2Command;
 import frc.robot.commands.L3Command;
 import frc.robot.commands.L4Command;
+import frc.robot.commands.AutoIntake;
+
 import frc.robot.commands.ManualElevator;
 //import com.pathplanner.lib.auto.AutoBuilder;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -108,7 +110,6 @@ public class RobotContainer {
 
         autoChooser.setDefaultOption("Middle Barge to Reef G", drivetrain.getPPAutoCommand("Middle Barge to Reef G", true));
         autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
-        autoChooser.addOption("1m F", drivetrain.getPPAutoCommand("1m F", true));
         autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
         autoChooser.addOption("Start 1 to F to A Three Coral", drivetrain.getPPAutoCommand("Start 1 to F to A Three Coral", true));
         autoChooser.addOption("Start 1 to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to F Three Coral", true));
@@ -127,7 +128,8 @@ public class RobotContainer {
         autoChooser.addOption("3-b-y-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b-y-b", true));
         autoChooser.addOption("3-b-y-b-y-a", drivetrain.getPPAutoCommand("3-b-y-b-y-a", true));
         
-        autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
+        autoChooser.addOption("2-d One Coral", drivetrain.getPPAutoCommand("2-d One Coral", true));
+        //autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
 
@@ -152,7 +154,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
         NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
         NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
-        NamedCommands.registerCommand("intake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)).alongWith(new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()))).raceWith(new WaitCommand(4)));
+        NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, CONVEYOR_EJECT_SPEED, RAMP_SPEED));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> rampSubsystem.run(0)).alongWith(new InstantCommand(() -> endEffector.stopConveyorCommand())).raceWith(new WaitCommand(0.01)));
         NamedCommands.registerCommand("StopLimelight", drivetrain.LimelightStatus(false));
         NamedCommands.registerCommand("StartLimelight", drivetrain.LimelightStatus(true));
@@ -258,14 +260,15 @@ public class RobotContainer {
 
         // EndEffector Pivot Controls
         operatorController.povUp().onTrue(endEffector.setPivotPositionCommand(PivotPosition.UP));
+        operatorController.povUp().onTrue(elevator.moveToPosition(ElevatorPosition.INTAKE));
         operatorController.povDown().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DOWN));
         //operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
-        operatorController.povRight().onTrue(elevator.resetEncoderCommand());
+        driveController.start().onTrue(elevator.resetEncoderCommand());
         operatorController.povLeft().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
                 
         // Conveyor Controls (using triggers)
         operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED));
-        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()));
+        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED));
         
 
         // operatorController.rightBumper().whileTrue(endEffector.run(0.05));
@@ -273,7 +276,8 @@ public class RobotContainer {
         operatorController.button(7).onTrue(tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP));
         operatorController.button(8).onTrue(tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN));
         // Ramp Controls (using bumpers)
-        operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED));
+        operatorController.rightBumper().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()));
+        operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED).until(() -> endEffector.StopWithSensor()));
         operatorController.leftBumper().whileTrue(rampSubsystem.run(-RAMP_SPEED));
 
         //operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
