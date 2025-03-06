@@ -25,6 +25,7 @@ import frc.robot.Constants.EndEffectorConstants;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class EndEffectorSubsystem extends SubsystemBase {
@@ -41,6 +42,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private double holdPosition = 0;
     private boolean isHoldingPosition = false;
     private SparkAnalogSensor analoginput;
+    private SparkAnalogSensor absoluteAnalogInput;
 
 
 
@@ -98,6 +100,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         pivotConfig.idleMode(IdleMode.kBrake);
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         analoginput = conveyorMotor.getAnalog();
+        absoluteAnalogInput = pivotMotor.getAnalog();
 //      pivotEncoder.setPosition(0);
     }
 
@@ -130,6 +133,12 @@ public class EndEffectorSubsystem extends SubsystemBase {
         } else {
             return false;
         }
+    }
+    
+    public double getAbsoluteEncoder(){
+        double voltage = absoluteAnalogInput.getVoltage();
+        double angle = (voltage / RobotController.getVoltage5V()) * 360.0;
+        return angle;
     }
 
     public Command run(double speed) {
@@ -177,6 +186,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pivot Velocity", pivotEncoder.getVelocity());
         SmartDashboard.putBoolean("Sensor", getSensor());
         SmartDashboard.putNumber("Analog Voltage", AnalogOutput());
+        SmartDashboard.putNumber("AbsoluteEncoderPosition", getAbsoluteEncoder());
+        SmartDashboard.putNumber("AbsoluteEncoderVoltage", absoluteAnalogInput.getVoltage());
+
     }
 }
 

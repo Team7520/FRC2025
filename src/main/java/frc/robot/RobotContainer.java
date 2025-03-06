@@ -260,9 +260,10 @@ public class RobotContainer {
 
         // EndEffector Pivot Controls
         operatorController.povUp().onTrue(endEffector.setPivotPositionCommand(PivotPosition.UP));
+        operatorController.povUp().onTrue(elevator.moveToPosition(ElevatorPosition.INTAKE));
         operatorController.povDown().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DOWN));
         //operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
-        operatorController.povRight().onTrue(elevator.resetEncoderCommand());
+        driveController.start().onTrue(elevator.resetEncoderCommand());
         operatorController.povLeft().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
                 
         // Conveyor Controls (using triggers)

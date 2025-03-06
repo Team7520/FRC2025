@@ -61,7 +61,8 @@ public class Constants {
             MID(26.8),
             HIGH(54.3),
             LOWALG(18.3),
-            HIGHALG(34.45);
+            HIGHALG(34.45),
+            INTAKE(2.365);
 
             private final double height;
 

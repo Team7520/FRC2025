@@ -65,7 +65,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
     int counter = 0;
-    public static boolean UpdatedPose = true;
+    public static boolean UpdatedPose = false;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -101,7 +101,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         )
     );
 
-    private void configureAutoBuilder(double driveP, double driveI, double driveD, double turnP, double turnI, double turnD) {
+    private void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
@@ -116,9 +116,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(driveP, driveI, driveD),
+                    new PIDConstants(7, 0, 0),
                     // PID constants for rotation
-                    new PIDConstants(turnP, turnI, turnD)
+                    new PIDConstants(3, 0, 0)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
@@ -208,7 +208,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configureAutoBuilder(7, 0, 0, 3, 0, 0); //14P, 22.5P
+        configureAutoBuilder(); //14P, 22.5P
         LimeTags();
     }
 
@@ -234,7 +234,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configureAutoBuilder(7, 0, 0, 3, 0, 0);
+        configureAutoBuilder();
         LimeTags();
     }
 
@@ -268,7 +268,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configureAutoBuilder(7, 0, 0, 3, 0, 0);
+        configureAutoBuilder();
         LimeTags();
     }
 
@@ -445,7 +445,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     allianceColor == Alliance.Red
                         ? kRedAlliancePerspectiveRotation
                         : kBlueAlliancePerspectiveRotation
-                );
+                );  
                 m_hasAppliedOperatorPerspective = true;
             });
         }
@@ -521,7 +521,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public PathPlannerPath GoLeft(int mode) {
         //if Mode is 1, run normally. If -1, don't move
         if(mode == -1) {
-            configureAutoBuilder(10, 0, 0, 5, 0, 0);
+            //configureAutoBuilder(10, 0, 0, 5, 0, 0);
             List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
                 new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
@@ -541,8 +541,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
         //Create a path from current pose to the Left of seen tag
         pathActive = true;
-        configureAutoBuilder(10, 0, 0, 5, 0, 0);
+        UpdatedPose = true;
+        //configureAutoBuilder(10, 0, 0, 5, 0, 0);
         double id = LimelightHelpers.getFiducialID("");
+        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
+        resetPose(updatedPose);
         List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
             new Pose2d(TagArray.get((int)id).LeftX, TagArray.get((int)id).LeftY, TagArray.get((int)id).BotAngle)
@@ -551,7 +554,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         PathConstraints constraints = new PathConstraints(1, 1, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
 
         EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
-        List<EventMarker> lst_em = Arrays.asList(signalEnd);
+        EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
+        List<EventMarker> lst_em = Arrays.asList(signalEnd, turnofflie);
         List<RotationTarget> lst_rt = Arrays.asList();
         List<ConstraintsZone> lst_cz = Arrays.asList();
         List<PointTowardsZone> lst_ptz = Arrays.asList();
@@ -574,7 +578,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public PathPlannerPath GoRight(int mode) {
         if(mode == -1) {
-            configureAutoBuilder(10, 0, 0, 5, 0, 0);
+            //configureAutoBuilder(10, 0, 0, 5, 0, 0);
             List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
                 new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
@@ -593,10 +597,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             pathActive = false;
             return path;
         }
-        configureAutoBuilder(10, 0, 0, 5, 0, 0);
+        //configureAutoBuilder(10, 0, 0, 5, 0, 0);
         pathActive = true;
-
-        double id = LimelightHelpers.getFiducialID("");        
+        UpdatedPose = true;
+        double id = LimelightHelpers.getFiducialID(""); 
+        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
+        resetPose(updatedPose);
         List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
                 new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
                 new Pose2d(TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle)
@@ -605,7 +611,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         PathConstraints constraints = new PathConstraints(1, 1, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
         
         EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
-        List<EventMarker> lst_em = Arrays.asList(signalEnd);
+        EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
+        List<EventMarker> lst_em = Arrays.asList(signalEnd, turnofflie);
         List<RotationTarget> lst_rt = Arrays.asList();
         List<ConstraintsZone> lst_cz = Arrays.asList();
         List<PointTowardsZone> lst_ptz = Arrays.asList();
