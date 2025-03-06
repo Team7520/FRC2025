@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.LightingSubsystem;
+import frc.robot.subsystems.EndEffectorSubsystem;;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private final LightingSubsystem lightingSubsystem = LightingSubsystem.getInstance();
+  private final EndEffectorSubsystem endEffectorSubsystem = EndEffectorSubsystem.getInstance();
   private final RobotContainer m_robotContainer;
 
   public Robot() {
@@ -27,14 +29,16 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    lightingSubsystem.FlashAllianceColour();
+  }
 
   @Override
   public void disabledExit() {}
 
   @Override
   public void autonomousInit() {
-    lightingSubsystem.StrobeAnimate(0, 255, 0, 0);
+    lightingSubsystem.StrobeAnimate(0, 255, 0);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -52,18 +56,25 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    lightingSubsystem.RainbowAnimate();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if (endEffectorSubsystem.getSensor()) {
+      lightingSubsystem.StrobeAnimate(0, 255, 0);
+      lightingSubsystem.FlashingWhite();
+    }
+    else {
+      lightingSubsystem.setLEDs(255, 0, 0);
+    }
+  }
 
   @Override
   public void teleopExit() {
-    lightingSubsystem.AnimateTeam();
+    lightingSubsystem.FlashAllianceColour();
   }
 
   @Override

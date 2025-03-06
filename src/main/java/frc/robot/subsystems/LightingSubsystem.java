@@ -1,10 +1,14 @@
 package frc.robot.subsystems;// Define the package
 
+import java.util.Optional;
+
 import com.ctre.phoenix.led.CANdle;// Import the CANdle libraries and the LED animation libraries
 import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.FireAnimation;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /* 
  * Class that controls robot lighting through the CANdle (excluding the RSL)
@@ -28,7 +32,7 @@ public class LightingSubsystem {// Define a class
     private LightingSubsystem() {// Startup code
       candle.clearAnimation(0);// Clear animations
       candle.clearAnimation(1);
-      ColourFlowAnimate(0, 0, 255);
+      ColourFlowAnimate(255, 0, 0);
     }
 
     public void setLEDs(int r, int g, int b) {// Function to change LED colours
@@ -49,19 +53,19 @@ public class LightingSubsystem {// Define a class
       candle.animate(rainbowAnim, 0);
     }
 
-    public void StrobeAnimate(int r, int g, int b, int w) {// Strobe animation
-      StrobeAnimation strobeAnim = new StrobeAnimation(r, g, b, w, 0.1, numLED);
+    public void StrobeAnimate(int r, int g, int b) {// Strobe animation
+      StrobeAnimation strobeAnim = new StrobeAnimation(r, g, b, 0, 0.1, numLED);
 
       candle.animate(strobeAnim, 0);
     }
   
     public void AnimateTeam() {
       // Set LEDs to team colour
-      StrobeAnimate(255, 0, 0, 0);
+      StrobeAnimate(255, 0, 0);
     }
 
     public void FlashingWhite() {// Flash all LEDs white
-      StrobeAnimate(191, 191, 191, 0);
+      StrobeAnimate(191, 191, 191);
     }
 
     public void FireAnimate() {// Fire animation
@@ -71,5 +75,20 @@ public class LightingSubsystem {// Define a class
       //TwinkleAnimation fireAnimR = new TwinkleAnimation(242, 145, 12, 0, 1, numLED, null);
       candle.animate(fireAnimL, 0);
       candle.animate(fireAnimR, 1);
+    }
+
+    public void FlashAllianceColour() {// Gets alliance colour from DS and adjusts colour based on alliance
+      Optional<Alliance> ally = DriverStation.getAlliance();
+      if (ally.isPresent()) {
+        if (ally.get() == Alliance.Red) {
+          StrobeAnimate(255, 0, 0);
+        }
+        if (ally.get() == Alliance.Blue) {
+          StrobeAnimate(0, 0, 255);
+        }
+      }
+      else {
+        RainbowAnimate();
+      }
     }
 }
