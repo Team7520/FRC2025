@@ -27,7 +27,7 @@ public class Constants {
     }
 
     public static final class AutoMoveConstants {
-        public static final double a = 0.2; // 0.305
+        public static final double a = 0.185; // 0.305
         public static final double b = 0.175; //0.165
         public static final double c = a /2;
         public static final double d = Math.sqrt(3) * (a/2);
@@ -57,12 +57,12 @@ public class Constants {
         public static final int CURRENT_LIMIT = 20;
         public static enum ElevatorPosition {
             GROUND(0),
-            LOW(11.83),
-            MID(26.8),
+            LOW(11.104),
+            MID(27),
             HIGH(54.3),
             LOWALG(18.3),
-            HIGHALG(34.45),
-            INTAKE(2.365);
+            HIGHALG(35.7138671875),
+            INTAKE(1.7197265625);
 
             private final double height;
 

@@ -45,9 +45,11 @@ import frc.robot.commands.AlgaeHigh;
 import frc.robot.commands.AlgaeLow;
 //import frc.robot.commands.ElevatorDown;
 import frc.robot.commands.ElevatorDownAuto;
+import frc.robot.commands.ElevatorDownFromIntake;
 import frc.robot.commands.L2Command;
 import frc.robot.commands.L3Command;
 import frc.robot.commands.L4Command;
+import frc.robot.commands.Lighting;
 import frc.robot.commands.AutoIntake;
 
 import frc.robot.commands.ManualElevator;
@@ -96,7 +98,7 @@ public class RobotContainer {
 
         configureBindings();
 
-        lightingSubsystem.AnimateTeam();// Flashing red
+        //lightingSubsystem.AnimateTeam();// Flashing red
         //lightingSubsystem.FlashingWhite();// Flashing white
         //lightingSubsystem.FireAnimate();// Fire animation
         //lightingSubsystem.setLEDs(0, 0, 255);// Set a colour    
@@ -106,27 +108,28 @@ public class RobotContainer {
     private void registerAutos() {
         registerNamedCommands();
 
-        autoChooser = AutoBuilder.buildAutoChooser();
+        autoChooser = new SendableChooser<>();
 
         autoChooser.setDefaultOption("Middle Barge to Reef G", drivetrain.getPPAutoCommand("Middle Barge to Reef G", true));
-        autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
-        autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
-        autoChooser.addOption("Start 1 to F to A Three Coral", drivetrain.getPPAutoCommand("Start 1 to F to A Three Coral", true));
-        autoChooser.addOption("Start 1 to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to F Three Coral", true));
-        autoChooser.addOption("Start 1 to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to F Two Coral", true));
-        autoChooser.addOption("Start 1 to F One Coral", drivetrain.getPPAutoCommand("Start 1 to F One Coral", true));
-        autoChooser.addOption("Start 1 to E to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to E to F Three Coral", true));
-        autoChooser.addOption("Start 1 to E to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to E to F Two Coral", true));
-        autoChooser.addOption("Start 1 to E One Coral", drivetrain.getPPAutoCommand("Start 1 to E One Coral", true));
+        // autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
+        // autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
+        // autoChooser.addOption("Start 1 to F to A Three Coral", drivetrain.getPPAutoCommand("Start 1 to F to A Three Coral", true));
+        // autoChooser.addOption("Start 1 to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to F Three Coral", true));
+        // autoChooser.addOption("Start 1 to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to F Two Coral", true));
+        // autoChooser.addOption("Start 1 to F One Coral", drivetrain.getPPAutoCommand("Start 1 to F One Coral", true));
+        // autoChooser.addOption("Start 1 to E to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to E to F Three Coral", true));
+        // autoChooser.addOption("Start 1 to E to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to E to F Two Coral", true));
+        // autoChooser.addOption("Start 1 to E One Coral", drivetrain.getPPAutoCommand("Start 1 to E One Coral", true));
         
         //All of section 3 autos
-        autoChooser.addOption("3-c", drivetrain.getPPAutoCommand("3-c", true));
+        // autoChooser.addOption("3-c", drivetrain.getPPAutoCommand("3-c", true));
         autoChooser.addOption("3-c-y-b", drivetrain.getPPAutoCommand("3-c-y-b", true));
-        autoChooser.addOption("3-c-y-b-y-b", drivetrain.getPPAutoCommand("3-c-y-b-y-b", true));
-        autoChooser.addOption("3-b", drivetrain.getPPAutoCommand("3-b", true));
-        autoChooser.addOption("3-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b", true));
-        autoChooser.addOption("3-b-y-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b-y-b", true));
-        autoChooser.addOption("3-b-y-b-y-a", drivetrain.getPPAutoCommand("3-b-y-b-y-a", true));
+        autoChooser.addOption("1-e-x-f", drivetrain.getPPAutoCommand("1-e-x-f", true));
+        // autoChooser.addOption("3-c-y-b-y-b", drivetrain.getPPAutoCommand("3-c-y-b-y-b", true));
+        // autoChooser.addOption("3-b", drivetrain.getPPAutoCommand("3-b", true));
+        // autoChooser.addOption("3-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b", true));
+        // autoChooser.addOption("3-b-y-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b-y-b", true));
+        // autoChooser.addOption("3-b-y-b-y-a", drivetrain.getPPAutoCommand("3-b-y-b-y-a", true));
         
         autoChooser.addOption("2-d One Coral", drivetrain.getPPAutoCommand("2-d One Coral", true));
         //autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
@@ -137,6 +140,7 @@ public class RobotContainer {
 
         // Example
         NamedCommands.registerCommand("elevatorGround", new ElevatorDownAuto(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
+        NamedCommands.registerCommand("elevatorGroundFromIntake", new ElevatorDownFromIntake(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorLow", new L2Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorMid", new L3Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorHigh", new L4Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
@@ -154,7 +158,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
         NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
         NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
-        NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, CONVEYOR_EJECT_SPEED, RAMP_SPEED));
+        NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, elevator, CONVEYOR_EJECT_SPEED, RAMP_SPEED));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> rampSubsystem.run(0)).alongWith(new InstantCommand(() -> endEffector.stopConveyorCommand())).raceWith(new WaitCommand(0.01)));
         NamedCommands.registerCommand("StopLimelight", drivetrain.LimelightStatus(false));
         NamedCommands.registerCommand("StartLimelight", drivetrain.LimelightStatus(true));
@@ -290,6 +294,13 @@ public class RobotContainer {
         // Manual elevator control
         elevator.setDefaultCommand(
             new ManualElevator(elevator, () -> -operatorController.getRightY())
+        );
+
+        lightingSubsystem.setDefaultCommand(
+            new Lighting(
+                lightingSubsystem, 
+                () -> endEffector.AnalogOutput()
+            )
         );
 
         drivetrain.registerTelemetry(logger::telemeterize);

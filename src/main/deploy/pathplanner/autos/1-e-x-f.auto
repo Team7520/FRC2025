@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3-c"
+                  "pathName": "1-e"
                 }
               },
               {
@@ -74,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "c-y"
+                  "pathName": "e-x"
                 }
               }
             ]
@@ -141,7 +141,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "pathy-b"
+                        "pathName": "pathx-f"
                       }
                     }
                   ]
