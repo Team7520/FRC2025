@@ -56,10 +56,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         leftMotor.setNeutralMode(NeutralModeValue.Brake);
         rightMotor.setNeutralMode(NeutralModeValue.Brake);
         
-        leftMotor.setPosition(0);
-        rightMotor.setPosition(0);
-        
-        
+        // leftMotor.setPosition(0);
+        // rightMotor.setPosition(0);
+               
         follower = new StrictFollower(leftMotor.getDeviceID());
         rightMotor.setControl(follower);
         
