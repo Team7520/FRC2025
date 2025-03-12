@@ -449,9 +449,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+        //System.out.printf("updatedPose X is: %f updatedPose Y is: %f updatedPose Z is: %f\n", LimelightHelpers.getBotPose2d_wpiBlue("").getX(), LimelightHelpers.getBotPose2d_wpiBlue("").getY(), LimelightHelpers.getBotPose2d_wpiBlue("").getRotation().getDegrees());
+        if(LimelightHelpers.getBotPose2d_wpiBlue("") == null) {
+            System.out.println("NULLLLLLLLSGADUFAYFYFGWY*HFUHFYWFYFYWYWFVUFUSJFHJSFHJFHUISHFUUIFHJSHFJFHJSHF");
+        }
         SmartDashboard.putBoolean("Is Lime Disabled?", !UpdatedPose);
         if(UpdatedPose) {
             Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
+            if(updatedPose == null) {
+                System.out.println("updatedPose is Null!! _____________________________________________________________");
+                return;
+            }
             if (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0 && counter > 0) {
                 counter = 0;
                 resetPose(updatedPose);
@@ -518,118 +526,133 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 
-    public PathPlannerPath GoLeft(int mode) {
-        //if Mode is 1, run normally. If -1, don't move
-        if(mode == -1) {
-            //configureAutoBuilder(10, 0, 0, 5, 0, 0);
-            List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
-                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
-                new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
-            );
-            
-            PathConstraints constraints = new PathConstraints(0.5, 0.5, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
-            
-            PathPlannerPath path = new PathPlannerPath( 
-                wayPoints,
-                constraints,
-                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0.0, getState().Pose.getRotation()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-            );
-            
-            path.preventFlipping =true;
-            return path;
+    public PathPlannerPath GoRight(int mode) {
+        try {
+            if(mode != -1) {   
+                //configureAutoBuilder(10, 0, 0, 5, 0, 0);
+                pathActive = true;
+                UpdatedPose = true;
+                double id = LimelightHelpers.getFiducialID(""); 
+                Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
+                if(updatedPose == null) {
+                    throw new RuntimeException("Pose was null when making path!! Gonna cancel path now\n");
+                } 
+                resetPose(updatedPose);
+                List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
+                        new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+                        new Pose2d(TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle)
+                    );        
+
+                PathConstraints constraints = new PathConstraints(1, 1, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+                
+                EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
+                EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
+                List<EventMarker> lst_em = Arrays.asList(signalEnd, turnofflie);
+                List<RotationTarget> lst_rt = Arrays.asList();
+                List<ConstraintsZone> lst_cz = Arrays.asList();
+                List<PointTowardsZone> lst_ptz = Arrays.asList();
+
+                PathPlannerPath path = new PathPlannerPath( 
+                    wayPoints,
+                    lst_rt,
+                    lst_ptz, 
+                    lst_cz,
+                    lst_em,
+                    constraints,
+                    null, 
+                    new GoalEndState(0.0, TagArray.get((int)id).BotAngle), // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+                    false
+                );
+                
+                path.preventFlipping =true;
+                return path;
+            }
+        } catch (Exception e) {
+            System.out.printf("ERROR! Exception in GoRight!!\n");
+            e.printStackTrace();
         }
-        //Create a path from current pose to the Left of seen tag
-        pathActive = true;
-        UpdatedPose = true;
-        //configureAutoBuilder(10, 0, 0, 5, 0, 0);
-        double id = LimelightHelpers.getFiducialID("");
-        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
-        resetPose(updatedPose);
+         //configureAutoBuilder(10, 0, 0, 5, 0, 0);
         List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
-            new Pose2d(TagArray.get((int)id).LeftX, TagArray.get((int)id).LeftY, TagArray.get((int)id).BotAngle)
+            new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
         );
-
-        PathConstraints constraints = new PathConstraints(1, 1, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
-
-        EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
-        EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
-        List<EventMarker> lst_em = Arrays.asList(signalEnd, turnofflie);
-        List<RotationTarget> lst_rt = Arrays.asList();
-        List<ConstraintsZone> lst_cz = Arrays.asList();
-        List<PointTowardsZone> lst_ptz = Arrays.asList();
-
+            
+        PathConstraints constraints = new PathConstraints(0.5, 0.5, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+        
         PathPlannerPath path = new PathPlannerPath( 
             wayPoints,
-            lst_rt,
-            lst_ptz, 
-            lst_cz,
-            lst_em,
             constraints,
-            null, 
-            new GoalEndState(0.0, TagArray.get((int)id).BotAngle), // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-            false
+            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+            new GoalEndState(0.0, getState().Pose.getRotation()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
         );
-        
+            
         path.preventFlipping =true;
+        pathActive = false;
         return path;
     }
 
-    public PathPlannerPath GoRight(int mode) {
-        if(mode == -1) {
-            //configureAutoBuilder(10, 0, 0, 5, 0, 0);
-            List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
-                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
-                new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
-            );
-            
-            PathConstraints constraints = new PathConstraints(0.5, 0.5, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
-            
-            PathPlannerPath path = new PathPlannerPath( 
-                wayPoints,
-                constraints,
-                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0.0, getState().Pose.getRotation()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-            );
-            
-            path.preventFlipping =true;
-            pathActive = false;
-            return path;
+    public PathPlannerPath GoLeft(int mode) {
+        try {
+            if(mode != -1) {   
+                //configureAutoBuilder(10, 0, 0, 5, 0, 0);
+                pathActive = true;
+                UpdatedPose = true;
+                double id = LimelightHelpers.getFiducialID(""); 
+                Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
+                if(updatedPose == null) {
+                    throw new RuntimeException("Pose was null when making path!! Gonna cancel path now\n");
+                } 
+                resetPose(updatedPose);
+                List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
+                        new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+                        new Pose2d(TagArray.get((int)id).LeftX, TagArray.get((int)id).LeftY, TagArray.get((int)id).BotAngle)
+                    );        
+
+                PathConstraints constraints = new PathConstraints(1, 1, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+                
+                EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
+                EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
+                List<EventMarker> lst_em = Arrays.asList(signalEnd, turnofflie);
+                List<RotationTarget> lst_rt = Arrays.asList();
+                List<ConstraintsZone> lst_cz = Arrays.asList();
+                List<PointTowardsZone> lst_ptz = Arrays.asList();
+
+                PathPlannerPath path = new PathPlannerPath( 
+                    wayPoints,
+                    lst_rt,
+                    lst_ptz, 
+                    lst_cz,
+                    lst_em,
+                    constraints,
+                    null, 
+                    new GoalEndState(0.0, TagArray.get((int)id).BotAngle), // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+                    false
+                );
+                
+                path.preventFlipping = true;
+                return path;
+            }
+        } catch (Exception e) {
+            System.out.printf("ERROR! Exception in GoLeft!!\n");
+            e.printStackTrace();
         }
         //configureAutoBuilder(10, 0, 0, 5, 0, 0);
-        pathActive = true;
-        UpdatedPose = true;
-        double id = LimelightHelpers.getFiducialID(""); 
-        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
-        resetPose(updatedPose);
         List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
-                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
-                new Pose2d(TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle)
-            );        
-
-        PathConstraints constraints = new PathConstraints(1, 1, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+            new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+            new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
+        );
+            
+        PathConstraints constraints = new PathConstraints(0.5, 0.5, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
         
-        EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
-        EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
-        List<EventMarker> lst_em = Arrays.asList(signalEnd, turnofflie);
-        List<RotationTarget> lst_rt = Arrays.asList();
-        List<ConstraintsZone> lst_cz = Arrays.asList();
-        List<PointTowardsZone> lst_ptz = Arrays.asList();
-
         PathPlannerPath path = new PathPlannerPath( 
             wayPoints,
-            lst_rt,
-            lst_ptz, 
-            lst_cz,
-            lst_em,
             constraints,
-            null, 
-            new GoalEndState(0.0, TagArray.get((int)id).BotAngle), // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-            false
+            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+            new GoalEndState(0.0, getState().Pose.getRotation()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
         );
-        
+            
         path.preventFlipping =true;
+        pathActive = false;
         return path;
     }
 
@@ -654,6 +677,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         );
         
         path.preventFlipping =true;
+        return path;
+    }
+
+    public PathPlannerPath TestCrash() {
+        Pose2d currentPose = LimelightHelpers.getBotPose2d_wpiBlue("");
+        resetPose(currentPose);
+        List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+            new Pose2d(1, 0, Rotation2d.fromDegrees(0))
+        );
+
+        PathConstraints constraints = new PathConstraints(0.15, 0.15, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+
+        PathPlannerPath path = new PathPlannerPath(
+            wayPoints,
+            constraints,
+            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+            new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+
         return path;
     }
 }
