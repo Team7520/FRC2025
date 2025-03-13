@@ -116,12 +116,6 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "elevatorGroundFromIntake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
                         "name": "elevatorHigh"
                       }
                     }
@@ -141,7 +135,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "pathy-Left b"
+                        "pathName": "pathy-Right b"
                       }
                     }
                   ]
@@ -169,7 +163,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left b-y"
+                  "pathName": "Right b-y"
                 }
               }
             ]
@@ -211,12 +205,6 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "elevatorGroundFromIntake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
                         "name": "elevatorHigh"
                       }
                     }
@@ -236,7 +224,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "pathy-Right b"
+                        "pathName": "pathy-Left b"
                       }
                     }
                   ]
