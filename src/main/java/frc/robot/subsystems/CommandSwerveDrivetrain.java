@@ -478,11 +478,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 counter++;
                 //System.out.println("ran in null");
             }   
-            SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
-            SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
-            SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
-            SmartDashboard.putNumber("RobotZ_Pose", getState().Pose.getRotation().getDegrees());
-        }     
+        }  
+        SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
+        SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
+        SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
+        SmartDashboard.putNumber("RobotZ_Pose", getState().Pose.getRotation().getDegrees());   
     }
 
     private void startSimThread() {
