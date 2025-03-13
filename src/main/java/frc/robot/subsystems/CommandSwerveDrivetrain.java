@@ -454,6 +454,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             System.out.println("NULLLLLLLLSGADUFAYFYFGWY*HFUHFYWFYFYWYWFVUFUSJFHJSFHJFHUISHFUUIFHJSHFJFHJSHF");
         }
         SmartDashboard.putBoolean("Is Lime Disabled?", !UpdatedPose);
+        if(LimelightHelpers.getTV("")) {
+            SmartDashboard.putBoolean("Limelight Can See?", true);
+        } else {
+            SmartDashboard.putBoolean("Limelight Can See?", false);
+        }
+        if(LimelightHelpers.getFiducialID("null") == 0) {
+            SmartDashboard.putBoolean("Lime Connected?", false);
+        } else {
+            SmartDashboard.putBoolean("Lime Connected?", true);
+        }
         if(UpdatedPose) {
             Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
             if(updatedPose == null) {
@@ -463,12 +473,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             if (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0 && counter > 0) {
                 counter = 0;
                 resetPose(updatedPose);
-                SmartDashboard.putBoolean("Can See?", true);
                 //System.out.printf("Updated X:%f Updated Y:%f, Updated Rotate:%f\n", updatedPose.getX(), updatedPose.getY(), updatedPose.getRotation().getDegrees());
             } else {
                 counter++;
                 //System.out.println("ran in null");
-                SmartDashboard.putBoolean("Can See?", false);
             }   
             SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
             SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
