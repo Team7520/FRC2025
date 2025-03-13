@@ -527,14 +527,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public PathPlannerPath GoRight(int mode) {
+        double id = LimelightHelpers.getFiducialID(""); 
+        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
         try {
             if(mode != -1) {   
                 //configureAutoBuilder(10, 0, 0, 5, 0, 0);
                 pathActive = true;
                 UpdatedPose = true;
-                double id = LimelightHelpers.getFiducialID(""); 
-                Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
-                if(updatedPose == null) {
+                if(updatedPose == null || (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0)) {
                     throw new RuntimeException("Pose was null when making path!! Gonna cancel path now\n");
                 } 
                 resetPose(updatedPose);
@@ -569,6 +569,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             }
         } catch (Exception e) {
             System.out.printf("ERROR! Exception in GoRight!!\n");
+            System.out.printf("The current X , Y, Z poses are: %f, %f, %f\n The ID is: %f\n", updatedPose.getX(), updatedPose.getY(), updatedPose.getRotation().getDegrees(), id);
             e.printStackTrace();
         }
          //configureAutoBuilder(10, 0, 0, 5, 0, 0);
@@ -592,14 +593,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public PathPlannerPath GoLeft(int mode) {
+        double id = LimelightHelpers.getFiducialID(""); 
+        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
         try {
             if(mode != -1) {   
                 //configureAutoBuilder(10, 0, 0, 5, 0, 0);
                 pathActive = true;
                 UpdatedPose = true;
-                double id = LimelightHelpers.getFiducialID(""); 
-                Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
-                if(updatedPose == null) {
+                if(updatedPose == null || (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0)) {
                     throw new RuntimeException("Pose was null when making path!! Gonna cancel path now\n");
                 } 
                 resetPose(updatedPose);
@@ -634,6 +635,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             }
         } catch (Exception e) {
             System.out.printf("ERROR! Exception in GoLeft!!\n");
+            System.out.printf("The current X , Y, Z poses are: %f, %f, %f\n The ID is: %f\n", updatedPose.getX(), updatedPose.getY(), updatedPose.getRotation().getDegrees(), id);
             e.printStackTrace();
         }
         //configureAutoBuilder(10, 0, 0, 5, 0, 0);
