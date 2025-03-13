@@ -12,8 +12,6 @@ import frc.robot.subsystems.RampSubsystem;
 public class AutoIntake extends ParallelCommandGroup {
     public AutoIntake(RampSubsystem rampSubsystem, EndEffectorSubsystem endEffector, ElevatorSubsystem elevatorSubsystem, double conveyorSpeed, double RAMP_SPEED) {
         addCommands(
-            elevatorSubsystem.moveToPosition(ElevatorPosition.INTAKE),
-            new WaitCommand(0.25),
             endEffector.setConveyorSpeedCommand(conveyorSpeed)
                 .until(() -> endEffector.StopWithSensor()), // Run for 2 seconds
             rampSubsystem.run(RAMP_SPEED)

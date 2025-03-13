@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
+
 //import static edu.wpi.first.units.Units.Rotation;
 
 //import com.revrobotics.AnalogInput;
@@ -42,6 +44,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private double lastPivotPosition;
     private double holdPosition = 0;
     private boolean isHoldingPosition = false;
+    //private AbsoluteEncoder absoluteEncoder;
     private SparkAnalogSensor analoginput;
     private SparkAnalogSensor absoluteAnalogInput;
 
@@ -56,6 +59,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         pivotMotor = new SparkMax(EndEffectorConstants.PIVOT_ID, MotorType.kBrushless);
         pivotController = pivotMotor.getClosedLoopController();
         pivotEncoder = pivotMotor.getEncoder();
+        //absoluteEncoder = pivotMotor.getAbsoluteEncoder();
 
         SparkFlexConfig conveyorConfig = new SparkFlexConfig();
         conveyorConfig.smartCurrentLimit(EndEffectorConstants.CONVEYOR_CURRENT_LIMIT);
@@ -114,6 +118,18 @@ public class EndEffectorSubsystem extends SubsystemBase {
         return Commands.runOnce(() -> setPivotPosition(down), this);
     }
 
+    public void manual(double addRotations) {
+        pivotController.setReference(pivotEncoder.getPosition() + addRotations, ControlType.kPosition);
+    }
+
+    public void resetEncoder() {
+        pivotEncoder.setPosition(0);
+    }
+
+    public Command resetEncoderCommand() {
+        return Commands.runOnce(() -> resetEncoder(), this);
+    }
+
     public double AnalogOutput() {
         return analoginput.getVoltage();
     }
@@ -125,7 +141,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
     public void stop() {
         setSpeed(0);
         stopConveyor();
-
     }
 
     public boolean StopWithSensor() {
@@ -136,11 +151,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
         }
     }
     
-    public double getAbsoluteEncoder(){
-        double voltage = absoluteAnalogInput.getVoltage();
-        double angle = (voltage / RobotController.getVoltage5V()) * 360.0;
-        return angle;
-    }
+    // public double getAbsoluteEncoder(){
+    //     return absoluteEncoder.getPosition();
+    // }
 
     public Command run(double speed) {
         return this.run(() -> setSpeed(speed));
@@ -184,10 +197,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
     public void periodic() {    
         // Update dashboard with current positions and states
         SmartDashboard.putNumber("Pivot Angle", pivotEncoder.getPosition());
+        //SmartDashboard.putNumber("Absolute Pivot Angle", getAbsoluteEncoder());
         SmartDashboard.putNumber("Pivot Velocity", pivotEncoder.getVelocity());
         SmartDashboard.putBoolean("Sensor", getSensor());
         SmartDashboard.putNumber("Analog Voltage", AnalogOutput());
-        SmartDashboard.putNumber("AbsoluteEncoderPosition", getAbsoluteEncoder());
+        //SmartDashboard.putNumber("AbsoluteEncoderPosition", getAbsoluteEncoder());
         SmartDashboard.putNumber("AbsoluteEncoderVoltage", absoluteAnalogInput.getVoltage());
 
     }
