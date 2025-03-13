@@ -18,11 +18,12 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     m_robotContainer = new RobotContainer();
+    lightingSubsystem.FlashAllianceColour();
   }
 
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run(); 
+    CommandScheduler.getInstance().run();
   }
 
   @Override
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     lightingSubsystem.FlashAllianceColour();
+    lightingSubsystem.RainbowAnimateSide();
   }
 
   @Override
