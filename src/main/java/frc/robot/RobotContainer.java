@@ -232,6 +232,13 @@ public class RobotContainer {
                   cmd.schedule();}
             }
         ));
+
+        //testing for crash
+        driveController.povDown().onTrue(new InstantCommand(() -> {
+            var cmd = AutoBuilder.followPath(drivetrain.TestCrash());
+            cmd.schedule();}   
+                 
+        ));
         
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
         // endEffector.setDefaultCommand(endEffector.run(0));
