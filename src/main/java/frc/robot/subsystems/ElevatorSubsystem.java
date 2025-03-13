@@ -11,8 +11,11 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 //import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,8 +28,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final TalonFX rightMotor;
     private final MotionMagicVoltage motionMagic;
     private final StrictFollower follower;
+    private final DigitalInput limitSwitch;
     
     private ElevatorSubsystem() {
+        limitSwitch = new DigitalInput(ElevatorConstants.LIMIT_SWITCH_ID);
         leftMotor = new TalonFX(ElevatorConstants.LEFT_MOTOR_ID);
         rightMotor = new TalonFX(ElevatorConstants.RIGHT_MOTOR_ID);
         
@@ -36,6 +41,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         config.Slot0.kI = ElevatorConstants.kI;
         config.Slot0.kD = ElevatorConstants.kD;
         config.Slot0.kV = ElevatorConstants.kFF;
+        config.Slot0.kG = ElevatorConstants.kG;
+        config.Slot0.kA = ElevatorConstants.kA;
         config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.MAX_VELOCITY;
         config.MotionMagic.MotionMagicAcceleration = ElevatorConstants.MAX_ACCELERATION;
         config.MotionMagic.MotionMagicJerk = ElevatorConstants.MAX_JERK;
@@ -43,11 +50,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Current Limits
         CurrentLimitsConfigs limitConfigs = new CurrentLimitsConfigs();
         limitConfigs.StatorCurrentLimit = 120;
-        limitConfigs.StatorCurrentLimitEnable = true;
+        limitConfigs.StatorCurrentLimitEnable = false;
+        limitConfigs.SupplyCurrentLimit = Constants.ElevatorConstants.CURRENT_LIMIT;
+        limitConfigs.SupplyCurrentLimitEnable = false;
         config.withCurrentLimits(limitConfigs);
+        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         
         leftMotor.getConfigurator().apply(config);
-        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         rightMotor.getConfigurator().apply(config);
         
         // Configure right motor to follow left motor (inverted)
@@ -56,8 +66,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         leftMotor.setNeutralMode(NeutralModeValue.Brake);
         rightMotor.setNeutralMode(NeutralModeValue.Brake);
         
-        // leftMotor.setPosition(0);
-        // rightMotor.setPosition(0);
+        leftMotor.setPosition(0);
+        rightMotor.setPosition(0);
                
         follower = new StrictFollower(leftMotor.getDeviceID());
         rightMotor.setControl(follower);
@@ -77,9 +87,15 @@ public class ElevatorSubsystem extends SubsystemBase {
         leftMotor.setControl(motionMagic.withPosition(position.getHeight()));
     }
 
-    public void resetEncoder() {
-        leftMotor.setPosition(0.0);
+    public boolean getLimitSwitch() {
+        return limitSwitch.get();
     }
+
+    public void resetEncoder() {
+        leftMotor.setPosition(0);
+        rightMotor.setPosition(0);
+    }
+
     public Command resetEncoderCommand(){
         return Commands.runOnce(() -> resetEncoder());
     }
@@ -90,6 +106,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     * @return A command that will move the elevator to the specified position
     */
     public Command moveToPosition(ElevatorPosition position) {
+        SmartDashboard.putNumber("ElevatorSetpos", position.getHeight());
         return Commands.runOnce(() -> setPosition(position), this);
     }
     
@@ -111,6 +128,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Add any periodic checks or logging here
         String currentPos = leftMotor.getPosition().getValue().toLongString();
         SmartDashboard.putString("ElevatorPos", currentPos);
+        SmartDashboard.putBoolean("ElevatorReset", limitSwitch.get());
+
     }
 }
 

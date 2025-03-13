@@ -87,7 +87,7 @@ public class LightingSubsystem extends SubsystemBase {// Define a class
     public Command lighting(EndEffectorSubsystem endEffectorSubsystem) {
       return Commands.run(
         () -> {
-          if (endEffectorSubsystem.AnalogOutput() <= 1.8) {
+          if (endEffectorSubsystem.AnalogOutput() <= 1.5) {
             this.StrobeAnimate(0, 55, 0);
           }
           else {

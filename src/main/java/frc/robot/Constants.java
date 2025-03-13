@@ -27,7 +27,7 @@ public class Constants {
     }
 
     public static final class AutoMoveConstants {
-        public static final double a = 0.185; // 0.305
+        public static final double a = 0.2; // 0.305 0.185
         public static final double b = 0.175; //0.165
         public static final double c = a /2;
         public static final double d = Math.sqrt(3) * (a/2);
@@ -36,33 +36,36 @@ public class Constants {
     }
 
     public static class ElevatorConstants {
+        public static final int LIMIT_SWITCH_ID = 9;
         public static final int LEFT_MOTOR_ID = 41;
         public static final int RIGHT_MOTOR_ID = 42;
-        public static final double SENSOR_TO_MECHANISM_RATIO = 27d/11d; // Units will be in inches
+        public static final double SENSOR_TO_MECHANISM_RATIO = 4d/11d; // Units will be in inches
         public static final double MAX_HEIGHT = 60; // 60 inches
 
         // PID Constants
-        public static final double kP = 2;
+        public static final double kP = 0.45; // 0.675
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kIz = 0.0;
-        public static final double kFF = 0.0;
+        public static final double kFF = 0.09;
+        public static final double kG = 0.312;
+        public static final double kA = 0.002;
 
         // Motion Magic Constants
-        public static final double MAX_VELOCITY = 5000; // 10 inches per second
-        public static final double MAX_ACCELERATION = MAX_VELOCITY*2; // 20 inches per second squared
-        public static final double MAX_JERK = MAX_ACCELERATION*4; // 60 inches per second cubed
+        public static final double MAX_VELOCITY = 40000; // 10 inches per second
+        public static final double MAX_ACCELERATION = MAX_VELOCITY*1.5; // 20 inches per second squared
+        public static final double MAX_JERK = MAX_ACCELERATION; // 60 inches per second cubed
         public static final double ALLOWABLE_ERROR = 0.5; // 0.5 inches
 
-        public static final int CURRENT_LIMIT = 20;
+        public static final int CURRENT_LIMIT = 200;
         public static enum ElevatorPosition {
             GROUND(0),
-            LOW(11.104),
-            MID(27),
-            HIGH(54.3),
-            LOWALG(18.3),
-            HIGHALG(35.7138671875),
-            INTAKE(1.7197265625);
+            LOW(11.41455078125),
+            MID(26.8),
+            HIGH(53), //52
+            LOWALG(21.3),
+            HIGHALG(37.7138671875);
+            // INTAKE(1.7197265625); old elev pos for intake at centennial, unused with new mechanical changes
 
             private final double height;
 
@@ -84,9 +87,9 @@ public class Constants {
         public static final double MIN_ANGLE = -220;
 
         // PID Constants
-        public static final double kP = 0.01;
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
+        public static final double kP = 0.03;
+        public static final double kI = 0;
+        public static final double kD = 0.01;
         public static final double kIz = 0.0;
         public static final double kFF = 0.0;
 
@@ -95,12 +98,13 @@ public class Constants {
         public static final double kD_CONVEYOR = 0.0;
 
         // MAX motion constants
-        public static final double MAX_VELOCITY = 20000;
+        public static final double MAX_VELOCITY = 30000;
         public static final double MAX_ACCELERATION = MAX_VELOCITY*1.5;
         public static final double MAX_JERK = MAX_ACCELERATION*3;
         public static final double ALLOWABLE_ERROR = 0.5;
+        // Old values (starting from floor)
         public static enum PivotPosition {
-            UP(-215),
+            UP(-246),
             DOWN(-190),
             DUNK(-122),
             ALG(-128.57);
@@ -115,6 +119,23 @@ public class Constants {
                 return angle;
             }
         }
+
+        // public static enum PivotPosition {
+        //     UP(30),
+        //     DOWN(55),
+        //     DUNK(123),
+        //     ALG(116.43);
+
+        //     private final double angle;
+
+        //     PivotPosition(double angle) {
+        //         this.angle = angle;
+        //     }
+
+        //     public double getAngle() {
+        //         return angle;
+        //     }
+        // }
 
         // Current Limiting Constants
         public static final int PIVOT_CURRENT_LIMIT = 10;

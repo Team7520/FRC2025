@@ -21,6 +21,18 @@
           "data": {
             "pathName": "pathy-Left b"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "pathb-y"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "pathy-Left b"
+          }
         }
       ]
     }
