@@ -168,23 +168,15 @@ public class LightingSubsystem extends SubsystemBase {// Define a class
       Optional<Alliance> ally = DriverStation.getAlliance();
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
-          //if (alliance != 1) {
-            alliance = 1;
-            candle.animate(new ColorFlowAnimation(100, 0, 0));
-          //}
+          candle.animate(new ColorFlowAnimation(100, 0, 0));
         }
         if (ally.get() == Alliance.Blue) {
-          //if (alliance != 2) {
-            alliance = 2;
-            candle.animate(new ColorFlowAnimation(0, 0, 100));
-          //}
+          candle.animate(new ColorFlowAnimation(0, 0, 100));
         }
       }
       else {
-        //if (alliance != 0) {
           alliance = 0;
           RainbowAnimate();
-        //}
       }
     }
 }
