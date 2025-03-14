@@ -39,6 +39,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -482,7 +484,35 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
         SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
         SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
-        SmartDashboard.putNumber("RobotZ_Pose", getState().Pose.getRotation().getDegrees());   
+        SmartDashboard.putNumber("Gyro Angle", getState().Pose.getRotation().getDegrees());   
+        SmartDashboard.putNumber("Velocity", Math.sqrt(Math.pow(getState().Speeds.vxMetersPerSecond, 2) + Math.pow(getState().Speeds.vyMetersPerSecond, 2)));
+        // SmartDashboard.putData("Gyro", new Sendable() {
+        //     @Override
+        //     public void initSendable(SendableBuilder builder) {
+        //         builder.setSmartDashboardType("Gyro");
+        //         builder.addDoubleProperty("Value", () -> getState().Pose.getRotation().getDegrees(), null);
+        //     }
+        // });
+        // SmartDashboard.putData("SwerveDrive", new Sendable() {
+        //     @Override
+        //     public void initSendable(SendableBuilder builder) {
+        //         builder.setSmartDashboardType("SwerveDrive");
+
+        //         builder.addDoubleProperty("Front Left Angle", () -> getModule(0).getCurrentState().angle.getRadians(), null);
+        //         builder.addDoubleProperty("Front Left Velocity", () -> getModule(0).getCurrentState().speedMetersPerSecond, null);
+                
+        //         builder.addDoubleProperty("Front Right Angle", () -> getModule(1).getCurrentState().angle.getRadians(), null);
+        //         builder.addDoubleProperty("Front Right Velocity", () -> getModule(1).getCurrentState().speedMetersPerSecond, null);
+
+        //         builder.addDoubleProperty("Back Left Angle", () -> getModule(2).getCurrentState().angle.getRadians(), null);
+        //         builder.addDoubleProperty("Back Left Velocity", () -> getModule(2).getCurrentState().speedMetersPerSecond, null);
+
+        //         builder.addDoubleProperty("Back Right Angle", () -> getModule(3).getCurrentState().angle.getRadians(), null);
+        //         builder.addDoubleProperty("Back Right Velocity", () -> getModule(3).getCurrentState().speedMetersPerSecond, null);
+
+        //         builder.addDoubleProperty("Robot Angle", () -> getState().Pose.getRotation().getRadians(), null);
+        //     }
+        // });
     }
 
     private void startSimThread() {
@@ -542,7 +572,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 //configureAutoBuilder(10, 0, 0, 5, 0, 0);
                 pathActive = true;
                 UpdatedPose = true;
-                if(updatedPose == null || (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0)) {
+                if(updatedPose == null || (updatedPose.getX() == 0.0 && updatedPose.getY() == 0.0 && updatedPose.getRotation().getDegrees() == 0.0)) {
                     throw new RuntimeException("Pose was null when making path!! Gonna cancel path now\n");
                 } 
                 resetPose(updatedPose);
@@ -551,7 +581,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                         new Pose2d(TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle)
                     );        
 
-                PathConstraints constraints = new PathConstraints(1, 1, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+                PathConstraints constraints = new PathConstraints(2, 2, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
                 
                 EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
                 EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
@@ -608,7 +638,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 //configureAutoBuilder(10, 0, 0, 5, 0, 0);
                 pathActive = true;
                 UpdatedPose = true;
-                if(updatedPose == null || (updatedPose.getX() != 0.0 && updatedPose.getY() != 0.0 && updatedPose.getRotation().getDegrees() != 0.0)) {
+                if(updatedPose == null || (updatedPose.getX() == 0.0 && updatedPose.getY() == 0.0 && updatedPose.getRotation().getDegrees() == 0.0)) {
                     throw new RuntimeException("Pose was null when making path!! Gonna cancel path now\n");
                 } 
                 resetPose(updatedPose);
@@ -617,7 +647,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                         new Pose2d(TagArray.get((int)id).LeftX, TagArray.get((int)id).LeftY, TagArray.get((int)id).BotAngle)
                     );        
 
-                PathConstraints constraints = new PathConstraints(1, 1, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+                PathConstraints constraints = new PathConstraints(2, 2, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
                 
                 EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
                 EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));

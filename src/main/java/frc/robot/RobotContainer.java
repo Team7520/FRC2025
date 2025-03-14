@@ -18,6 +18,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 //import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -38,6 +40,7 @@ import frc.robot.subsystems.TuskSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.LightingSubsystem;
+import frc.robot.Constants.TuskConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 import frc.robot.Elastic.Notification;
@@ -124,6 +127,9 @@ public class RobotContainer {
         // autoChooser.addOption("3-c", drivetrain.getPPAutoCommand("3-c", true));
         autoChooser.addOption("3-c-y-b", drivetrain.getPPAutoCommand("3-c-y-b", true));
         autoChooser.addOption("1-e-x-f", drivetrain.getPPAutoCommand("1-e-x-f", true));
+        autoChooser.addOption("3-c-y-b-y-b", drivetrain.getPPAutoCommand("3-c-y-b-y-b", true));
+        autoChooser.addOption("1-e-x-f-x-f", drivetrain.getPPAutoCommand("1-e-x-f-x-f", true));
+        autoChooser.addOption("Movement 1-e-x-f-x-f", drivetrain.getPPAutoCommand("Movement 1-e-x-f-x-f", true));
         // autoChooser.addOption("3-c-y-b-y-b", drivetrain.getPPAutoCommand("3-c-y-b-y-b", true));
         // autoChooser.addOption("3-b", drivetrain.getPPAutoCommand("3-b", true));
         // autoChooser.addOption("3-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b", true));
@@ -143,7 +149,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("elevatorGroundFromIntake", new ElevatorDownFromIntake(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorLow", new L2Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorMid", new L3Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
-        NamedCommands.registerCommand("elevatorHigh", new L4Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
+        NamedCommands.registerCommand("elevatorHigh", new L4Command(elevator, endEffector, CONVEYOR_EJECT_SPEED-0.15));
         NamedCommands.registerCommand("elevatorLowAlgae", new AlgaeLow(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorHighAlgae", new AlgaeHigh(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("pivotUp", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.UP)));
@@ -276,10 +282,12 @@ public class RobotContainer {
         //operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
         driveController.start().onTrue(elevator.resetEncoderCommand());
         operatorController.povLeft().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
+        operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
+        operatorController.povRight().onTrue(tuskSubsystem.setPivotPositionCommand(TuskConstants.PivotPosition.DOWN));
                 
         // Conveyor Controls (using triggers)
         operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED));
-        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED+0.1));
+        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.1));
         
 
         // operatorController.rightBumper().whileTrue(endEffector.run(0.05));
