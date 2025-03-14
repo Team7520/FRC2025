@@ -27,7 +27,7 @@ public class Constants {
     }
 
     public static final class AutoMoveConstants {
-        public static final double a = 0.2; // 0.305 0.185
+        public static final double a = 0.125; // 0.2 // 0.305 0.185
         public static final double b = 0.175; //0.165
         public static final double c = a /2;
         public static final double d = Math.sqrt(3) * (a/2);
@@ -63,8 +63,8 @@ public class Constants {
             LOW(11.41455078125),
             MID(26.8),
             HIGH(53), //52
-            LOWALG(21.3),
-            HIGHALG(37.7138671875);
+            LOWALG(18.9),
+            HIGHALG(34.75);
             // INTAKE(1.7197265625); old elev pos for intake at centennial, unused with new mechanical changes
 
             private final double height;
