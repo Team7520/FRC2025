@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
+//import com.revrobotics.AbsoluteEncoder;
 
 //import static edu.wpi.first.units.Units.Rotation;
 
@@ -27,7 +27,7 @@ import frc.robot.Constants.EndEffectorConstants;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 //import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.RobotController;
+//import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class EndEffectorSubsystem extends SubsystemBase {

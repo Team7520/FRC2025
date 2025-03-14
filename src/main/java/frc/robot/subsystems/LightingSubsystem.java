@@ -1,14 +1,9 @@
 package frc.robot.subsystems;// Define the package
 import java.util.Optional;
 
-import javax.print.attribute.standard.ColorSupported;
-
-import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;// Import the CANdle libraries and the LED animation libraries
-import com.ctre.phoenix.led.CANdle;// Import the CANdle libraries, the WPILib Addressable LED libaries, and the LED animation libraries
 import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
-import com.ctre.phoenix.led.TwinkleAnimation;
 import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.FireAnimation;
 
@@ -16,11 +11,8 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-//import edu.wpi.first.wpilibj.AddressableLEDBufferView;
-import com.ctre.phoenix.led.LarsonAnimation;
 
 import edu.wpi.first.wpilibj.DriverStation;
-//import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,11 +30,6 @@ public class LightingSubsystem extends SubsystemBase {// Define a class
     public final int numLED = 32;// Change to adjust number of LEDs
     public final AddressableLED sideLED = new AddressableLED(0);// Initialize side LED strips
     public final AddressableLEDBuffer sideLEDBuffer = new AddressableLEDBuffer(40);
-    /*
-    public final AddressableLEDBufferView sideLeftLED = sideLEDBuffer.createView(0, 40);
-    public final AddressableLEDBufferView sideRightLED = sideLEDBuffer.createView(21, 40);
-    */
-    public int alliance = 0;
 
     public static LightingSubsystem getInstance() {// Return the instance when getInstance is called in the robot code
       return INSTANCE;
@@ -99,16 +86,6 @@ public class LightingSubsystem extends SubsystemBase {// Define a class
       sideLED.setData(sideLEDBuffer);
     }
 
-    /*
-    public void setSideLeftLEDs(int r, int g, int b) {// Function to change LED colours on side strips
-      LEDPattern colour = LEDPattern.solid(null);
-      colour.applyTo(sideLeftLED);
-      sideLED.setData(sideLeftLED);
-    }
-
-    public void setSideRightLEDs(int r, int g, int b) {// Function to change LED colours on side strips
-
-    }*/
     public void RainbowAnimate() {// Rainbow animation
       clearAnimation();
       // create a rainbow animation:
@@ -157,8 +134,6 @@ public class LightingSubsystem extends SubsystemBase {// Define a class
       clearAnimation();
       FireAnimation fireAnimL = new FireAnimation(1, 0.1, numLED, 1, 1, false, 0);// Left side animation
       FireAnimation fireAnimR = new FireAnimation(1, 0.1, numLED, 1, 1, true, 20);// Right side animation (needs offset and reverse)
-      //TwinkleAnimation fireAnimL = new TwinkleAnimation(242, 145, 12, 0, 1, numLED, null);
-      //TwinkleAnimation fireAnimR = new TwinkleAnimation(242, 145, 12, 0, 1, numLED, null);
       candle.animate(fireAnimL, 0);
       candle.animate(fireAnimR, 1);
     }
@@ -175,7 +150,6 @@ public class LightingSubsystem extends SubsystemBase {// Define a class
         }
       }
       else {
-          alliance = 0;
           RainbowAnimate();
       }
     }
