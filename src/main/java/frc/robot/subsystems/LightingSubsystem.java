@@ -1,9 +1,14 @@
 package frc.robot.subsystems;// Define the package
 import java.util.Optional;
 
+import javax.print.attribute.standard.ColorSupported;
+
+import com.ctre.phoenix.led.Animation;
+import com.ctre.phoenix.led.CANdle;// Import the CANdle libraries and the LED animation libraries
 import com.ctre.phoenix.led.CANdle;// Import the CANdle libraries, the WPILib Addressable LED libaries, and the LED animation libraries
 import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
+import com.ctre.phoenix.led.TwinkleAnimation;
 import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.FireAnimation;
 
@@ -12,17 +17,22 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 //import edu.wpi.first.wpilibj.AddressableLEDBufferView;
+import com.ctre.phoenix.led.LarsonAnimation;
+
 import edu.wpi.first.wpilibj.DriverStation;
 //import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /* 
  * Class that controls robot lighting through the CANdle (excluding the RSL)
  * Note: Until CTRE implements CANdle support in Phoenix 6, Phoenix 5 is required.
  */
 // Flashing white, fire animation
-public class LightingSubsystem {// Define a class
+public class LightingSubsystem extends SubsystemBase {// Define a class
     private final static LightingSubsystem INSTANCE = new LightingSubsystem();// Set INSTANCE to a new instance of LightingSubsystem
     public final CANdle candle = new CANdle(17); // creates a new CANdle with ID 17
     public final int numLED = 32;// Change to adjust number of LEDs
@@ -32,8 +42,15 @@ public class LightingSubsystem {// Define a class
     public final AddressableLEDBufferView sideLeftLED = sideLEDBuffer.createView(0, 40);
     public final AddressableLEDBufferView sideRightLED = sideLEDBuffer.createView(21, 40);
     */
+    public int alliance = 0;
+
     public static LightingSubsystem getInstance() {// Return the instance when getInstance is called in the robot code
       return INSTANCE;
+    }
+
+    public void clearAnimation() {// Clears all animations
+      candle.clearAnimation(0);
+      candle.clearAnimation(1);
     }
 
     public void ColourFlowAnimate(int r, int g, int b) {// Colour flow animation
@@ -93,6 +110,7 @@ public class LightingSubsystem {// Define a class
 
     }*/
     public void RainbowAnimate() {// Rainbow animation
+      clearAnimation();
       // create a rainbow animation:
 
       // - max brightness
@@ -113,15 +131,30 @@ public class LightingSubsystem {// Define a class
     }
   
     public void AnimateTeam() {
+      clearAnimation();
       // Set LEDs to team colour
       StrobeAnimate(255, 0, 0);
     }
 
     public void FlashingWhite() {// Flash all LEDs white
-      StrobeAnimate(191, 191, 191);
+      ColourFlowAnimate(55, 55, 55);
+    }
+
+    public Command lighting(EndEffectorSubsystem endEffectorSubsystem) {
+      return Commands.run(
+        () -> {
+          if (endEffectorSubsystem.AnalogOutput() <= 1.5) {
+            this.StrobeAnimate(0, 55, 0);
+          }
+          else {
+            this.FlashingWhite();
+          }
+        }
+      );
     }
 
     public void FireAnimate() {// Fire animation
+      clearAnimation();
       FireAnimation fireAnimL = new FireAnimation(1, 0.1, numLED, 1, 1, false, 0);// Left side animation
       FireAnimation fireAnimR = new FireAnimation(1, 0.1, numLED, 1, 1, true, 20);// Right side animation (needs offset and reverse)
       //TwinkleAnimation fireAnimL = new TwinkleAnimation(242, 145, 12, 0, 1, numLED, null);
@@ -129,19 +162,29 @@ public class LightingSubsystem {// Define a class
       candle.animate(fireAnimL, 0);
       candle.animate(fireAnimR, 1);
     }
-
-    public void FlashAllianceColour() {// Gets alliance colour from DS and adjusts colour based on alliance
+    
+    public void AllianceColour() {// Gets alliance colour from DS and adjusts colour based on alliance (rainbow if no alliance is detected)
+      clearAnimation();
       Optional<Alliance> ally = DriverStation.getAlliance();
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
-          StrobeAnimate(255, 0, 0);
+          //if (alliance != 1) {
+            alliance = 1;
+            candle.animate(new ColorFlowAnimation(100, 0, 0));
+          //}
         }
         if (ally.get() == Alliance.Blue) {
-          StrobeAnimate(0, 0, 255);
+          //if (alliance != 2) {
+            alliance = 2;
+            candle.animate(new ColorFlowAnimation(0, 0, 100));
+          //}
         }
       }
       else {
-        RainbowAnimate();
+        //if (alliance != 0) {
+          alliance = 0;
+          RainbowAnimate();
+        //}
       }
     }
 }

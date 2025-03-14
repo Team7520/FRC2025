@@ -12,12 +12,12 @@ public class L4Command extends SequentialCommandGroup {
         addCommands(
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DOWN),
             new WaitCommand(0.5),
-            elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.HIGH),
-            new WaitCommand(2),
-            endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DUNK),
-            new WaitCommand(0.5),
-            endEffector.setConveyorSpeedCommand(conveyorSpeed)
-                .withTimeout(1) // Run for 2 seconds
+            elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.HIGH)
+            // new WaitCommand(2),
+            // endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DUNK),
+            // new WaitCommand(0.5),
+            // endEffector.setConveyorSpeedCommand(conveyorSpeed)
+            //     .withTimeout(1) // Run for 2 seconds
         );
     }
 }

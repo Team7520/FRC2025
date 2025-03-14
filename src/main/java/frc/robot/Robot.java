@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.LightingSubsystem;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.EndEffectorSubsystem;;
 
 public class Robot extends TimedRobot {
@@ -22,17 +24,25 @@ public class Robot extends TimedRobot {
   }
 
   @Override
+  public void robotInit() {
+    CameraServer.startAutomaticCapture();
+  }
+
+  @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    lightingSubsystem.AllianceColour();
+  }
 
   @Override
   public void disabledPeriodic() {
     lightingSubsystem.FlashAllianceColour();
     lightingSubsystem.RainbowAnimateSide();
+    //lightingSubsystem.AllianceColour();
   }
 
   @Override
@@ -40,7 +50,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    lightingSubsystem.StrobeAnimate(0, 255, 0);
+    lightingSubsystem.ColourFlowAnimate(0, 100, 0);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -52,31 +62,23 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {
-    lightingSubsystem.AnimateTeam();
-  }
+  public void autonomousExit() {}
 
   @Override
   public void teleopInit() {
+    CommandSwerveDrivetrain.UpdatedPose = false;
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
   }
 
   @Override
-  public void teleopPeriodic() {
-    if (endEffectorSubsystem.getSensor()) {
-      lightingSubsystem.StrobeAnimate(0, 255, 0);
-      lightingSubsystem.FlashingWhite();
-    }
-    else {
-      lightingSubsystem.setLEDs(255, 0, 0);
-    }
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void teleopExit() {
-    lightingSubsystem.FlashAllianceColour();
+    lightingSubsystem.AllianceColour();
   }
 
   @Override

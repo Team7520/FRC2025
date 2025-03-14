@@ -15,7 +15,7 @@ public class ElevatorDownAuto extends SequentialCommandGroup {
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DOWN),
             new WaitCommand(0.5),
             elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.GROUND),
-            new WaitCommand(1),
+            new WaitCommand(1), 
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.UP)
         );
     }
