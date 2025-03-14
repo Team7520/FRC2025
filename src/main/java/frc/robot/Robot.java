@@ -20,7 +20,7 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     m_robotContainer = new RobotContainer();
-    lightingSubsystem.FlashAllianceColour();
+    lightingSubsystem.AllianceColour();
   }
 
   @Override
@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    lightingSubsystem.FlashAllianceColour();
+    lightingSubsystem.AllianceColour();
     lightingSubsystem.RainbowAnimateSide();
     //lightingSubsystem.AllianceColour();
   }
