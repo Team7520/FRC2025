@@ -53,6 +53,7 @@ import frc.robot.commands.ElevatorDownFromIntake;
 import frc.robot.commands.L2Command;
 import frc.robot.commands.L3Command;
 import frc.robot.commands.L4Command;
+import frc.robot.commands.L4CommandDunk;
 import frc.robot.commands.Lighting;
 import frc.robot.commands.AutoIntake;
 
@@ -95,16 +96,9 @@ public class RobotContainer {
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-
         registerAutos();
 
         configureBindings();
-
-        //lightingSubsystem.AnimateTeam();// Flashing red
-        //lightingSubsystem.FlashingWhite();// Flashing white
-        //lightingSubsystem.FireAnimate();// Fire animation
-        //lightingSubsystem.setLEDs(0, 0, 255);// Set a colour    
-        //lightingSubsystem.RainbowAnimate();// Rainbow animation
     }
 
     private void registerAutos() {
@@ -150,6 +144,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("elevatorLow", new L2Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorMid", new L3Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorHigh", new L4Command(elevator, endEffector, CONVEYOR_EJECT_SPEED-0.15));
+        NamedCommands.registerCommand("elevatorHighDunk", new L4CommandDunk(elevator, endEffector, CONVEYOR_EJECT_SPEED-0.15));
         NamedCommands.registerCommand("elevatorLowAlgae", new AlgaeLow(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorHighAlgae", new AlgaeHigh(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("pivotUp", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.UP)));

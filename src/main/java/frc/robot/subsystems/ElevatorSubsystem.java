@@ -126,10 +126,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Add any periodic checks or logging here
-        String currentPos = leftMotor.getPosition().getValue().toLongString();
-        SmartDashboard.putString("ElevatorPos", currentPos);
-        SmartDashboard.putBoolean("ElevatorReset", limitSwitch.get());
-
+        double currentPos = leftMotor.getPosition().getValue().magnitude();
+        SmartDashboard.putNumber("ElevatorPos", currentPos);
+        double setPointPos = leftMotor.getClosedLoopReference().getValue();
+        SmartDashboard.putNumber("ElevatorSetPoint", setPointPos);
     }
 }
 

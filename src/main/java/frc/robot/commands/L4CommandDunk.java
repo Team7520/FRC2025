@@ -8,15 +8,15 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 
 
-public class L4Command extends SequentialCommandGroup {
-    public L4Command(ElevatorSubsystem elevator, EndEffectorSubsystem endEffector, double conveyorSpeed) {
+public class L4CommandDunk extends SequentialCommandGroup {
+    public L4CommandDunk(ElevatorSubsystem elevator, EndEffectorSubsystem endEffector, double conveyorSpeed) {
         addCommands(
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.L4DOWN),
             new WaitUntilCommand(() -> endEffector.handOut()),
             elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.HIGH),
-            new WaitCommand(1.3),
-            // endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DUNK),
-            // new WaitCommand(0.5),
+            new WaitCommand(2),
+            endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DUNK),
+            new WaitCommand(0.5),
             endEffector.setConveyorSpeedCommand(conveyorSpeed)
                 .withTimeout(0.65) // Run for 2 seconds
         );

@@ -150,6 +150,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
             return false;
         }
     }
+
+    public boolean handOut() {
+        return pivotEncoder.getPosition() >= -197;
+    }
     
     // public double getAbsoluteEncoder(){
     //     return absoluteEncoder.getPosition();
