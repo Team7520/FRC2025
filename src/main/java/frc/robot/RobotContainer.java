@@ -121,8 +121,8 @@ public class RobotContainer {
         
         //All of section 3 autos
         // autoChooser.addOption("3-c", drivetrain.getPPAutoCommand("3-c", true));
-        autoChooser.addOption("3-c-y-b", drivetrain.getPPAutoCommand("3-c-y-b", true));
-        autoChooser.addOption("1-e-x-f", drivetrain.getPPAutoCommand("1-e-x-f", true));
+        autoChooser.addOption("ProcessorSide 2 coral -- 3-c-y-b", drivetrain.getPPAutoCommand("ProcessorSide 2 coral -- 3-c-y-b", true));
+        autoChooser.addOption("BargeSide 2 coral -- 1-e-x-f", drivetrain.getPPAutoCommand("BargeSide 2 coral -- 1-e-x-f", true));
         autoChooser.addOption("3-c-y-b-y-b", drivetrain.getPPAutoCommand("3-c-y-b-y-b", true));
         autoChooser.addOption("1-e-x-f-x-f", drivetrain.getPPAutoCommand("1-e-x-f-x-f", true));
         autoChooser.addOption("Movement 1-e-x-f-x-f", drivetrain.getPPAutoCommand("Movement 1-e-x-f-x-f", true));
