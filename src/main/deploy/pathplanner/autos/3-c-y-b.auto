@@ -37,16 +37,10 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "elevatorHigh"
+                              "name": "elevatorHighDunk"
                             }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.75
                       }
                     }
                   ]
@@ -107,7 +101,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 2.0
+                              "waitTime": 2.3
                             }
                           }
                         ]
@@ -116,13 +110,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "elevatorGroundFromIntake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "elevatorHigh"
+                        "name": "elevatorHighDunk"
                       }
                     }
                   ]

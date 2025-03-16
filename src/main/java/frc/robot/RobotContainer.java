@@ -53,6 +53,7 @@ import frc.robot.commands.ElevatorDownFromIntake;
 import frc.robot.commands.L2Command;
 import frc.robot.commands.L3Command;
 import frc.robot.commands.L4Command;
+import frc.robot.commands.L4CommandDunk;
 import frc.robot.commands.Lighting;
 import frc.robot.commands.AutoIntake;
 
@@ -150,6 +151,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("elevatorLow", new L2Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorMid", new L3Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorHigh", new L4Command(elevator, endEffector, CONVEYOR_EJECT_SPEED-0.15));
+        NamedCommands.registerCommand("elevatorHighDunk", new L4CommandDunk(elevator, endEffector, CONVEYOR_EJECT_SPEED-0.15));
         NamedCommands.registerCommand("elevatorLowAlgae", new AlgaeLow(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorHighAlgae", new AlgaeHigh(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("pivotUp", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.UP)));

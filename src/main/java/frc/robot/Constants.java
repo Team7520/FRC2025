@@ -27,7 +27,7 @@ public class Constants {
     }
 
     public static final class AutoMoveConstants {
-        public static final double a = 0.125; // 0.2 // 0.305 0.185
+        public static final double a = 0.111; // 0.2 // 0.305 0.185
         public static final double b = 0.175; //0.165
         public static final double c = a /2;
         public static final double d = Math.sqrt(3) * (a/2);
@@ -87,9 +87,9 @@ public class Constants {
         public static final double MIN_ANGLE = -220;
 
         // PID Constants
-        public static final double kP = 0.03;
+        public static final double kP = 0.032;
         public static final double kI = 0;
-        public static final double kD = 0.01;
+        public static final double kD = 0.015;
         public static final double kIz = 0.0;
         public static final double kFF = 0.0;
 
@@ -106,6 +106,7 @@ public class Constants {
         public static enum PivotPosition {
             UP(-246),
             DOWN(-190),
+            L4DOWN(-180),
             DUNK(-122),
             ALG(-128.57);
 
@@ -176,7 +177,7 @@ public class Constants {
         }
 
         // Current Limiting Constants
-        public static final int PIVOT_CURRENT_LIMIT = 30;
+        public static final int PIVOT_CURRENT_LIMIT = 50;
         public static final int CONVEYOR_CURRENT_LIMIT = 40;
     }
 }

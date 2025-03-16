@@ -486,33 +486,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
         SmartDashboard.putNumber("Gyro Angle", getState().Pose.getRotation().getDegrees());   
         SmartDashboard.putNumber("Velocity", Math.sqrt(Math.pow(getState().Speeds.vxMetersPerSecond, 2) + Math.pow(getState().Speeds.vyMetersPerSecond, 2)));
-        // SmartDashboard.putData("Gyro", new Sendable() {
-        //     @Override
-        //     public void initSendable(SendableBuilder builder) {
-        //         builder.setSmartDashboardType("Gyro");
-        //         builder.addDoubleProperty("Value", () -> getState().Pose.getRotation().getDegrees(), null);
-        //     }
-        // });
-        // SmartDashboard.putData("SwerveDrive", new Sendable() {
-        //     @Override
-        //     public void initSendable(SendableBuilder builder) {
-        //         builder.setSmartDashboardType("SwerveDrive");
-
-        //         builder.addDoubleProperty("Front Left Angle", () -> getModule(0).getCurrentState().angle.getRadians(), null);
-        //         builder.addDoubleProperty("Front Left Velocity", () -> getModule(0).getCurrentState().speedMetersPerSecond, null);
-                
-        //         builder.addDoubleProperty("Front Right Angle", () -> getModule(1).getCurrentState().angle.getRadians(), null);
-        //         builder.addDoubleProperty("Front Right Velocity", () -> getModule(1).getCurrentState().speedMetersPerSecond, null);
-
-        //         builder.addDoubleProperty("Back Left Angle", () -> getModule(2).getCurrentState().angle.getRadians(), null);
-        //         builder.addDoubleProperty("Back Left Velocity", () -> getModule(2).getCurrentState().speedMetersPerSecond, null);
-
-        //         builder.addDoubleProperty("Back Right Angle", () -> getModule(3).getCurrentState().angle.getRadians(), null);
-        //         builder.addDoubleProperty("Back Right Velocity", () -> getModule(3).getCurrentState().speedMetersPerSecond, null);
-
-        //         builder.addDoubleProperty("Robot Angle", () -> getState().Pose.getRotation().getRadians(), null);
-        //     }
-        // });
     }
 
     private void startSimThread() {
