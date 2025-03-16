@@ -18,8 +18,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 //import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
+//import edu.wpi.first.util.sendable.Sendable;
+//import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -43,7 +43,7 @@ import frc.robot.subsystems.LightingSubsystem;
 import frc.robot.Constants.TuskConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
-import frc.robot.Elastic.Notification;
+//import frc.robot.Elastic.Notification;
 //import frc.robot.Constants;
 import frc.robot.commands.AlgaeHigh;
 import frc.robot.commands.AlgaeLow;
@@ -60,7 +60,7 @@ import frc.robot.commands.AutoIntake;
 import frc.robot.commands.ManualElevator;
 //import com.pathplanner.lib.auto.AutoBuilder;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.commands.ManualPivot;
+//import frc.robot.commands.ManualPivot;
 
 
 public class RobotContainer {
@@ -96,16 +96,9 @@ public class RobotContainer {
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-
         registerAutos();
 
         configureBindings();
-
-        //lightingSubsystem.AnimateTeam();// Flashing red
-        //lightingSubsystem.FlashingWhite();// Flashing white
-        //lightingSubsystem.FireAnimate();// Fire animation
-        //lightingSubsystem.setLEDs(0, 0, 255);// Set a colour    
-        //lightingSubsystem.RainbowAnimate();// Rainbow animation
     }
 
     private void registerAutos() {

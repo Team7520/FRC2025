@@ -20,12 +20,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.LightingSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.EndEffectorSubsystem;;
+//import frc.robot.subsystems.EndEffectorSubsystem;;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private final LightingSubsystem lightingSubsystem = LightingSubsystem.getInstance();
-  private final EndEffectorSubsystem endEffectorSubsystem = EndEffectorSubsystem.getInstance();
+  //private final EndEffectorSubsystem endEffectorSubsystem = EndEffectorSubsystem.getInstance();
   private final RobotContainer m_robotContainer;
 
   public Robot() {
@@ -49,6 +49,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     CameraServer.startAutomaticCapture();
+    lightingSubsystem.AllianceColour();
   }
 
   @Override
@@ -70,8 +71,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     lightingSubsystem.AllianceColour();
-    lightingSubsystem.RainbowAnimateSide();
-    //lightingSubsystem.AllianceColour();
   }
 
   @Override
