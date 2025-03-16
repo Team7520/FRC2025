@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.startAutomaticCapture();
+    lightingSubsystem.AllianceColour();
   }
 
   @Override
@@ -50,8 +51,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     lightingSubsystem.AllianceColour();
-    lightingSubsystem.RainbowAnimateSide();
-    //lightingSubsystem.AllianceColour();
   }
 
   @Override

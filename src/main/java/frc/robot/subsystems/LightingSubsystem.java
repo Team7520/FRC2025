@@ -15,9 +15,12 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.LEDPattern;
+//import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 
 /* 
  * Class that controls robot lighting through the CANdle (excluding the RSL)
@@ -106,25 +109,47 @@ public class LightingSubsystem extends SubsystemBase {// Define a class
 
       candle.animate(strobeAnim, 0);
     }
-  
+    
+    public void SideStrobeAnimate(Color colour) {//Animation for blinking side LEDs
+      // Create an LED pattern that displays the specified colour.
+      LEDPattern base = LEDPattern.solid(colour);
+
+      // 1.5 seconds on, 1.5 seconds off, for a total period of 3 seconds
+      LEDPattern pattern = base.blink(Seconds.of(1.5));
+
+      // Apply the LED pattern to the data buffer
+      pattern.applyTo(sideLEDBuffer);
+
+      // Write the data to the LED strip
+      sideLED.setData(sideLEDBuffer);
+    }
+
     public void AnimateTeam() {
       clearAnimation();
       // Set LEDs to team colour
       StrobeAnimate(255, 0, 0);
     }
 
-    public void FlashingWhite() {// Flash all LEDs white
+    public void FlashingWhite() {// Flash intake and CANdle LEDs white
       ColourFlowAnimate(55, 55, 55);
     }
 
-    public Command lighting(EndEffectorSubsystem endEffectorSubsystem) {
+    public Command lighting(EndEffectorSubsystem endEffectorSubsystem) {// Command for intake LEDs
       return Commands.run(
         () -> {
           if (endEffectorSubsystem.AnalogOutput() <= 1.5) {
-            this.StrobeAnimate(0, 55, 0);
+              this.SideStrobeAnimate(Color.kRed);
+          } else {
+              this.SideStrobeAnimate(Color.kWhite);
+          }
+          if (LimelightHelpers.getFiducialID("") == 0) {// Check if fiducial ID is 0, which means Limelight is disconnected, and change side LED colour accordingly
+              this.StrobeAnimate(255, 0, 0);// Red for Limelight disconnect
+          }
+          else if (LimelightHelpers.getFiducialID("") == -1) {
+              this.StrobeAnimate(255, 255, 0);// Yellow for Limelight connected but no AprilTag detected
           }
           else {
-            this.FlashingWhite();
+              this.StrobeAnimate(0, 255, 0);// Green for Apriltag detected
           }
         }
       );
@@ -143,14 +168,17 @@ public class LightingSubsystem extends SubsystemBase {// Define a class
       Optional<Alliance> ally = DriverStation.getAlliance();
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
-          candle.animate(new ColorFlowAnimation(100, 0, 0));
+          StrobeAnimate(255, 0, 0);
+          SideStrobeAnimate(Color.kGreen);
         }
         if (ally.get() == Alliance.Blue) {
-          candle.animate(new ColorFlowAnimation(0, 0, 100));
+          StrobeAnimate(0, 0, 255);
+          SideStrobeAnimate(Color.kBlue);
         }
       }
       else {
           RainbowAnimate();
+          RainbowAnimateSide();
       }
     }
 }

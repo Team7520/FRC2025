@@ -95,16 +95,9 @@ public class RobotContainer {
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-
         registerAutos();
 
         configureBindings();
-
-        //lightingSubsystem.AnimateTeam();// Flashing red
-        //lightingSubsystem.FlashingWhite();// Flashing white
-        //lightingSubsystem.FireAnimate();// Fire animation
-        //lightingSubsystem.setLEDs(0, 0, 255);// Set a colour    
-        //lightingSubsystem.RainbowAnimate();// Rainbow animation
     }
 
     private void registerAutos() {
