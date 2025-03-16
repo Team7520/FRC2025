@@ -53,6 +53,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.TagCoods;
+import frc.robot.commands.LimelightStatus;
 import frc.robot.LimelightHelpers;
 //import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
@@ -84,7 +85,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public static ArrayList<TagCoods> TagArray = new ArrayList<>();
 
     public static boolean pathActive = false;
-    public static boolean KeepPath = true;
 
     
     
@@ -293,16 +293,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return change ? deadband * 0.25 : deadband;
     }
 
-    public Command LimelightStatus(boolean update) {
-        if(update) {
-            SmartDashboard.putBoolean("isWorking?", true);
-            return runOnce(() -> UpdatedPose = true);
-        } else {
-            SmartDashboard.putBoolean("isWorking?", false);
-            return runOnce(() -> UpdatedPose = false);
-        }
-    }
-
     public void LimeTags() {
         //Distance between sides is 33.02 cm
 
@@ -456,7 +446,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if(LimelightHelpers.getBotPose2d_wpiBlue("") == null) {
             System.out.println("NULLLLLLLLSGADUFAYFYFGWY*HFUHFYWFYFYWYWFVUFUSJFHJSFHJFHUISHFUUIFHJSHFJFHJSHF\n");
         }
-        SmartDashboard.putBoolean("Is Lime Updating?", !UpdatedPose);
+        SmartDashboard.putBoolean("Is Lime Updating?", UpdatedPose);
         if(LimelightHelpers.getTV("")) {
             SmartDashboard.putBoolean("Limelight Can See?", true);
         } else {
@@ -467,8 +457,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } else {
             SmartDashboard.putBoolean("Lime Connected?", true);
         }
+        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
         if(UpdatedPose) {
-            Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");
             if(updatedPose == null) {
                 System.out.println("updatedPose is Null!! _____________________________________________________________\n");
                 return;
@@ -486,8 +476,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 //System.out.println("ran in null");
             }   
         }  
+        
         SmartDashboard.putNumber("RobotX_POSE", getState().Pose.getX());
         SmartDashboard.putNumber("RobotY_POSE", getState().Pose.getY());
+        SmartDashboard.putNumber("Tag Rotation", updatedPose.getRotation().getDegrees());
         SmartDashboard.putNumber("Apriltag ID", LimelightHelpers.getFiducialID(""));
         SmartDashboard.putNumber("Gyro Angle", getState().Pose.getRotation().getDegrees());   
         SmartDashboard.putNumber("Velocity", Math.sqrt(Math.pow(getState().Speeds.vxMetersPerSecond, 2) + Math.pow(getState().Speeds.vyMetersPerSecond, 2)));
@@ -588,8 +580,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         /*Failsafes NOT Met, Auto Align */
         pathActive = true;
-        UpdatedPose = true;
-            
+        UpdatedPose = true;            
         resetPose(updatedPose);
         List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
@@ -599,7 +590,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         PathConstraints constraints = new PathConstraints(2, 2, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
                 
         EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
-        EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
+        EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new LimelightStatus(UpdatedPose));
         List<EventMarker> lst_em = Arrays.asList(signalEnd, turnofflie);
         List<RotationTarget> lst_rt = Arrays.asList();
         List<ConstraintsZone> lst_cz = Arrays.asList();
@@ -678,7 +669,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         PathConstraints constraints = new PathConstraints(2, 2, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
                 
         EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
-        EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
+        EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new LimelightStatus(false));
         List<EventMarker> lst_em = Arrays.asList(signalEnd, turnofflie);
         List<RotationTarget> lst_rt = Arrays.asList();
         List<ConstraintsZone> lst_cz = Arrays.asList();

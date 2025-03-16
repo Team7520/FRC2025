@@ -56,6 +56,8 @@ import frc.robot.commands.L4Command;
 import frc.robot.commands.L4CommandDunk;
 import frc.robot.commands.Lighting;
 import frc.robot.commands.AutoIntake;
+import frc.robot.commands.LimelightStatus;
+
 
 import frc.robot.commands.ManualElevator;
 //import com.pathplanner.lib.auto.AutoBuilder;
@@ -161,8 +163,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
         NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, elevator, CONVEYOR_EJECT_SPEED, RAMP_SPEED));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> rampSubsystem.run(0)).alongWith(new InstantCommand(() -> endEffector.stopConveyorCommand())).raceWith(new WaitCommand(0.01)));
-        NamedCommands.registerCommand("StopLimelight", drivetrain.LimelightStatus(false));
-        NamedCommands.registerCommand("StartLimelight", drivetrain.LimelightStatus(true));
+        NamedCommands.registerCommand("StopLimelight", new LimelightStatus(false));
+        NamedCommands.registerCommand("StartLimelight", new LimelightStatus(false));
         // NamedCommands.registerCommand("AutoAlignLeft", new InstantCommand(() -> {
         //     if(LimelightHelpers.getTV("") == true) {
         //         var cmd = AutoBuilder.followPath(drivetrain.GoLeft(1));
@@ -216,8 +218,8 @@ public class RobotContainer {
             () -> speedCutOff = !speedCutOff
         ));
         
-        driveController.a().onTrue(drivetrain.LimelightStatus(true));
-        driveController.rightBumper().onTrue(drivetrain.LimelightStatus(false));
+        driveController.a().onTrue(new LimelightStatus(true));
+        driveController.rightBumper().onTrue(new LimelightStatus(false));
 
         //auto movements to reef
         driveController.povLeft().onTrue(new InstantCommand(() -> {
