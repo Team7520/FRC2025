@@ -14,7 +14,7 @@ public class L4CommandDunk extends SequentialCommandGroup {
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.L4DOWN),
             new WaitUntilCommand(() -> endEffector.handOut()),
             elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.HIGH),
-            new WaitCommand(1.5),
+            new WaitCommand(2),
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DUNK),
             new WaitCommand(0.5),
             endEffector.setConveyorSpeedCommand(conveyorSpeed)

@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3-c"
+                  "pathName": "1-e"
                 }
               },
               {
@@ -31,16 +31,22 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.5
+                              "waitTime": 1.0
                             }
                           },
                           {
                             "type": "named",
                             "data": {
-                              "name": "elevatorHighDunk"
+                              "name": "elevatorHigh"
                             }
                           }
                         ]
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.75
                       }
                     }
                   ]
@@ -68,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "c-y"
+                  "pathName": "e-x"
                 }
               }
             ]
@@ -101,7 +107,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 2.3
+                              "waitTime": 2.0
                             }
                           }
                         ]
@@ -110,7 +116,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "elevatorHighDunk"
+                        "name": "elevatorGroundFromIntake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "elevatorHigh"
                       }
                     }
                   ]
@@ -129,7 +141,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "pathy-Left b"
+                        "pathName": "pathx-Right f"
                       }
                     }
                   ]
@@ -139,22 +151,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "elevatorGround"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Left b-y"
-                }
-              }
-            ]
+            "name": "elevatorGround"
           }
         }
       ]
