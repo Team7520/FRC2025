@@ -452,7 +452,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } else {
             SmartDashboard.putBoolean("Limelight Can See?", false);
         }
-        if(LimelightHelpers.getFiducialID("null") == 0) {
+        if(LimelightHelpers.getFiducialID("") == 0) {
             SmartDashboard.putBoolean("Lime Connected?", false);
         } else {
             SmartDashboard.putBoolean("Lime Connected?", true);

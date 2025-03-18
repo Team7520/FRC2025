@@ -121,8 +121,9 @@ public class RobotContainer {
         
         //All of section 3 autos
         // autoChooser.addOption("3-c", drivetrain.getPPAutoCommand("3-c", true));
-        autoChooser.addOption("3-c-y-b", drivetrain.getPPAutoCommand("3-c-y-b", true));
-        autoChooser.addOption("1-e-x-f", drivetrain.getPPAutoCommand("1-e-x-f", true));
+        autoChooser.addOption("ProcessorSide 3 Coral -- 3-c-y-b-y-b", drivetrain.getPPAutoCommand("ProcessorSide 3 Coral -- 3-c-y-b-y-b", true));
+        autoChooser.addOption("ProcessorSide 2 coral -- 3-c-y-b", drivetrain.getPPAutoCommand("ProcessorSide 2 coral -- 3-c-y-b", true));
+        autoChooser.addOption("BargeSide 2 coral -- 1-e-x-f", drivetrain.getPPAutoCommand("BargeSide 2 coral -- 1-e-x-f", true));
         autoChooser.addOption("3-c-y-b-y-b", drivetrain.getPPAutoCommand("3-c-y-b-y-b", true));
         autoChooser.addOption("1-e-x-f-x-f", drivetrain.getPPAutoCommand("1-e-x-f-x-f", true));
         autoChooser.addOption("Movement 1-e-x-f-x-f", drivetrain.getPPAutoCommand("Movement 1-e-x-f-x-f", true));
@@ -145,7 +146,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("elevatorGroundFromIntake", new ElevatorDownFromIntake(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorLow", new L2Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorMid", new L3Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
+        NamedCommands.registerCommand("elevatorMidNoShoot", new L3Command(elevator, endEffector, 0));
         NamedCommands.registerCommand("elevatorHigh", new L4Command(elevator, endEffector, CONVEYOR_EJECT_SPEED-0.15));
+        NamedCommands.registerCommand("elevatorHighNoShoot", new L4Command(elevator, endEffector, 0));
         NamedCommands.registerCommand("elevatorHighDunk", new L4CommandDunk(elevator, endEffector, CONVEYOR_EJECT_SPEED-0.15));
         NamedCommands.registerCommand("elevatorLowAlgae", new AlgaeLow(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
         NamedCommands.registerCommand("elevatorHighAlgae", new AlgaeHigh(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
@@ -154,7 +157,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("pivotDunk", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DUNK)));
         NamedCommands.registerCommand("pivotAlgae", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.ALG)));
         NamedCommands.registerCommand("conveyorIntake", new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED)));
-        NamedCommands.registerCommand("conveyorEject", new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED)));
+        NamedCommands.registerCommand("conveyorEject", endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.3).withTimeout(0.5));
         NamedCommands.registerCommand("conveyorStop", new InstantCommand(() -> endEffector.stopConveyorCommand()));
         NamedCommands.registerCommand("tuskUp", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP)));
         NamedCommands.registerCommand("tuskDown", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN)));
@@ -164,7 +167,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, elevator, CONVEYOR_EJECT_SPEED, RAMP_SPEED));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> rampSubsystem.run(0)).alongWith(new InstantCommand(() -> endEffector.stopConveyorCommand())).raceWith(new WaitCommand(0.01)));
         NamedCommands.registerCommand("StopLimelight", new LimelightStatus(false));
-        NamedCommands.registerCommand("StartLimelight", new LimelightStatus(false));
+        NamedCommands.registerCommand("StartLimelight", new LimelightStatus(true));
         // NamedCommands.registerCommand("AutoAlignLeft", new InstantCommand(() -> {
         //     if(LimelightHelpers.getTV("") == true) {
         //         var cmd = AutoBuilder.followPath(drivetrain.GoLeft(1));
@@ -297,9 +300,9 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED)); // .until(() -> endEffector.StopWithSensor())
         operatorController.leftBumper().whileTrue(rampSubsystem.run(-RAMP_SPEED));
 
-        new Trigger(() -> 
-            elevator.getLimitSwitch()
-        ).onTrue(elevator.resetEncoderCommand());
+        // new Trigger(() -> 
+        //     elevator.getLimitSwitch()
+        // ).onTrue(elevator.resetEncoderCommand());
 
         //operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
 

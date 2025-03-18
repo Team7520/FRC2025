@@ -96,10 +96,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
         .allowedClosedLoopError(EndEffectorConstants.ALLOWABLE_ERROR);
 
         pivotConfig.softLimit.apply(new SoftLimitConfig()
-        .forwardSoftLimitEnabled(false)
         .forwardSoftLimit(EndEffectorConstants.MAX_ANGLE)
-        .reverseSoftLimitEnabled(false)
-        .reverseSoftLimit(EndEffectorConstants.MIN_ANGLE));
+        .forwardSoftLimitEnabled(false)
+        .reverseSoftLimit(EndEffectorConstants.MIN_ANGLE))
+        .reverseSoftLimitEnabled(false);
 
         pivotConfig.smartCurrentLimit(EndEffectorConstants.PIVOT_CURRENT_LIMIT);
         pivotConfig.idleMode(IdleMode.kBrake);

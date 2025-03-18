@@ -50,9 +50,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Current Limits
         CurrentLimitsConfigs limitConfigs = new CurrentLimitsConfigs();
         limitConfigs.StatorCurrentLimit = 120;
-        limitConfigs.StatorCurrentLimitEnable = false;
+        limitConfigs.StatorCurrentLimitEnable = true;
         limitConfigs.SupplyCurrentLimit = Constants.ElevatorConstants.CURRENT_LIMIT;
-        limitConfigs.SupplyCurrentLimitEnable = false;
+        limitConfigs.SupplyCurrentLimitEnable = true;
         config.withCurrentLimits(limitConfigs);
         config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         

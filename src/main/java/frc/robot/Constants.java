@@ -57,14 +57,14 @@ public class Constants {
         public static final double MAX_JERK = MAX_ACCELERATION; // 60 inches per second cubed
         public static final double ALLOWABLE_ERROR = 0.5; // 0.5 inches
 
-        public static final int CURRENT_LIMIT = 200;
+        public static final int CURRENT_LIMIT = 120;
         public static enum ElevatorPosition {
             GROUND(0),
-            LOW(11.41455078125),
-            MID(26.8),
-            HIGH(53), //52
-            LOWALG(18.9),
-            HIGHALG(34.75);
+            LOW(11.41455078125), // 12.01904296875
+            MID(26.8), // 27.6181640625
+            HIGH(53),
+            LOWALG(23.7724609375),
+            HIGHALG(39.609130859375);
             // INTAKE(1.7197265625); old elev pos for intake at centennial, unused with new mechanical changes
 
             private final double height;
@@ -84,7 +84,7 @@ public class Constants {
         public static final int CONVEYOR_ID = 20;
         public static final double SENSOR_TO_MECHANISM_RATIO = 14.0625;
         public static final double MAX_ANGLE = 0;
-        public static final double MIN_ANGLE = -220;
+        public static final double MIN_ANGLE = -246;
 
         // PID Constants
         public static final double kP = 0.032;
@@ -139,8 +139,8 @@ public class Constants {
         // }
 
         // Current Limiting Constants
-        public static final int PIVOT_CURRENT_LIMIT = 10;
-        public static final int CONVEYOR_CURRENT_LIMIT = 40;
+        public static final int PIVOT_CURRENT_LIMIT = 60;
+        public static final int CONVEYOR_CURRENT_LIMIT = 60;
 
 
     }
@@ -177,7 +177,7 @@ public class Constants {
         }
 
         // Current Limiting Constants
-        public static final int PIVOT_CURRENT_LIMIT = 50;
+        public static final int PIVOT_CURRENT_LIMIT = 60;
         public static final int CONVEYOR_CURRENT_LIMIT = 40;
     }
 }

@@ -14,7 +14,7 @@ public class L4Command extends SequentialCommandGroup {
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.L4DOWN),
             new WaitUntilCommand(() -> endEffector.handOut()),
             elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.HIGH),
-            new WaitCommand(1.3),
+            new WaitCommand(1),
             // endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DUNK),
             // new WaitCommand(0.5),
             endEffector.setConveyorSpeedCommand(conveyorSpeed)
