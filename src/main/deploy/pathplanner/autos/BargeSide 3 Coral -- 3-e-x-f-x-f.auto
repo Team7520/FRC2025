@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3-c"
+                  "pathName": "1-e"
                 }
               },
               {
@@ -74,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Fast c-y"
+                  "pathName": "Fast e-x"
                 }
               }
             ]
@@ -135,7 +135,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "pathy-Right b"
+                        "pathName": "pathx-Left f"
                       }
                     }
                   ]
@@ -169,7 +169,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Fast Right b-y"
+                  "pathName": "Fast Left f-x"
                 }
               }
             ]
@@ -230,7 +230,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "pathy-Left b"
+                        "pathName": "pathx-Right f"
                       }
                     }
                   ]
