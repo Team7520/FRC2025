@@ -319,33 +319,33 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         //ID 5 Apriltag
         TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
         //ID 6 Apriltag
-        TagArray.add(new TagCoods(13.474 + Constants.AutoMoveConstants.c, 3.306 - Constants.AutoMoveConstants.d, 
+        TagArray.add(new TagCoods(13.474, 3.306, 
                     13.474 + Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
                     3.306 - Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, 
                     13.474 + Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
                     3.306 - Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(120)));
         //ID 7 Apriltag
-        TagArray.add(new TagCoods(13.89 + Constants.AutoMoveConstants.a, 4.026, 
+        TagArray.add(new TagCoods(13.89, 4.026, 
                     13.89 + Constants.AutoMoveConstants.a, 4.026 + Constants.AutoMoveConstants.b, 
                     13.89 + Constants.AutoMoveConstants.a, 4.026 - Constants.AutoMoveConstants.b, Rotation2d.fromDegrees(180)));
         //ID 8 Apriltag
-        TagArray.add(new TagCoods(13.474 + Constants.AutoMoveConstants.c, 4.745 + Constants.AutoMoveConstants.d, 
+        TagArray.add(new TagCoods(13.474, 4.745, 
                     13.474 + Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
                     4.745 + Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, 
                     13.474 + Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
                     4.745 + Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(240)));
         //ID 9 Apriltag
-        TagArray.add(new TagCoods(12.643 - Constants.AutoMoveConstants.c, 4.745 + Constants.AutoMoveConstants.d, 
+        TagArray.add(new TagCoods(12.643, 4.745, 
                     12.643 - Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
                     4.745 + Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, 
                     12.643 - Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
                     4.745 + Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(300)));
         //ID 10 Apriltag
-        TagArray.add(new TagCoods(12.227 - Constants.AutoMoveConstants.a, 4.026, 
+        TagArray.add(new TagCoods(12.227, 4.026, 
                     12.227 - Constants.AutoMoveConstants.a, 4.026 - Constants.AutoMoveConstants.b, 
                     12.227 - Constants.AutoMoveConstants.a, 4.026 + Constants.AutoMoveConstants.b, Rotation2d.fromDegrees(0)));
         //ID 11 Apriltag
-        TagArray.add(new TagCoods(12.643 - Constants.AutoMoveConstants.c, 3.306 - Constants.AutoMoveConstants.d, 
+        TagArray.add(new TagCoods(12.643, 3.306, 
                     12.643 - Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
                     3.306 - Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, 
                     12.643 - Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
@@ -361,33 +361,33 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         //ID 16 Apriltag
         TagArray.add(new TagCoods(-1, -1, -1, -1, -1, -1, Rotation2d.fromDegrees(0))); //Not used for this season
         //ID 17 Apriltag
-        TagArray.add(new TagCoods(4.074 - Constants.AutoMoveConstants.c, 3.306 - Constants.AutoMoveConstants.d, 
+        TagArray.add(new TagCoods(4.074, 3.306, 
                     4.074 - Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
                     3.306 - Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, 
                     4.074 - Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
                     3.306 - Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(60)));
         //ID 18 Apriltag
-        TagArray.add(new TagCoods(3.658 - Constants.AutoMoveConstants.a, 4.026, 
+        TagArray.add(new TagCoods(3.658, 4.026, 
                     3.658 - Constants.AutoMoveConstants.a, 4.026 - Constants.AutoMoveConstants.b, 
                     3.658 - Constants.AutoMoveConstants.a, 4.026 + Constants.AutoMoveConstants.b, Rotation2d.fromDegrees(0)));
         //ID 19 Apriltag
-        TagArray.add(new TagCoods(4.074 - Constants.AutoMoveConstants.c, 4.745 + Constants.AutoMoveConstants.d, 
+        TagArray.add(new TagCoods(4.074, 4.745, 
                     4.074 - Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
                     4.745 + Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, 
                     4.074 - Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
                     4.745 + Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(300)));
         //ID 20 Apriltag
-        TagArray.add(new TagCoods(4.905 + Constants.AutoMoveConstants.c, 4.745 + Constants.AutoMoveConstants.d, 
+        TagArray.add(new TagCoods(4.905, 4.745, 
                     4.905 + Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
                     4.745 + Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, 
                     4.905 + Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
                     4.745 + Constants.AutoMoveConstants.d - Constants.AutoMoveConstants.e, Rotation2d.fromDegrees(240)));
         //ID 21 Apriltag
-        TagArray.add(new TagCoods(5.321 + Constants.AutoMoveConstants.a, 4.026, 
+        TagArray.add(new TagCoods(5.321, 4.026, 
                     5.321 + Constants.AutoMoveConstants.a, 4.026 + Constants.AutoMoveConstants.b, 
                     5.321 + Constants.AutoMoveConstants.a, 4.026 - Constants.AutoMoveConstants.b, Rotation2d.fromDegrees(180)));
         //ID 22 Apriltag
-        TagArray.add(new TagCoods(4.905 + Constants.AutoMoveConstants.c, 3.306 - Constants.AutoMoveConstants.d, 
+        TagArray.add(new TagCoods(4.905, 3.306, 
                     4.905 + Constants.AutoMoveConstants.c + Constants.AutoMoveConstants.f, 
                     3.306 - Constants.AutoMoveConstants.d + Constants.AutoMoveConstants.e, 
                     4.905 + Constants.AutoMoveConstants.c - Constants.AutoMoveConstants.f, 
@@ -596,7 +596,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             new Pose2d(TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle)
         );        
 
-        PathConstraints constraints = new PathConstraints(2, 2, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+        PathConstraints constraints = new PathConstraints(3.25, 4, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
                 
         EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
         EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
@@ -700,47 +700,82 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return path;    
     }
 
-    public PathPlannerPath GoMid4Algae() {
+    public PathPlannerPath GoMid(int mode) {
+        double id = LimelightHelpers.getFiducialID(""); 
+        Pose2d updatedPose = LimelightHelpers.getBotPose2d_wpiBlue("");  
+
+        /*Failsafes */
+        if(updatedPose == null || (updatedPose.getX() == 0.0 && updatedPose.getY() == 0.0 && updatedPose.getRotation().getDegrees() == 0.0)) {
+            System.out.println("Pose was Null or zero when making path!! Gonna cancel path now\n");
+            mode = -1;
+        } 
+        if(id < 1 || id > 22) {
+            System.out.printf("ID wasn't within proper range!! The ID was: %f\n", id);
+            mode = -1;
+        }
+        if(LimelightHelpers.getTV("") == false) {
+            System.out.println("Limelight Could not see target after pressing!!\n");
+            mode = -1;
+        }
+        if(updatedPose.getRotation().getCos() == 0.0 && updatedPose.getRotation().getSin() == 0.0) {
+            System.out.println("Rotation was invalid while creating path!!\n");
+            mode = -1;
+        }
+
+        /*Cancel Path OR Failsafe Met */
+        if(mode == -1) {
+            List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
+                new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
+                new Pose2d(getState().Pose.getX() + 0.01, getState().Pose.getY(), getState().Pose.getRotation())
+            );
+                
+            PathConstraints constraints = new PathConstraints(0.5, 0.5, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+            
+            PathPlannerPath path = new PathPlannerPath( 
+                wayPoints,
+                constraints,
+                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0.0, getState().Pose.getRotation()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            );
+                
+            path.preventFlipping =true;
+            pathActive = false;
+            UpdatedPose = false;
+            return path;
+        } 
+
+        /*Failsafes NOT Met, Auto Align */
+        pathActive = true;
+        UpdatedPose = true;
+            
+        resetPose(updatedPose);
         List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
-            new Pose2d(4.914, 5.092, Rotation2d.fromDegrees(240))
-            // 11 Right is 12.634, 2.96, 60 degRree
-            // 6 Right is 13.77, 3.125, 120 degree
-            // 8 Right is 13.484, 5.092, 240 degree
-            // 9 Right is 12.348, 4.927, 300 degrees
-            // 7 Right is 14.195, 4.191, 180 degrees
-        );
+            new Pose2d(TagArray.get((int)id).MidX, TagArray.get((int)id).MidY, TagArray.get((int)id).BotAngle)
+        );        
 
-        PathConstraints constraints = new PathConstraints(0.15, 0.15, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+        PathConstraints constraints = new PathConstraints(2, 2, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+                
+        EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
+        EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));
+        List<EventMarker> lst_em = Arrays.asList(signalEnd, turnofflie);
+        List<RotationTarget> lst_rt = Arrays.asList();
+        List<ConstraintsZone> lst_cz = Arrays.asList();
+        List<PointTowardsZone> lst_ptz = Arrays.asList();
 
-        PathPlannerPath path = new PathPlannerPath(
+        PathPlannerPath path = new PathPlannerPath( 
             wayPoints,
+            lst_rt,
+            lst_ptz, 
+            lst_cz,
+            lst_em,
             constraints,
-            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-            new GoalEndState(0.0, Rotation2d.fromDegrees(240)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            null, 
+            new GoalEndState(0.0, TagArray.get((int)id).BotAngle), // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            false
         );
         
         path.preventFlipping =true;
-        return path;
-    }
-
-    public PathPlannerPath TestCrash() {
-        Pose2d currentPose = LimelightHelpers.getBotPose2d_wpiBlue("");
-        resetPose(currentPose);
-        List<Waypoint> wayPoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(getState().Pose.getX(), getState().Pose.getY(), getState().Pose.getRotation()),
-            new Pose2d(1, 0, Rotation2d.fromDegrees(0))
-        );
-
-        PathConstraints constraints = new PathConstraints(0.15, 0.15, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
-
-        PathPlannerPath path = new PathPlannerPath(
-            wayPoints,
-            constraints,
-            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-            new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-        );
-
-        return path;
+        return path;    
     }
 }

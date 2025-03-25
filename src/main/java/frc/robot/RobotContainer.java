@@ -239,10 +239,11 @@ public class RobotContainer {
         ));
 
         //testing for crash
-        driveController.povDown().onTrue(new InstantCommand(() -> {
-            var cmd = AutoBuilder.followPath(drivetrain.TestCrash());
-            cmd.schedule();}   
-                 
+        driveController.povUp().onTrue(new InstantCommand(() -> {
+            if(LimelightHelpers.getTV("") == true) {
+                var cmd = AutoBuilder.followPath(drivetrain.GoMid(1));
+                cmd.schedule();}
+            }
         ));
         
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
