@@ -456,7 +456,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if(LimelightHelpers.getBotPose2d_wpiBlue("") == null) {
             System.out.println("NULLLLLLLLSGADUFAYFYFGWY*HFUHFYWFYFYWYWFVUFUSJFHJSFHJFHUISHFUUIFHJSHFJFHJSHF\n");
         }
-        SmartDashboard.putBoolean("Is Lime Updating?", !UpdatedPose);
+        SmartDashboard.putBoolean("Is Lime Updating?", UpdatedPose);
         if(LimelightHelpers.getTV("")) {
             SmartDashboard.putBoolean("Limelight Can See?", true);
         } else {

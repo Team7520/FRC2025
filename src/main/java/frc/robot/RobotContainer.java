@@ -133,6 +133,7 @@ public class RobotContainer {
         // autoChooser.addOption("3-b-y-b-y-a", drivetrain.getPPAutoCommand("3-b-y-b-y-a", true));
         
         autoChooser.addOption("2-d One Coral", drivetrain.getPPAutoCommand("2-d One Coral", true));
+        autoChooser.addOption("testStationPath", drivetrain.getPPAutoCommand("test-pathing", true));
         autoChooser.addOption("Nothing", drivetrain.getPPAutoCommand("Nothing", true));
         //autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
         SmartDashboard.putData("AutoPaths", autoChooser);
