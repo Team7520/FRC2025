@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "StartLimelight"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Middle Barge to Reef G"

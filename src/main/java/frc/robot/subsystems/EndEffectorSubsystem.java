@@ -152,7 +152,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     }
 
     public boolean handOut() {
-        return pivotEncoder.getPosition() >= -197;
+        return pivotEncoder.getPosition() >= -215;
     }
     
     // public double getAbsoluteEncoder(){

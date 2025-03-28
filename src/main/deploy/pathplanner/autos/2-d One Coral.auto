@@ -7,7 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "StopLimelight"
+            "name": "StartLimelight"
           }
         },
         {
@@ -17,13 +17,63 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2-d"
+                  "pathName": "Middle Barge to Reef G"
                 }
               },
               {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "elevatorHighDunk"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pivotDown"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef_G Left to Mid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevatorLowAlgae"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
                 "type": "named",
                 "data": {
-                  "name": "elevatorHigh"
+                  "name": "conveyorEject"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reverse Middle Barge to Reef G"
                 }
               }
             ]
@@ -33,12 +83,6 @@
           "type": "named",
           "data": {
             "name": "elevatorGround"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartLimelight"
           }
         }
       ]

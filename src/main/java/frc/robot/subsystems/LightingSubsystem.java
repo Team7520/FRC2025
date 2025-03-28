@@ -169,10 +169,12 @@ public class LightingSubsystem extends SubsystemBase {// Define a class
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
           StrobeAnimate(255, 0, 0);
+          //setSideLEDs(0, 255, 0);
           SideStrobeAnimate(Color.kGreen);
         }
         if (ally.get() == Alliance.Blue) {
           StrobeAnimate(0, 0, 255);
+          //setSideLEDs(0, 0, 255);
           SideStrobeAnimate(Color.kBlue);
         }
       }

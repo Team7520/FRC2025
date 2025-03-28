@@ -31,7 +31,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.3
+                              "waitTime": 1.0
                             }
                           },
                           {
@@ -50,15 +50,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "conveyorEject"
+            "waitTime": 0.05
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StopLimelight"
+            "name": "conveyorEject"
           }
         },
         {
@@ -81,12 +81,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StartLimelight"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -107,7 +101,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.25
+                              "waitTime": 1.1
                             }
                           }
                         ]
@@ -129,7 +123,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.7
+                        "waitTime": 0.3
                       }
                     },
                     {
@@ -145,15 +139,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "conveyorEject"
+            "waitTime": 0.05
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StopLimelight"
+            "name": "conveyorEject"
           }
         },
         {
@@ -176,12 +170,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StartLimelight"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -202,7 +190,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.25
+                              "waitTime": 0.75
                             }
                           }
                         ]
@@ -224,7 +212,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.7
+                        "waitTime": 0.3
                       }
                     },
                     {
@@ -240,15 +228,40 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.05
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "conveyorEject"
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "elevatorGround"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right f-x"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "elevatorGround"
+            "name": "intake"
           }
         }
       ]

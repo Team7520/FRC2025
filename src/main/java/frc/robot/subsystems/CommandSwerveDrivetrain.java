@@ -596,7 +596,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             new Pose2d(TagArray.get((int)id).RightX, TagArray.get((int)id).RightY, TagArray.get((int)id).BotAngle)
         );        
 
-        PathConstraints constraints = new PathConstraints(3.25, 4, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
+        PathConstraints constraints = new PathConstraints(2, 2, 2 * Math.PI, 2 * Math.PI); // The constraints for this path.
                 
         EventMarker signalEnd = new EventMarker("ChangeBool", 0.95, -1, new InstantCommand(() -> {pathActive = false;})); // THIS COMMAND IS TERMINATED WHEN THE PATH ENDS
         EventMarker turnofflie = new EventMarker("ChangeLime", 0.99, -1, new InstantCommand(() -> {UpdatedPose = false;}));

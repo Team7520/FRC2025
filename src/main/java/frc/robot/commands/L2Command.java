@@ -14,9 +14,9 @@ public class L2Command extends SequentialCommandGroup {
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DOWN),
             new WaitUntilCommand(() -> endEffector.handOut()),
             elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.LOW),
-            new WaitCommand(1),
-            endEffector.setConveyorSpeedCommand(conveyorSpeed)
-                .withTimeout(2) // Run for 2 seconds
+            new WaitCommand(1)
+            // endEffector.setConveyorSpeedCommand(conveyorSpeed)
+            //     .withTimeout(2) // Run for 2 seconds
         );
     }
 }
