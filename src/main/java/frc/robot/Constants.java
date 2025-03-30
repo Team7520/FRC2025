@@ -27,7 +27,7 @@ public class Constants {
     }
 
     public static final class AutoMoveConstants {
-        public static final double a = 0.116; // 0.2 // 0.305 0.185
+        public static final double a = 0.025; // 0.2 // 0.305 0.185
         public static final double b = 0.17; //0.165
         public static final double c = a /2;
         public static final double d = Math.sqrt(3) * (a/2);
@@ -39,30 +39,30 @@ public class Constants {
         public static final int LIMIT_SWITCH_ID = 9;
         public static final int LEFT_MOTOR_ID = 41;
         public static final int RIGHT_MOTOR_ID = 42;
-        public static final double SENSOR_TO_MECHANISM_RATIO = 4d/11d; // Units will be in inches
+        public static final double SENSOR_TO_MECHANISM_RATIO = 3d/11d; // Units will be in inches
         public static final double MAX_HEIGHT = 60; // 60 inches
 
         // PID Constants
-        public static final double kP = 0.45; // 0.675
+        public static final double kP = 0.7; // 0.675
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kIz = 0.0;
         public static final double kFF = 0.09;
-        public static final double kG = 0.312;
+        public static final double kG = 0;
         public static final double kA = 0.002;
 
         // Motion Magic Constants
-        public static final double MAX_VELOCITY = 40000; // 10 inches per second
-        public static final double MAX_ACCELERATION = MAX_VELOCITY*1.5; // 20 inches per second squared
-        public static final double MAX_JERK = MAX_ACCELERATION; // 60 inches per second cubed
+        public static final double MAX_VELOCITY = 800; // 10 inches per second
+        public static final double MAX_ACCELERATION = 2000; // 20 inches per second squared
+        public static final double MAX_JERK = 4000; // 60 inches per second cubed
         public static final double ALLOWABLE_ERROR = 0.5; // 0.5 inches
 
         public static final int CURRENT_LIMIT = 120;
         public static enum ElevatorPosition {
             GROUND(0),
-            LOW(11.41455078125), // 12.01904296875
-            MID(26.8), // 27.6181640625
-            HIGH(53),
+            LOW(7.984863), // 11.41455078125
+            MID(23.775879), // 26.8
+            HIGH(52),
             LOWALG(23.7724609375),
             HIGHALG(39.609130859375);
             // INTAKE(1.7197265625); old elev pos for intake at centennial, unused with new mechanical changes
