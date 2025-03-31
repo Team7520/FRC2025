@@ -88,7 +88,7 @@ public class RobotContainer {
     private final LightingSubsystem lightingSubsystem = LightingSubsystem.getInstance();
 
     // Constants for speeds
-    private static final double CONVEYOR_INTAKE_SPEED = 0.2;
+    private static final double CONVEYOR_INTAKE_SPEED = 0.1;
     private static final double CONVEYOR_EJECT_SPEED = -0.2;
     private static final double RAMP_SPEED = 0.35;
     private static boolean speedCutOff = false;
@@ -284,8 +284,7 @@ public class RobotContainer {
         //operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
         driveController.start().onTrue(elevator.resetEncoderCommand());
         operatorController.povLeft().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
-        operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
-        operatorController.povRight().onTrue(tuskSubsystem.setPivotPositionCommand(TuskConstants.PivotPosition.DOWN));
+        operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.GROUNDALG));
                 
         // Conveyor Controls (using triggers)
         operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED));
@@ -300,7 +299,7 @@ public class RobotContainer {
         // Ramp Controls (using bumpers)
         operatorController.rightBumper().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()));
         operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED)); // .until(() -> endEffector.StopWithSensor())
-        operatorController.leftBumper().whileTrue(rampSubsystem.run(-RAMP_SPEED));
+        operatorController.leftBumper().whileTrue(rampSubsystem.runSeparately(-RAMP_SPEED/2, -0.14));
             
         // new Trigger(() -> 
         //     elevator.getLimitSwitch()

@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class Constants {
     public static class RampConstants {
         public static final int RampID = 43;
+        public static final int StarWheelID = 44;
     }
 
     public static final class TagCoods {
@@ -27,7 +28,7 @@ public class Constants {
     }
 
     public static final class AutoMoveConstants {
-        public static final double a = 0.025; // 0.2 // 0.305 0.185
+        public static final double a = 0.075; // 0.2 // 0.305 0.185
         public static final double b = 0.17; //0.165
         public static final double c = a /2;
         public static final double d = Math.sqrt(3) * (a/2);
@@ -60,11 +61,11 @@ public class Constants {
         public static final int CURRENT_LIMIT = 120;
         public static enum ElevatorPosition {
             GROUND(0),
-            LOW(7.984863), // 11.41455078125
-            MID(23.775879), // 26.8
-            HIGH(52),
-            LOWALG(23.7724609375),
-            HIGHALG(39.609130859375);
+            LOW(12.3), // 11.41455078125, 7.984863
+            MID(27.5), // 26.8, 
+            HIGH(55), // 52
+            LOWALG(27.1), // 23.7724609375
+            HIGHALG(42.4); // 39.609130859375
             // INTAKE(1.7197265625); old elev pos for intake at centennial, unused with new mechanical changes
 
             private final double height;
@@ -101,14 +102,15 @@ public class Constants {
         public static final double MAX_VELOCITY = 30000;
         public static final double MAX_ACCELERATION = MAX_VELOCITY*1.5;
         public static final double MAX_JERK = MAX_ACCELERATION*3;
-        public static final double ALLOWABLE_ERROR = 0.5;
+        public static final double ALLOWABLE_ERROR = 1;
         // Old values (starting from floor)
         public static enum PivotPosition {
-            UP(-246),
+            UP(-239),
             DOWN(-190),
             L4DOWN(-180),
             DUNK(-122),
-            ALG(-128.57);
+            ALG(-128.57),
+            GROUNDALG(-117.5);
 
             private final double angle;
 

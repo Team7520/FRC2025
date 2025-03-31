@@ -9,6 +9,7 @@ import frc.robot.Constants;
 
 public class RampSubsystem extends SubsystemBase {
     private final TalonFX RampMotor = new TalonFX(Constants.RampConstants.RampID);
+    private final TalonFX StarWheelMotor = new TalonFX(Constants.RampConstants.StarWheelID);
     // private final SlewRateLimiter speedLimiter = new SlewRateLimiter(100);
 
     private final static RampSubsystem INSTANCE = new RampSubsystem();
@@ -28,9 +29,19 @@ public class RampSubsystem extends SubsystemBase {
 
     public void setSpeed(double speed) {
         RampMotor.set(speed);
+        StarWheelMotor.set(speed);
+    }
+
+    public void setSeparateSpeeds(double rampSpeed, double starWheelSpeed) {
+        RampMotor.set(rampSpeed);
+        StarWheelMotor.set(starWheelSpeed);
     }
 
     public Command run(double speed) {
         return this.run(() -> setSpeed(speed));
+    }
+
+    public Command runSeparately(double rampSpeed, double starWheelSpeed) {
+        return this.run(() -> setSeparateSpeeds(rampSpeed, starWheelSpeed));
     }
 }
