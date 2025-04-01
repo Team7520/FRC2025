@@ -158,7 +158,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("pivotDunk", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DUNK)));
         NamedCommands.registerCommand("pivotAlgae", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.ALG)));
         NamedCommands.registerCommand("conveyorIntake", new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED)));
-        NamedCommands.registerCommand("conveyorEject", endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.3).withTimeout(0.2));
+        NamedCommands.registerCommand("conveyorEject", endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.5).withTimeout(0.15));
         NamedCommands.registerCommand("conveyorStop", new InstantCommand(() -> endEffector.stopConveyorCommand()));
         NamedCommands.registerCommand("tuskUp", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP)));
         NamedCommands.registerCommand("tuskDown", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN)));
@@ -287,19 +287,21 @@ public class RobotContainer {
         operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.GROUNDALG));
                 
         // Conveyor Controls (using triggers)
-        operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED));
-        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.1));
+        operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED+0.3));
+        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.5));
         
 
         // operatorController.rightBumper().whileTrue(endEffector.run(0.05));
         // operatorController.leftBumper().whileTrue(endEffector.run(-0.1));
         //operatorController.povRight().onTrue(endEffector.resetEncoderCommand());
-        operatorController.button(7).onTrue(tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP));
-        operatorController.button(8).onTrue(tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN));
+        operatorController.back().onTrue(elevator.resetEncoderCommand());
+
         // Ramp Controls (using bumpers)
         operatorController.rightBumper().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()));
         operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED)); // .until(() -> endEffector.StopWithSensor())
-        operatorController.leftBumper().whileTrue(rampSubsystem.runSeparately(-RAMP_SPEED/2, -0.14));
+        operatorController.leftBumper().whileTrue(rampSubsystem.runSeparately(-RAMP_SPEED/1.5, -0.2));
+        driveController.leftTrigger().whileTrue(rampSubsystem.runSeparately(0, 1));
+        driveController.rightTrigger().whileTrue(rampSubsystem.runSeparately(0, -1));
             
         // new Trigger(() -> 
         //     elevator.getLimitSwitch()

@@ -28,7 +28,7 @@ public class Constants {
     }
 
     public static final class AutoMoveConstants {
-        public static final double a = 0.075; // 0.2 // 0.305 0.185
+        public static final double a = 0.122; // 0.2 // 0.305 0.185
         public static final double b = 0.17; //0.165
         public static final double c = a /2;
         public static final double d = Math.sqrt(3) * (a/2);
