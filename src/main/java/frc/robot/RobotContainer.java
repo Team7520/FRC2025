@@ -119,6 +119,7 @@ public class RobotContainer {
         
         //All of section 3 autos
         // autoChooser.addOption("3-c", drivetrain.getPPAutoCommand("3-c", true));
+        autoChooser.addOption("ProcessorSide 4 Coral", drivetrain.getPPAutoCommand("ProcessorSide 4 Coral", true));
         autoChooser.addOption("ProcessorSide 3 Coral -- 3-c-y-b-y-b", drivetrain.getPPAutoCommand("ProcessorSide 3 Coral -- 3-c-y-b-y-b", true));
         autoChooser.addOption("BargeSide 3 Coral -- 3-e-x-f-x-f", drivetrain.getPPAutoCommand("BargeSide 3 Coral -- 3-e-x-f-x-f", true));
         autoChooser.addOption("ProcessorSide 2 coral -- 3-c-y-b", drivetrain.getPPAutoCommand("ProcessorSide 2 coral -- 3-c-y-b", true));
@@ -158,17 +159,18 @@ public class RobotContainer {
         NamedCommands.registerCommand("pivotDunk", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DUNK)));
         NamedCommands.registerCommand("pivotAlgae", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.ALG)));
         NamedCommands.registerCommand("conveyorIntake", new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED)));
-        NamedCommands.registerCommand("conveyorEject", endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.5).withTimeout(0.15));
+        NamedCommands.registerCommand("conveyorEject", endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.6).withTimeout(0.1));
         NamedCommands.registerCommand("conveyorStop", new InstantCommand(() -> endEffector.stopConveyorCommand()));
         NamedCommands.registerCommand("tuskUp", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP)));
         NamedCommands.registerCommand("tuskDown", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN)));
         NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
         NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
         NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
-        NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, elevator, CONVEYOR_EJECT_SPEED, RAMP_SPEED));
+        NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, elevator, CONVEYOR_EJECT_SPEED-0.2, RAMP_SPEED));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> rampSubsystem.run(0)).alongWith(new InstantCommand(() -> endEffector.stopConveyorCommand())).raceWith(new WaitCommand(0.01)));
         NamedCommands.registerCommand("StopLimelight", drivetrain.LimelightStatus(false));
         NamedCommands.registerCommand("StartLimelight", drivetrain.LimelightStatus(true));
+        NamedCommands.registerCommand("rampintake", rampSubsystem.run(RAMP_SPEED));
         // NamedCommands.registerCommand("AutoAlignLeft", new InstantCommand(() -> {
         //     if(LimelightHelpers.getTV("") == true) {
         //         var cmd = AutoBuilder.followPath(drivetrain.GoLeft(1));
