@@ -92,7 +92,7 @@ public class Constants {
         public static final double kI = 0;
         public static final double kD = 0.015;
         public static final double kIz = 0.0;
-        public static final double kFF = 0.0;
+        public static final double kFF = 0.08;
 
         public static final double kP_CONVEYOR = 0.2;
         public static final double kI_CONVEYOR = 0.0;
@@ -105,7 +105,7 @@ public class Constants {
         public static final double ALLOWABLE_ERROR = 0.05;//1
         // Old values (starting from floor)
         public static enum PivotPosition {
-            UP(-239),
+            UP(-245),
             DOWN(-190),
             L4DOWN(-180),
             DUNK(-122),
