@@ -283,7 +283,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.06
+                        "waitTime": 0.1
                       }
                     },
                     {
