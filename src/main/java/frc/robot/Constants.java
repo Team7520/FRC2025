@@ -28,8 +28,8 @@ public class Constants {
     }
 
     public static final class AutoMoveConstants {
-        public static final double a = 0.122; // 0.2 // 0.305 0.185
-        public static final double b = 0.17; //0.165
+        public static final double a = 0.13; // 0.2 // 0.305 0.185
+        public static final double b = 0.165; //0.17
         public static final double c = a /2;
         public static final double d = Math.sqrt(3) * (a/2);
         public static final double e = b / 2;
@@ -62,7 +62,7 @@ public class Constants {
         public static enum ElevatorPosition {
             GROUND(0),
             LOW(12.3), // 11.41455078125, 7.984863
-            MID(27.5), // 26.8, 
+            MID(28.056641), // 27.5 
             HIGH(55), // 52
             LOWALG(27.1), // 23.7724609375
             HIGHALG(42.4); // 39.609130859375
@@ -88,7 +88,7 @@ public class Constants {
         public static final double MIN_ANGLE = -246;
 
         // PID Constants
-        public static final double kP = 0.032;
+        public static final double kP = 0.024;//0.032;
         public static final double kI = 0;
         public static final double kD = 0.015;
         public static final double kIz = 0.0;
@@ -102,7 +102,7 @@ public class Constants {
         public static final double MAX_VELOCITY = 30000;
         public static final double MAX_ACCELERATION = MAX_VELOCITY*1.5;
         public static final double MAX_JERK = MAX_ACCELERATION*3;
-        public static final double ALLOWABLE_ERROR = 1;
+        public static final double ALLOWABLE_ERROR = 0.05;//1
         // Old values (starting from floor)
         public static enum PivotPosition {
             UP(-239),
@@ -141,7 +141,7 @@ public class Constants {
         // }
 
         // Current Limiting Constants
-        public static final int PIVOT_CURRENT_LIMIT = 60;
+        public static final int PIVOT_CURRENT_LIMIT = 100; //60;
         public static final int CONVEYOR_CURRENT_LIMIT = 60;
 
 
