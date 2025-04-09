@@ -129,8 +129,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
         lastPivotPosition  = position.getAngle();
         handAngle = (pivotEncoder.getPosition()-handZeroDegree)/encoderToDegrees;
         referenceHandAngle = (position.getAngle()-handZeroDegree)/encoderToDegrees;
+        double referenceAngleRadians = Math.toRadians(referenceHandAngle);
         //pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl);
-        pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, kFF*Math.abs(Math.sin(referenceHandAngle)));
+        pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, kFF*Math.cos(referenceAngleRadians));
     }
         
 
