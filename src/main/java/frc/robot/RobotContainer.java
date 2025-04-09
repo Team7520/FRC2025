@@ -61,6 +61,7 @@ import frc.robot.commands.ManualElevator;
 //import com.pathplanner.lib.auto.AutoBuilder;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import frc.robot.commands.ManualPivot;
+import frc.robot.commands.ManualPivot;
 
 
 public class RobotContainer {
@@ -89,7 +90,7 @@ public class RobotContainer {
 
     // Constants for speeds
     private static final double CONVEYOR_INTAKE_SPEED = 0.1;
-    private static final double CONVEYOR_EJECT_SPEED = -0.2;
+    private static double CONVEYOR_EJECT_SPEED = -0.2;
     private static final double RAMP_SPEED = 0.35;
     private static boolean speedCutOff = false;
 
@@ -158,14 +159,15 @@ public class RobotContainer {
         NamedCommands.registerCommand("pivotDunk", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DUNK)));
         NamedCommands.registerCommand("pivotAlgae", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.ALG)));
         NamedCommands.registerCommand("conveyorIntake", new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED)));
-        NamedCommands.registerCommand("conveyorEject", endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.5).withTimeout(0.15));
+        NamedCommands.registerCommand("conveyorEject", endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.2).withTimeout(0.17));
+        NamedCommands.registerCommand("conveyorEjectNoTimeout", endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.2).withTimeout(2));
         NamedCommands.registerCommand("conveyorStop", new InstantCommand(() -> endEffector.stopConveyorCommand()));
         NamedCommands.registerCommand("tuskUp", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP)));
         NamedCommands.registerCommand("tuskDown", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN)));
         NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
         NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
         NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
-        NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, elevator, CONVEYOR_EJECT_SPEED, RAMP_SPEED));
+        NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, elevator, CONVEYOR_EJECT_SPEED, RAMP_SPEED).withTimeout(2));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> rampSubsystem.run(0)).alongWith(new InstantCommand(() -> endEffector.stopConveyorCommand())).raceWith(new WaitCommand(0.01)));
         NamedCommands.registerCommand("StopLimelight", drivetrain.LimelightStatus(false));
         NamedCommands.registerCommand("StartLimelight", drivetrain.LimelightStatus(true));
@@ -180,7 +182,7 @@ public class RobotContainer {
         //           var cmd = AutoBuilder.followPath(drivetrain.GoRight(1));
         //           cmd.schedule();}
         //     }
-        // ));
+        // ));7
 
         /*
         NamedCommands.registerCommand("log", new InstantCommand(() -> System.out.println("eeeeeeeeeeeeeeeeeeeeeeeee")));
@@ -251,9 +253,10 @@ public class RobotContainer {
         rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
         // endEffector.setDefaultCommand(endEffector.run(0));
         driveController.x().whileTrue(drivetrain.applyRequest(() -> brake));
-        driveController.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
-        ));
+        // driveController.b().whileTrue(drivetrain.applyRequest(() ->
+        //     point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
+        // ));
+        driveController.b().whileTrue(endEffector.setConveyorSpeedCommand(-0.12));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -268,11 +271,11 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         // Elevator Position Controls - using command factory method
-        operatorController.a().onTrue(elevator.moveToPosition(ElevatorPosition.GROUND));
+        operatorController.a().onTrue(elevator.moveToPosition(ElevatorPosition.GROUND).alongWith(new InstantCommand(() -> CONVEYOR_EJECT_SPEED = -0.2)));
         //operatorController.x().onTrue(elevator.moveToPosition(ElevatorPosition.LOW));
-        operatorController.x().onTrue(new L2Command(elevator, endEffector, 0));
-        operatorController.y().onTrue(new L3Command(elevator, endEffector, 0));
-        operatorController.b().onTrue(new L4Command(elevator, endEffector, 0));
+        operatorController.x().onTrue(new L2Command(elevator, endEffector, 0).alongWith(new InstantCommand(() -> CONVEYOR_EJECT_SPEED = 0.15)));
+        operatorController.y().onTrue(new L3Command(elevator, endEffector, 0).alongWith(new InstantCommand(() -> CONVEYOR_EJECT_SPEED = 0.15)));
+        operatorController.b().onTrue(new L4Command(elevator, endEffector, 0).alongWith(new InstantCommand(() -> CONVEYOR_EJECT_SPEED = -0.2)));
         // Algae - press joystick inwards
         operatorController.button(9).onTrue(new AlgaeLow(elevator, endEffector, tuskSubsystem, 0));
         operatorController.button(10).onTrue(new AlgaeHigh(elevator, endEffector, tuskSubsystem, 0));
@@ -285,10 +288,11 @@ public class RobotContainer {
         driveController.start().onTrue(elevator.resetEncoderCommand());
         operatorController.povLeft().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
         operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.GROUNDALG));
+        // operatorController.povRight().onTrue(new InstantCommand(() -> endEffector.test()));
                 
         // Conveyor Controls (using triggers)
         operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED+0.3));
-        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.5));
+        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.25));
         
 
         // operatorController.rightBumper().whileTrue(endEffector.run(0.05));

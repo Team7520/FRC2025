@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -61,19 +67,51 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "conveyorEject"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "conveyorEject"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Reverse Middle Barge to Reef G"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Reverse Middle Barge to Reef G"
+                  "name": "conveyorEjectNoTimeout"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.3
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "elevatorGroundFromIntake"
+                      }
+                    }
+                  ]
                 }
               }
             ]

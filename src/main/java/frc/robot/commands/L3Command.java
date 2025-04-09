@@ -14,7 +14,7 @@ public class L3Command extends SequentialCommandGroup {
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DOWN),
             new WaitUntilCommand(() -> endEffector.handOut()),
             elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.MID),
-            new WaitCommand(1)
+            new WaitCommand(0.6)
             // endEffector.setConveyorSpeedCommand(conveyorSpeed)
             //     .withTimeout(2) // Run for 2 seconds
         );

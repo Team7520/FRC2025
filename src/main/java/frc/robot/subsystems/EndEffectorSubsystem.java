@@ -8,6 +8,7 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAnalogSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -47,8 +48,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
     //private AbsoluteEncoder absoluteEncoder;
     private SparkAnalogSensor analoginput;
     private SparkAnalogSensor absoluteAnalogInput;
-
-
+    private double kFF = -0.28;
+    private double encoderToDegrees = 150d/90d;
+    private double handZeroDegree = -60d; 
+    private double handAngle;                                
+    private double referenceHandAngle;
 
     public static EndEffectorSubsystem getInstance() {
         return INSTANCE;
@@ -107,12 +111,28 @@ public class EndEffectorSubsystem extends SubsystemBase {
         analoginput = conveyorMotor.getAnalog();
         absoluteAnalogInput = pivotMotor.getAnalog();
 //      pivotEncoder.setPosition(0);
+
+    SmartDashboard.putNumber("Pivot FF", kFF);
+    }
+
+    public void test() {
+        handAngle = (pivotEncoder.getPosition()-handZeroDegree)/encoderToDegrees;
+        //pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl);
+        pivotController.setReference(pivotEncoder.getPosition(), ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, kFF*Math.abs(Math.sin(handAngle)));
+    }
+
+    public void ninety() {
+        pivotController.setReference(pivotEncoder.getPosition()-90, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, kFF);
     }
 
     public void setPivotPosition(EndEffectorConstants.PivotPosition position) {
         lastPivotPosition  = position.getAngle();
-        pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl);
+        handAngle = (pivotEncoder.getPosition()-handZeroDegree)/encoderToDegrees;
+        referenceHandAngle = (position.getAngle()-handZeroDegree)/encoderToDegrees;
+        //pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl);
+        pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, kFF*Math.abs(Math.sin(referenceHandAngle)));
     }
+        
 
     public Command setPivotPositionCommand(PivotPosition down) {
         return Commands.runOnce(() -> setPivotPosition(down), this);
@@ -207,7 +227,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Analog Voltage", AnalogOutput());
         //SmartDashboard.putNumber("AbsoluteEncoderPosition", getAbsoluteEncoder());
         SmartDashboard.putNumber("AbsoluteEncoderVoltage", absoluteAnalogInput.getVoltage());
-
+        SmartDashboard.putNumber("Pivot Voltage", pivotMotor.getBusVoltage());
+        kFF = SmartDashboard.getNumber("Pivot FF", 0);
     }
 }
 

@@ -88,11 +88,11 @@ public class Constants {
         public static final double MIN_ANGLE = -246;
 
         // PID Constants
-        public static final double kP = 0.024;//0.032;
+        public static final double kP = 0.0285;//0.032;
         public static final double kI = 0;
         public static final double kD = 0.015;
         public static final double kIz = 0.0;
-        public static final double kFF = 0.08;
+        public static final double kFF = 0;
 
         public static final double kP_CONVEYOR = 0.2;
         public static final double kI_CONVEYOR = 0.0;
@@ -100,9 +100,9 @@ public class Constants {
 
         // MAX motion constants
         public static final double MAX_VELOCITY = 30000;
-        public static final double MAX_ACCELERATION = MAX_VELOCITY*1.5;
-        public static final double MAX_JERK = MAX_ACCELERATION*3;
-        public static final double ALLOWABLE_ERROR = 0.05;//1
+        public static final double MAX_ACCELERATION = MAX_VELOCITY*2;
+        public static final double MAX_JERK = MAX_ACCELERATION*2;
+        public static final double ALLOWABLE_ERROR = 1;//1
         // Old values (starting from floor)
         public static enum PivotPosition {
             UP(-245),
@@ -110,7 +110,8 @@ public class Constants {
             L4DOWN(-180),
             DUNK(-122),
             ALG(-128.57),
-            GROUNDALG(-117.5);
+            GROUNDALG(-117.5),
+            PARALLELGROUND(-60);
 
             private final double angle;
 
@@ -141,7 +142,7 @@ public class Constants {
         // }
 
         // Current Limiting Constants
-        public static final int PIVOT_CURRENT_LIMIT = 100; //60;
+        public static final int PIVOT_CURRENT_LIMIT = 120; //60;
         public static final int CONVEYOR_CURRENT_LIMIT = 60;
 
 

@@ -18,7 +18,7 @@ public class L4CommandDunk extends SequentialCommandGroup {
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DUNK),
             new WaitCommand(0.5),
             endEffector.setConveyorSpeedCommand(conveyorSpeed)
-                .withTimeout(0.65) // Run for 2 seconds
+                .withTimeout(1) // Run for 2 seconds
         );
     }
 }

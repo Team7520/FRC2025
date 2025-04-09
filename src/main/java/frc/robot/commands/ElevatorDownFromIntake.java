@@ -11,11 +11,7 @@ import frc.robot.subsystems.TuskSubsystem;
 public class ElevatorDownFromIntake extends SequentialCommandGroup {
     public ElevatorDownFromIntake(ElevatorSubsystem elevator, EndEffectorSubsystem endEffector, TuskSubsystem tuskSubsystem, double conveyorSpeed) {
         addCommands(
-            tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP),
-            endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DOWN),
-            new WaitCommand(0.1),
-            elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.GROUND),
-            new WaitCommand(0.25)
+            elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.GROUND)
         );
     }
 }
