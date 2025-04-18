@@ -68,6 +68,8 @@ public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
+    private Command autoAlignCommand;
+
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -217,6 +219,8 @@ public class RobotContainer {
             Math.abs(driveController.getRightY()) > 0.2) 
             && CommandSwerveDrivetrain.pathActive
         ).onTrue(new InstantCommand(() -> {
+
+            autoAlignCommand.cancel();
             
         }));
         
@@ -230,23 +234,23 @@ public class RobotContainer {
         //auto movements to reef
         driveController.povLeft().onTrue(new InstantCommand(() -> {
             if(LimelightHelpers.getTV("") == true) {
-                var cmd = AutoBuilder.followPath(drivetrain.GoLeft(1));
-                cmd.schedule();}   
+                autoAlignCommand = AutoBuilder.followPath(drivetrain.GoLeft(1));
+                autoAlignCommand.schedule();}   
             }
         ));
                 
         driveController.povRight().onTrue(new InstantCommand(() -> {
             if(LimelightHelpers.getTV("") == true) {
-                  var cmd = AutoBuilder.followPath(drivetrain.GoRight(1));
-                  cmd.schedule();}
+                autoAlignCommand = AutoBuilder.followPath(drivetrain.GoRight(1));
+                autoAlignCommand.schedule();}
             }
         ));
 
         //testing for crash
         driveController.povUp().onTrue(new InstantCommand(() -> {
             if(LimelightHelpers.getTV("") == true) {
-                var cmd = AutoBuilder.followPath(drivetrain.GoMid(1));
-                cmd.schedule();}
+                autoAlignCommand = AutoBuilder.followPath(drivetrain.GoMid(1));
+                autoAlignCommand.schedule();}
             }
         ));
         
