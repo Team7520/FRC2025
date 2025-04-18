@@ -29,6 +29,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final MotionMagicVoltage motionMagic;
     private final StrictFollower follower;
     private final DigitalInput limitSwitch;
+    private ElevatorPosition elevatorPosition = ElevatorPosition.GROUND;
     
     private ElevatorSubsystem() {
         limitSwitch = new DigitalInput(ElevatorConstants.LIMIT_SWITCH_ID);
@@ -84,7 +85,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     * @param position The ElevatorPosition to move to
     */
     public void setPosition(ElevatorPosition position) {
+        elevatorPosition = position;
         leftMotor.setControl(motionMagic.withPosition(position.getHeight()));
+    }
+
+    public ElevatorPosition getElevatorPosition() {
+        return elevatorPosition;
     }
 
     public boolean getLimitSwitch() {

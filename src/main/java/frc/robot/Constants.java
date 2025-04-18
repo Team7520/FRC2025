@@ -60,22 +60,28 @@ public class Constants {
 
         public static final int CURRENT_LIMIT = 120;
         public static enum ElevatorPosition {
-            GROUND(0),
-            LOW(12.3), // 11.41455078125, 7.984863
-            MID(28.056641), // 27.5 
-            HIGH(55), // 52
-            LOWALG(27.1), // 23.7724609375
-            HIGHALG(42.4); // 39.609130859375
+            GROUND(0, -0.45),
+            LOW(13.3, -0.12), // 11.41455078125, 7.984863
+            MID(29.056641, -0.12), // 27.5 
+            HIGH(55, -0.45), // 52
+            LOWALG(27.1, -0.45), // 23.7724609375
+            HIGHALG(42.4, -0.45); // 39.609130859375
             // INTAKE(1.7197265625); old elev pos for intake at centennial, unused with new mechanical changes
 
             private final double height;
+            private final double speed;
 
-            ElevatorPosition(double height) {
+            ElevatorPosition(double height, double speed) {
                 this.height = height;
+                this.speed = speed;
             }
 
             public double getHeight() {
                 return height;
+            }
+
+            public double getSpeed() {
+                return speed;
             }
         }
     }

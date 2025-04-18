@@ -137,6 +137,7 @@ public class RobotContainer {
         autoChooser.addOption("2-d One Coral", drivetrain.getPPAutoCommand("2-d One Coral", true));
         autoChooser.addOption("testStationPath", drivetrain.getPPAutoCommand("test-pathing", true));
         autoChooser.addOption("Nothing", drivetrain.getPPAutoCommand("Nothing", true));
+        autoChooser.addOption("ProcessorSide 4 Coral", drivetrain.getPPAutoCommand("ProcessorSide 4 Coral", true));
         //autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
         SmartDashboard.putData("AutoPaths", autoChooser);
     }
@@ -216,8 +217,7 @@ public class RobotContainer {
             Math.abs(driveController.getRightY()) > 0.2) 
             && CommandSwerveDrivetrain.pathActive
         ).onTrue(new InstantCommand(() -> {
-            var cmd = AutoBuilder.followPath(drivetrain.GoRight(-1));
-            cmd.schedule();
+            
         }));
         
         driveController.y().onTrue(new InstantCommand(
@@ -232,7 +232,7 @@ public class RobotContainer {
             if(LimelightHelpers.getTV("") == true) {
                 var cmd = AutoBuilder.followPath(drivetrain.GoLeft(1));
                 cmd.schedule();}   
-            }            
+            }
         ));
                 
         driveController.povRight().onTrue(new InstantCommand(() -> {
@@ -271,11 +271,11 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         // Elevator Position Controls - using command factory method
-        operatorController.a().onTrue(elevator.moveToPosition(ElevatorPosition.GROUND).alongWith(new InstantCommand(() -> CONVEYOR_EJECT_SPEED = -0.2)));
+        operatorController.a().onTrue(elevator.moveToPosition(ElevatorPosition.GROUND));
         //operatorController.x().onTrue(elevator.moveToPosition(ElevatorPosition.LOW));
-        operatorController.x().onTrue(new L2Command(elevator, endEffector, 0).alongWith(new InstantCommand(() -> CONVEYOR_EJECT_SPEED = 0.15)));
-        operatorController.y().onTrue(new L3Command(elevator, endEffector, 0).alongWith(new InstantCommand(() -> CONVEYOR_EJECT_SPEED = 0.15)));
-        operatorController.b().onTrue(new L4Command(elevator, endEffector, 0).alongWith(new InstantCommand(() -> CONVEYOR_EJECT_SPEED = -0.2)));
+        operatorController.y().onTrue(new L3Command(elevator, endEffector, 0));
+        operatorController.x().onTrue(new L2Command(elevator, endEffector, 0));
+        operatorController.b().onTrue(new L4Command(elevator, endEffector, 0));
         // Algae - press joystick inwards
         operatorController.button(9).onTrue(new AlgaeLow(elevator, endEffector, tuskSubsystem, 0));
         operatorController.button(10).onTrue(new AlgaeHigh(elevator, endEffector, tuskSubsystem, 0));
@@ -292,7 +292,7 @@ public class RobotContainer {
                 
         // Conveyor Controls (using triggers)
         operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED+0.3));
-        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.25));
+        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(elevator::getElevatorPosition));
         
 
         // operatorController.rightBumper().whileTrue(endEffector.run(0.05));

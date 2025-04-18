@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 //import com.revrobotics.AbsoluteEncoder;
 
 //import static edu.wpi.first.units.Units.Rotation;
@@ -25,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import frc.robot.Constants;
 import frc.robot.Constants.EndEffectorConstants;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.EndEffectorConstants.PivotPosition;
 //import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -41,8 +44,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private final SparkClosedLoopController pivotController;
     private final RelativeEncoder pivotEncoder;
     private final SparkClosedLoopController conveyorController;
-    @SuppressWarnings("unused")
-    private double lastPivotPosition;
+    private PivotPosition lastPivotPosition;
     private double holdPosition = 0;
     private boolean isHoldingPosition = false;
     //private AbsoluteEncoder absoluteEncoder;
@@ -126,12 +128,16 @@ public class EndEffectorSubsystem extends SubsystemBase {
     }
 
     public void setPivotPosition(EndEffectorConstants.PivotPosition position) {
-        lastPivotPosition  = position.getAngle();
+        lastPivotPosition  = position;
         handAngle = (pivotEncoder.getPosition()-handZeroDegree)/encoderToDegrees;
         referenceHandAngle = (position.getAngle()-handZeroDegree)/encoderToDegrees;
         double referenceAngleRadians = Math.toRadians(referenceHandAngle);
         //pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl);
         pivotController.setReference(position.getAngle(), ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, kFF*Math.cos(referenceAngleRadians));
+    }
+
+    public PivotPosition getLastPivotPosition() {
+        return lastPivotPosition;
     }
         
 
@@ -201,6 +207,13 @@ public class EndEffectorSubsystem extends SubsystemBase {
     }
 
     public Command setConveyorSpeedCommand(double speed) {
+        return this.run(() -> setConveyorSpeed(speed))
+               .finallyDo((interrupted) -> setConveyorSpeed(0)); // Explicitly require this subsystem
+    }
+
+    public Command setConveyorSpeedCommand(Supplier<ElevatorPosition> positionSup) {
+        double speed = positionSup.get().getSpeed();
+        SmartDashboard.putNumber("outspeed", speed);
         return this.run(() -> setConveyorSpeed(speed))
                .finallyDo((interrupted) -> setConveyorSpeed(0)); // Explicitly require this subsystem
     }

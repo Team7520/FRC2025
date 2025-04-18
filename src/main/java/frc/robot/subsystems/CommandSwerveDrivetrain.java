@@ -699,6 +699,33 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         path.preventFlipping =true;
         return path;    
     }
+    
+    public Command alignLeft(){
+        if(LimelightHelpers.getTV("") == true) {
+            var cmd = AutoBuilder.followPath(GoLeft(1));
+            return cmd;
+        } else {
+            return new InstantCommand(() -> {});
+        }
+    }
+
+    public Command alignRight(){
+        if(LimelightHelpers.getTV("") == true) {
+            var cmd = AutoBuilder.followPath(GoRight(1));
+            return cmd;
+        } else {
+            return new InstantCommand(() -> {});
+        }
+    }
+
+    public Command alignMid(){
+        if(LimelightHelpers.getTV("") == true) {
+            var cmd = AutoBuilder.followPath(GoMid(1));
+            return cmd;
+        } else {
+            return new InstantCommand(() -> {});
+        }
+    }
 
     public PathPlannerPath GoMid(int mode) {
         double id = LimelightHelpers.getFiducialID(""); 
