@@ -1,341 +1,195 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-// Make povRight reset
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
-
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.ctre.phoenix6.swerve.SwerveRequest;
-//import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-//import com.pathplanner.lib.commands.PathPlannerAuto;
-//import com.revrobotics.AnalogInput;
-//import com.revrobotics.spark.SparkFlex;
-
-//import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-//import edu.wpi.first.util.sendable.Sendable;
-//import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-//import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-//import edu.wpi.first.wpilibj2.command.Commands;
-//import edu.wpi.first.wpilibj2.command.InstantCommand;
-//import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.RampSubsystem;
-import frc.robot.subsystems.TuskSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.LightingSubsystem;
-import frc.robot.Constants.TuskConstants;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
-import frc.robot.Constants.EndEffectorConstants.PivotPosition;
-//import frc.robot.Elastic.Notification;
-//import frc.robot.Constants;
-import frc.robot.commands.AlgaeHigh;
-import frc.robot.commands.AlgaeLow;
-//import frc.robot.commands.ElevatorDown;
-import frc.robot.commands.ElevatorDownAuto;
-import frc.robot.commands.ElevatorDownFromIntake;
-import frc.robot.commands.L2Command;
-import frc.robot.commands.L3Command;
-import frc.robot.commands.L4Command;
-import frc.robot.commands.L4CommandDunk;
-import frc.robot.commands.Lighting;
-import frc.robot.commands.AutoIntake;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.SwerveSubsystem;
+import java.io.File;
+import swervelib.SwerveInputStream;
 
-import frc.robot.commands.ManualElevator;
-//import com.pathplanner.lib.auto.AutoBuilder;
-//import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-//import frc.robot.commands.ManualPivot;
+/**
+ * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
+ * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
+ * Instead, the structure of the robot (including subsystems, commands, and trigger mappings) should be declared here.
+ */
+public class RobotContainer
+{
 
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+  final         CommandXboxController driverXbox = new CommandXboxController(0);
+  // The robot's subsystems and commands are defined here...
+  private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+                                                                                "swerve/neo"));
 
-public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+  /**
+   * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
+   */
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                                                                () -> driverXbox.getLeftY() * -1,
+                                                                () -> driverXbox.getLeftX() * -1)
+                                                            .withControllerRotationAxis(driverXbox::getRightX)
+                                                            .deadband(OperatorConstants.DEADBAND)
+                                                            .scaleTranslation(0.8)
+                                                            .allianceRelativeControl(true);
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+  /**
+   * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
+   */
+  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX,
+                                                                                             driverXbox::getRightY)
+                                                           .headingWhile(true);
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+  /**
+   * Clone's the angular velocity input stream and converts it to a robotRelative input stream.
+   */
+  SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
+                                                             .allianceRelativeControl(false);
 
-    private final CommandXboxController driveController = new CommandXboxController(0);
-    private final CommandXboxController operatorController = new CommandXboxController(1); // Port 1
-    private final ElevatorSubsystem elevator = ElevatorSubsystem.getInstance();
+  SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                                                                        () -> -driverXbox.getLeftY(),
+                                                                        () -> -driverXbox.getLeftX())
+                                                                    .withControllerRotationAxis(() -> driverXbox.getRawAxis(
+                                                                        2))
+                                                                    .deadband(OperatorConstants.DEADBAND)
+                                                                    .scaleTranslation(0.8)
+                                                                    .allianceRelativeControl(true);
+  // Derive the heading axis with math!
+  SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.copy()
+                                                                               .withControllerHeadingAxis(() ->
+                                                                                                              Math.sin(
+                                                                                                                  driverXbox.getRawAxis(
+                                                                                                                      2) *
+                                                                                                                  Math.PI) *
+                                                                                                              (Math.PI *
+                                                                                                               2),
+                                                                                                          () ->
+                                                                                                              Math.cos(
+                                                                                                                  driverXbox.getRawAxis(
+                                                                                                                      2) *
+                                                                                                                  Math.PI) *
+                                                                                                              (Math.PI *
+                                                                                                               2))
+                                                                               .headingWhile(true)
+                                                                               .translationHeadingOffset(true)
+                                                                               .translationHeadingOffset(Rotation2d.fromDegrees(
+                                                                                   0));
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
+  public RobotContainer()
+  {
+    // Configure the trigger bindings
+    configureBindings();
+    DriverStation.silenceJoystickConnectionWarning(true);
+    NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+  }
 
-    private final RampSubsystem rampSubsystem = RampSubsystem.getInstance();
-    private final EndEffectorSubsystem endEffector = EndEffectorSubsystem.getInstance();
-    private final TuskSubsystem tuskSubsystem = TuskSubsystem.getInstance();
-    private final LightingSubsystem lightingSubsystem = LightingSubsystem.getInstance();
+  /**
+   * Use this method to define your trigger->command mappings. Triggers can be created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary predicate, or via the
+   * named factories in {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
+   * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
+   */
+  private void configureBindings()
+  {
+    Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
+    Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(
+        driveDirectAngle);
+    Command driveFieldOrientedDirectAngleKeyboard      = drivebase.driveFieldOriented(driveDirectAngleKeyboard);
+    Command driveFieldOrientedAnglularVelocityKeyboard = drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
+    Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(
+        driveDirectAngleKeyboard);
 
-    // Constants for speeds
-    private static final double CONVEYOR_INTAKE_SPEED = 0.1;
-    private static final double CONVEYOR_EJECT_SPEED = -0.2;
-    private static final double RAMP_SPEED = 0.35;
-    private static boolean speedCutOff = false;
-
-    private SendableChooser<Command> autoChooser;
-
-    public RobotContainer() {
-        registerAutos();
-
-        configureBindings();
+    if (RobotBase.isSimulation())
+    {
+      drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+    } else
+    {
+      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     }
 
-    private void registerAutos() {
-        registerNamedCommands();
+    if (Robot.isSimulation())
+    {
+      Pose2d target = new Pose2d(new Translation2d(1, 4),
+                                 Rotation2d.fromDegrees(90));
+      //drivebase.getSwerveDrive().field.getObject("targetPose").setPose(target);
+      driveDirectAngleKeyboard.driveToPose(() -> target,
+                                           new ProfiledPIDController(5,
+                                                                     0,
+                                                                     0,
+                                                                     new Constraints(5, 2)),
+                                           new ProfiledPIDController(5,
+                                                                     0,
+                                                                     0,
+                                                                     new Constraints(Units.degreesToRadians(360),
+                                                                                     Units.degreesToRadians(180))
+                                           ));
+      driverXbox.start().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
+      driverXbox.button(1).whileTrue(drivebase.sysIdDriveMotorCommand());
+      driverXbox.button(2).whileTrue(Commands.runEnd(() -> driveDirectAngleKeyboard.driveToPoseEnabled(true),
+                                                     () -> driveDirectAngleKeyboard.driveToPoseEnabled(false)));
 
-        autoChooser = new SendableChooser<>();
+//      driverXbox.b().whileTrue(
+//          drivebase.driveToPose(
+//              new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
+//                              );
 
-        autoChooser.setDefaultOption("Middle Barge to Reef G", drivetrain.getPPAutoCommand("Middle Barge to Reef G", true));
-        // autoChooser.addOption("Testy", drivetrain.getPPAutoCommand("Testy", true));
-        // autoChooser.addOption("Curvy", drivetrain.getPPAutoCommand("Curvy", true));
-        // autoChooser.addOption("Start 1 to F to A Three Coral", drivetrain.getPPAutoCommand("Start 1 to F to A Three Coral", true));
-        // autoChooser.addOption("Start 1 to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to F Three Coral", true));
-        // autoChooser.addOption("Start 1 to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to F Two Coral", true));
-        // autoChooser.addOption("Start 1 to F One Coral", drivetrain.getPPAutoCommand("Start 1 to F One Coral", true));
-        // autoChooser.addOption("Start 1 to E to F Three Coral", drivetrain.getPPAutoCommand("Start 1 to E to F Three Coral", true));
-        // autoChooser.addOption("Start 1 to E to F Two Coral", drivetrain.getPPAutoCommand("Start 1 to E to F Two Coral", true));
-        // autoChooser.addOption("Start 1 to E One Coral", drivetrain.getPPAutoCommand("Start 1 to E One Coral", true));
-        
-        //All of section 3 autos
-        // autoChooser.addOption("3-c", drivetrain.getPPAutoCommand("3-c", true));
-        autoChooser.addOption("ProcessorSide 3 Coral -- 3-c-y-b-y-b", drivetrain.getPPAutoCommand("ProcessorSide 3 Coral -- 3-c-y-b-y-b", true));
-        autoChooser.addOption("BargeSide 3 Coral -- 3-e-x-f-x-f", drivetrain.getPPAutoCommand("BargeSide 3 Coral -- 3-e-x-f-x-f", true));
-        autoChooser.addOption("ProcessorSide 2 coral -- 3-c-y-b", drivetrain.getPPAutoCommand("ProcessorSide 2 coral -- 3-c-y-b", true));
-        autoChooser.addOption("BargeSide 2 coral -- 1-e-x-f", drivetrain.getPPAutoCommand("BargeSide 2 coral -- 1-e-x-f", true));
-        autoChooser.addOption("3-c-y-b-y-b", drivetrain.getPPAutoCommand("3-c-y-b-y-b", true));
-        autoChooser.addOption("1-e-x-f-x-f", drivetrain.getPPAutoCommand("1-e-x-f-x-f", true));
-        autoChooser.addOption("Movement 1-e-x-f-x-f", drivetrain.getPPAutoCommand("Movement 1-e-x-f-x-f", true));
-        // autoChooser.addOption("3-c-y-b-y-b", drivetrain.getPPAutoCommand("3-c-y-b-y-b", true));
-        // autoChooser.addOption("3-b", drivetrain.getPPAutoCommand("3-b", true));
-        // autoChooser.addOption("3-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b", true));
-        // autoChooser.addOption("3-b-y-b-y-b", drivetrain.getPPAutoCommand("3-b-y-b-y-b", true));
-        // autoChooser.addOption("3-b-y-b-y-a", drivetrain.getPPAutoCommand("3-b-y-b-y-a", true));
-        
-        autoChooser.addOption("Shoot Ests!", drivetrain.getPPAutoCommand("Shoot Ests!", true));
-        autoChooser.addOption("2-d One Coral", drivetrain.getPPAutoCommand("2-d One Coral", true));
-        autoChooser.addOption("testStationPath", drivetrain.getPPAutoCommand("test-pathing", true));
-        autoChooser.addOption("Nothing", drivetrain.getPPAutoCommand("Nothing", true));
-        //autoChooser.addOption("2-d-auto", drivetrain.getPPAutoCommand("2-d-auto", false));
-        SmartDashboard.putData("AutoPaths", autoChooser);
+    }
+    if (DriverStation.isTest())
+    {
+      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
+
+      driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
+      driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.back().whileTrue(drivebase.centerModulesCommand());
+      driverXbox.leftBumper().onTrue(Commands.none());
+      driverXbox.rightBumper().onTrue(Commands.none());
+    } else
+    {
+      driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
+      driverXbox.start().whileTrue(Commands.none());
+      driverXbox.back().whileTrue(Commands.none());
+      driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      driverXbox.rightBumper().onTrue(Commands.none());
     }
 
-    private void registerNamedCommands() {
+  }
 
-        // Example
-        NamedCommands.registerCommand("elevatorGround", new ElevatorDownAuto(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
-        NamedCommands.registerCommand("elevatorGroundFromIntake", new ElevatorDownFromIntake(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
-        NamedCommands.registerCommand("elevatorLow", new L2Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
-        NamedCommands.registerCommand("elevatorMid", new L3Command(elevator, endEffector, CONVEYOR_EJECT_SPEED));
-        NamedCommands.registerCommand("elevatorMidNoShoot", new L3Command(elevator, endEffector, 0));
-        NamedCommands.registerCommand("elevatorHigh", new L4Command(elevator, endEffector, CONVEYOR_EJECT_SPEED-0.15));
-        NamedCommands.registerCommand("elevatorHighNoShoot", new L4Command(elevator, endEffector, 0));
-        NamedCommands.registerCommand("elevatorHighDunk", new L4CommandDunk(elevator, endEffector, CONVEYOR_EJECT_SPEED-0.15));
-        NamedCommands.registerCommand("elevatorLowAlgae", new AlgaeLow(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
-        NamedCommands.registerCommand("elevatorHighAlgae", new AlgaeHigh(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));
-        NamedCommands.registerCommand("pivotUp", endEffector.setPivotPositionCommand(PivotPosition.UP));
-        NamedCommands.registerCommand("pivotDown", endEffector.setPivotPositionCommand(PivotPosition.DOWN));
-        NamedCommands.registerCommand("pivotDunk", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.DUNK)));
-        NamedCommands.registerCommand("pivotAlgae", new InstantCommand(() -> endEffector.setPivotPositionCommand(PivotPosition.ALG)));
-        NamedCommands.registerCommand("conveyorIntake", new InstantCommand(() -> endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED)));
-        NamedCommands.registerCommand("conveyorEject", endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.5).withTimeout(0.15));
-        NamedCommands.registerCommand("conveyorStop", new InstantCommand(() -> endEffector.stopConveyorCommand()));
-        NamedCommands.registerCommand("tuskUp", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP)));
-        NamedCommands.registerCommand("tuskDown", new InstantCommand(() -> tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.DOWN)));
-        NamedCommands.registerCommand("rampIntake", new InstantCommand(() -> rampSubsystem.run(RAMP_SPEED)));
-        NamedCommands.registerCommand("rampReverse", new InstantCommand(() -> rampSubsystem.run(-RAMP_SPEED)));
-        NamedCommands.registerCommand("rampStop", new InstantCommand(() -> rampSubsystem.run(0)));
-        NamedCommands.registerCommand("intake", new AutoIntake(rampSubsystem, endEffector, elevator, CONVEYOR_EJECT_SPEED, RAMP_SPEED));
-        NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> rampSubsystem.run(0)).alongWith(new InstantCommand(() -> endEffector.stopConveyorCommand())).raceWith(new WaitCommand(0.01)));
-        NamedCommands.registerCommand("StopLimelight", drivetrain.LimelightStatus(false));
-        NamedCommands.registerCommand("StartLimelight", drivetrain.LimelightStatus(true));
-        // NamedCommands.registerCommand("AutoAlignLeft", new InstantCommand(() -> {
-        //     if(LimelightHelpers.getTV("") == true) {
-        //         var cmd = AutoBuilder.followPath(drivetrain.GoLeft(1));
-        //         cmd.schedule();}   
-        //     }            
-        // ));
-        // NamedCommands.registerCommand("AutoAlignRight", new InstantCommand(() -> {
-        //     if(LimelightHelpers.getTV("") == true) {
-        //           var cmd = AutoBuilder.followPath(drivetrain.GoRight(1));
-        //           cmd.schedule();}
-        //     }
-        // ));
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand()
+  {
+    // An example command will be run in autonomous
+    return drivebase.getAutonomousCommand("New Auto");
+  }
 
-        /*
-        NamedCommands.registerCommand("log", new InstantCommand(() -> System.out.println("eeeeeeeeeeeeeeeeeeeeeeeee")));
-        NamedCommands.registerCommand("intakeOut", new AutoIntake(Position.INTAKE));
-        NamedCommands.registerCommand("intake", new InstantCommand(() -> intakeSubsystem.setSpeed(Position.INTAKE.getSpeed())));
-        NamedCommands.registerCommand("stopIntaking", new InstantCommand(() -> intakeSubsystem.setSpeed(0)));
-        NamedCommands.registerCommand("intakeIn", new AutoIntake(Position.SHOOT));
-        NamedCommands.registerCommand("stopShoot", new AutoShoot(0, false));
-        NamedCommands.registerCommand("AutoNotePickUp", new AutoNotePickUp());
-*/
-    }
-
-    private void configureBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(drivetrain.limitSpeed(-driveController.getLeftY() * MaxSpeed, speedCutOff)) // Drive forward with negative Y (forward)
-                    .withVelocityY(drivetrain.limitSpeed(-driveController.getLeftX() * MaxSpeed, speedCutOff)) // Drive left with negative X (left)
-                    .withRotationalRate(-driveController.getRightX() * MaxAngularRate)
-                    .withDeadband(MaxSpeed * drivetrain.changeDeadband(0.1, speedCutOff)) // Drive counterclockwise with negative X (left)
-            )
-        );
-
-        //Cancel current path when Joystick is moved
-        new Trigger(() -> 
-            (Math.abs(driveController.getLeftX()) > 0.2 || 
-            Math.abs(driveController.getLeftY()) > 0.2 || 
-            Math.abs(driveController.getRightX()) > 0.2 || 
-            Math.abs(driveController.getRightY()) > 0.2) 
-            && CommandSwerveDrivetrain.pathActive
-        ).onTrue(new InstantCommand(() -> {
-            var cmd = AutoBuilder.followPath(drivetrain.GoRight(-1));
-            cmd.schedule();
-        }));
-        
-        driveController.y().onTrue(new InstantCommand(
-            () -> speedCutOff = !speedCutOff
-        ));
-        
-        driveController.a().onTrue(drivetrain.LimelightStatus(true));
-        driveController.rightBumper().onTrue(drivetrain.LimelightStatus(false));
-
-        //auto movements to reef
-        driveController.povLeft().onTrue(new InstantCommand(() -> {
-            if(LimelightHelpers.getTV("") == true) {
-                var cmd = AutoBuilder.followPath(drivetrain.GoLeft(1));
-                cmd.schedule();}   
-            }            
-        ));
-                
-        driveController.povRight().onTrue(new InstantCommand(() -> {
-            if(LimelightHelpers.getTV("") == true) {
-                  var cmd = AutoBuilder.followPath(drivetrain.GoRight(1));
-                  cmd.schedule();}
-            }
-        ));
-
-        //testing for crash
-        driveController.povUp().onTrue(new InstantCommand(() -> {
-            if(LimelightHelpers.getTV("") == true) {
-                var cmd = AutoBuilder.followPath(drivetrain.GoMid(1));
-                cmd.schedule();}
-            }
-        ));
-        
-        rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
-        // endEffector.setDefaultCommand(endEffector.run(0));
-        driveController.x().whileTrue(drivetrain.applyRequest(() -> brake));
-        driveController.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
-        ));
-
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        driveController.back().and(driveController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driveController.back().and(driveController.a()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driveController.start().and(driveController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driveController.start().and(driveController.a()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-        // reset the field-centric heading on left bumper press
-        driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-        drivetrain.registerTelemetry(logger::telemeterize);
-
-        // Elevator Position Controls - using command factory method
-        operatorController.a().onTrue(elevator.moveToPosition(ElevatorPosition.GROUND));
-        //operatorController.x().onTrue(elevator.moveToPosition(ElevatorPosition.LOW));
-        operatorController.x().onTrue(new L2Command(elevator, endEffector, 0));
-        operatorController.y().onTrue(new L3Command(elevator, endEffector, 0));
-        operatorController.b().onTrue(new L4Command(elevator, endEffector, 0));
-        // Algae - press joystick inwards
-        operatorController.button(9).onTrue(new AlgaeLow(elevator, endEffector, tuskSubsystem, 0));
-        operatorController.button(10).onTrue(new AlgaeHigh(elevator, endEffector, tuskSubsystem, 0));
-
-        // EndEffector Pivot Controls
-        operatorController.povUp().onTrue(endEffector.setPivotPositionCommand(PivotPosition.UP));
-        // operatorController.povUp().onTrue(elevator.moveToPosition(ElevatorPosition.INTAKE));
-        operatorController.povDown().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DOWN));
-        //operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.DUNK));
-        driveController.start().onTrue(elevator.resetEncoderCommand());
-        operatorController.povLeft().onTrue(endEffector.setPivotPositionCommand(PivotPosition.ALG));
-        operatorController.povRight().onTrue(endEffector.setPivotPositionCommand(PivotPosition.GROUNDALG));
-                
-        // Conveyor Controls (using triggers)
-        operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED+0.3));
-        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED-0.5));
-        
-
-        // operatorController.rightBumper().whileTrue(endEffector.run(0.05));
-        // operatorController.leftBumper().whileTrue(endEffector.run(-0.1));
-        //operatorController.povRight().onTrue(endEffector.resetEncoderCommand());
-        operatorController.back().onTrue(elevator.resetEncoderCommand());
-
-        // Ramp Controls (using bumpers)
-        operatorController.rightBumper().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()));
-        operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED)); // .until(() -> endEffector.StopWithSensor())
-        operatorController.leftBumper().whileTrue(rampSubsystem.runSeparately(-RAMP_SPEED/1.5, -0.2));
-        driveController.leftTrigger().whileTrue(rampSubsystem.runSeparately(0, 1));
-        driveController.rightTrigger().whileTrue(rampSubsystem.runSeparately(0, -1));
-            
-        // new Trigger(() -> 
-        //     elevator.getLimitSwitch()
-        // ).onTrue(elevator.resetEncoderCommand());
-
-        //operatorController.povDownRight().onTrue(elevator.resetEncoderCommand());
-
-        // Default commands to stop when not actively controlled
-
-        endEffector.setDefaultCommand(endEffector.stopConveyorCommand());
-        // endEffector.setDefaultCommand(
-        //     new ManualPivot(
-        //         endEffector, 
-        //         () -> -operatorController.getLeftY()
-        //     )
-        // );
-        rampSubsystem.setDefaultCommand(rampSubsystem.run(0));
-
-        // Manual elevator control
-        elevator.setDefaultCommand(
-            new ManualElevator(elevator, () -> -operatorController.getRightY())
-        );
-
-        lightingSubsystem.setDefaultCommand(
-            new Lighting(
-                lightingSubsystem, 
-                () -> endEffector.AnalogOutput()
-            )
-        );
-
-        drivetrain.registerTelemetry(logger::telemeterize);
-    }
-
-    public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
-    }
+  public void setMotorBrake(boolean brake)
+  {
+    drivebase.setMotorBrake(brake);
+  }
 }
