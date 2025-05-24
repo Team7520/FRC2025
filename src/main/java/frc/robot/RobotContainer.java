@@ -21,11 +21,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake;
+import frc.robot.commands.ManualTurretControl;
 import frc.robot.commands.Shooter;
 import frc.robot.subsystems.SensorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.TurretSubsystem;
 
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -44,6 +46,10 @@ public class RobotContainer
   private final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
 
   private final SensorSubsystem sensorSubsystem = SensorSubsystem.getInstance();
+
+  private final TurretSubsystem turretSubsystem = TurretSubsystem.getInstance();
+  private final ManualTurretControl manualTurretControl = 
+  new ManualTurretControl(turretSubsystem, operatorController);
 
   private final Intake intake = new Intake(
             intakeSubsystem,
@@ -141,6 +147,8 @@ public class RobotContainer
    */
   private void configureBindings()
   {
+    turretSubsystem.setDefaultCommand(manualTurretControl);
+
     Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);

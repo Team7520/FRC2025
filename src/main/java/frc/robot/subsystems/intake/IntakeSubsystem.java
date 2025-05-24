@@ -23,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public TalonFX RingOneMotor = new TalonFX(21);
     public TalonFX RingTwoMotor = new TalonFX(22);
     public TalonFX FeederMotor = new TalonFX(23);
-    
+
     // private final DigitalInput input = new DigitalInput(0);
 
     private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(5);
