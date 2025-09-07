@@ -58,7 +58,7 @@ public class Constants {
         public static final double MAX_JERK = 4000; // 60 inches per second cubed
         public static final double ALLOWABLE_ERROR = 0.5; // 0.5 inches
 
-        public static final int CURRENT_LIMIT = 120;
+        public static final int CURRENT_LIMIT = 60;
         public static enum ElevatorPosition {
             GROUND(0, -0.45),
             LOW(13.3, -0.12), // 11.41455078125, 7.984863

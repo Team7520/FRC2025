@@ -122,6 +122,8 @@ public class RobotContainer {
         
         //All of section 3 autos
         // autoChooser.addOption("3-c", drivetrain.getPPAutoCommand("3-c", true));
+        autoChooser.addOption("Copy of BargeSide 3 Coral -- 3-e-x-f-x-f", drivetrain.getPPAutoCommand("Copy of BargeSide 3 Coral -- 3-e-x-f-x-f", true));
+
         autoChooser.addOption("ProcessorSide 3 Coral -- 3-c-y-b-y-b", drivetrain.getPPAutoCommand("ProcessorSide 3 Coral -- 3-c-y-b-y-b", true));
         autoChooser.addOption("BargeSide 3 Coral -- 3-e-x-f-x-f", drivetrain.getPPAutoCommand("BargeSide 3 Coral -- 3-e-x-f-x-f", true));
         autoChooser.addOption("ProcessorSide 2 coral -- 3-c-y-b", drivetrain.getPPAutoCommand("ProcessorSide 2 coral -- 3-c-y-b", true));
@@ -204,8 +206,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(drivetrain.limitSpeed(-driveController.getLeftY() * MaxSpeed, speedCutOff)) // Drive forward with negative Y (forward)
-                    .withVelocityY(drivetrain.limitSpeed(-driveController.getLeftX() * MaxSpeed, speedCutOff)) // Drive left with negative X (left)
+                drive.withVelocityX(drivetrain.limitSpeed(-driveController.getLeftY() * MaxSpeed * 0.8, speedCutOff)) // Drive forward with negative Y (forward)
+                    .withVelocityY(drivetrain.limitSpeed(-driveController.getLeftX() * MaxSpeed * 0.8, speedCutOff)) // Drive left with negative X (left)
                     .withRotationalRate(-driveController.getRightX() * MaxAngularRate)
                     .withDeadband(MaxSpeed * drivetrain.changeDeadband(0.1, speedCutOff)) // Drive counterclockwise with negative X (left)
             )
@@ -232,14 +234,14 @@ public class RobotContainer {
         driveController.rightBumper().onTrue(drivetrain.LimelightStatus(false));
 
         //auto movements to reef
-        driveController.povLeft().onTrue(new InstantCommand(() -> {
+        driveController.leftBumper().onTrue(new InstantCommand(() -> {
             if(LimelightHelpers.getTV("") == true) {
                 autoAlignCommand = AutoBuilder.followPath(drivetrain.GoLeft(1));
                 autoAlignCommand.schedule();}   
             }
         ));
                 
-        driveController.povRight().onTrue(new InstantCommand(() -> {
+        driveController.rightBumper().onTrue(new InstantCommand(() -> {
             if(LimelightHelpers.getTV("") == true) {
                 autoAlignCommand = AutoBuilder.followPath(drivetrain.GoRight(1));
                 autoAlignCommand.schedule();}
@@ -270,12 +272,12 @@ public class RobotContainer {
         driveController.start().and(driveController.a()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driveController.povRight().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
         // Elevator Position Controls - using command factory method
-        operatorController.a().onTrue(elevator.moveToPosition(ElevatorPosition.GROUND));
+        operatorController.a().onTrue(new ElevatorDownAuto(elevator, endEffector, tuskSubsystem, CONVEYOR_EJECT_SPEED));//elevator.moveToPosition(ElevatorPosition.GROUND).until(elevator.getCurrentPosition)    andThen(endEffector.setPivotPositionCommand(PivotPosition.UP)));
         //operatorController.x().onTrue(elevator.moveToPosition(ElevatorPosition.LOW));
         operatorController.y().onTrue(new L3Command(elevator, endEffector, 0));
         operatorController.x().onTrue(new L2Command(elevator, endEffector, 0));
@@ -295,8 +297,8 @@ public class RobotContainer {
         // operatorController.povRight().onTrue(new InstantCommand(() -> endEffector.test()));
                 
         // Conveyor Controls (using triggers)
-        operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED+0.3));
-        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(elevator::getElevatorPosition));
+        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED+0.3));
+        operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(elevator::getElevatorPosition));
         
 
         // operatorController.rightBumper().whileTrue(endEffector.run(0.05));

@@ -13,7 +13,7 @@ public class ElevatorDownAuto extends SequentialCommandGroup {
         addCommands(
             tuskSubsystem.setPivotPositionCommand(Constants.TuskConstants.PivotPosition.UP),
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.DOWN),
-            new WaitCommand(0.5),
+            new WaitCommand(0.3),//-/5
             elevator.moveToPosition(Constants.ElevatorConstants.ElevatorPosition.GROUND),
             new WaitCommand(0.7), 
             endEffector.setPivotPositionCommand(Constants.EndEffectorConstants.PivotPosition.UP)
