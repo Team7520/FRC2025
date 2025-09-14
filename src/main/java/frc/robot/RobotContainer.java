@@ -50,6 +50,7 @@ import frc.robot.commands.AlgaeLow;
 //import frc.robot.commands.ElevatorDown;
 import frc.robot.commands.ElevatorDownAuto;
 import frc.robot.commands.ElevatorDownFromIntake;
+import frc.robot.commands.L1Command;
 import frc.robot.commands.L2Command;
 import frc.robot.commands.L3Command;
 import frc.robot.commands.L4Command;
@@ -230,7 +231,7 @@ public class RobotContainer {
             () -> speedCutOff = !speedCutOff
         ));
         
-        driveController.a().onTrue(drivetrain.LimelightStatus(true));
+        driveController.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         driveController.rightBumper().onTrue(drivetrain.LimelightStatus(false));
 
         //auto movements to reef
@@ -297,15 +298,16 @@ public class RobotContainer {
         // operatorController.povRight().onTrue(new InstantCommand(() -> endEffector.test()));
                 
         // Conveyor Controls (using triggers)
-        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_INTAKE_SPEED+0.3));
+        operatorController.leftTrigger().whileTrue(endEffector.setConveyorSpeedCommand(0.1));
         operatorController.rightTrigger().whileTrue(endEffector.setConveyorSpeedCommand(elevator::getElevatorPosition));
         
 
         // operatorController.rightBumper().whileTrue(endEffector.run(0.05));
         // operatorController.leftBumper().whileTrue(endEffector.run(-0.1));
         //operatorController.povRight().onTrue(endEffector.resetEncoderCommand());
-        operatorController.back().onTrue(elevator.resetEncoderCommand());
+        operatorController.start().onTrue(new L1Command(elevator, endEffector, 0));
 
+        
         // Ramp Controls (using bumpers)
         operatorController.rightBumper().whileTrue(endEffector.setConveyorSpeedCommand(CONVEYOR_EJECT_SPEED).until(() -> endEffector.StopWithSensor()));
         operatorController.rightBumper().whileTrue(rampSubsystem.run(RAMP_SPEED)); // .until(() -> endEffector.StopWithSensor())

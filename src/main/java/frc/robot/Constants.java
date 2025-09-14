@@ -60,6 +60,7 @@ public class Constants {
 
         public static final int CURRENT_LIMIT = 60;
         public static enum ElevatorPosition {
+            L1(22.45,-0.3),
             GROUND(0, -0.45),
             LOW(13.3, -0.12), // 11.41455078125, 7.984863
             MID(29.056641, -0.12), // 27.5 
@@ -111,6 +112,7 @@ public class Constants {
         public static final double ALLOWABLE_ERROR = 1;//1
         // Old values (starting from floor)
         public static enum PivotPosition {
+            L1(10),
             UP(-245),
             DOWN(-190),
             L4DOWN(-180),
