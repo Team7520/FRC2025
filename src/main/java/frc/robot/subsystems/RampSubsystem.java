@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 
 //import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -8,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class RampSubsystem extends SubsystemBase {
-    private final TalonFX RampMotor = new TalonFX(Constants.RampConstants.RampID);
+    private final SparkMax RampMotor = new SparkMax(Constants.RampConstants.RampID, MotorType.kBrushless);
     private final TalonFX StarWheelMotor = new TalonFX(Constants.RampConstants.StarWheelID);
     // private final SlewRateLimiter speedLimiter = new SlewRateLimiter(100);
 
@@ -28,12 +30,12 @@ public class RampSubsystem extends SubsystemBase {
     }
 
     public void setSpeed(double speed) {
-        RampMotor.set(speed);
+        RampMotor.set(-speed);
         StarWheelMotor.set(speed);
     }
 
     public void setSeparateSpeeds(double rampSpeed, double starWheelSpeed) {
-        RampMotor.set(rampSpeed);
+        RampMotor.set(-rampSpeed);
         StarWheelMotor.set(starWheelSpeed);
     }
 

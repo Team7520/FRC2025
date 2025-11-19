@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Constants {
     public static class RampConstants {
-        public static final int RampID = 43;
+        public static final int RampID = 3; // old 43
         public static final int StarWheelID = 44;
     }
 
